@@ -1,5 +1,7 @@
 <?php
 
+/**
+ * MXM JSON API Client
  *
  * v1.4, config array version
  *
