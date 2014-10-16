@@ -1,7 +1,7 @@
 Maxemail JSON Client
 ====================
 
-Self contained JSON client in PHP for simplifying access to the Maxemail API
+Self-contained client in PHP for simplifying access to the Maxemail API
 
 Usage Example
 -------------
@@ -12,10 +12,10 @@ $config = array(
     'user' => 'api@user.com',
     'pass' => 'apipass'
 );
-$client = new Mxm_Api_JsonClient($config);
+$api = new \Mxm\Api($config);
  
  
 // General:
-$result = $client->serviceName->method($arg1, $arg2);
+$result = $api->serviceName->method($arg1, $arg2);
 var_dump($result);
 ```
