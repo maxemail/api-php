@@ -1,5 +1,5 @@
-Maxemail JSON Client
-====================
+Maxemail API Client for PHP
+===========================
 
 Self-contained client in PHP for simplifying access to the Maxemail API
 
