@@ -12,7 +12,7 @@ namespace Mxm\Api;
  */
 class JsonClient
 {
-    const VERSION = '1.6';
+    const VERSION = '2.0';
 
     /**
      * @var string
