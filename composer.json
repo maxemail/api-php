@@ -1,0 +1,23 @@
+{
+    "name": "emailcenter/mxm-api-php",
+    "description": "Maxemail API",
+
+    "autoload": {
+        "psr-4": {
+            "Mxm\\": "src/"
+        }
+    },
+
+    "require": {
+        "php" : "~5.4"
+    },
+
+    "autoload-dev": {
+        "psr-4": {
+            "Mxm\\": "tests/"
+        }
+    },
+
+    "require-dev": {
+    }
+}
