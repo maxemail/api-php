@@ -1,33 +1,81 @@
 <?php
 
+namespace Mxm;
+
 /**
  * MXM JSON API Client
  *
- * v1.5, config array version
- *
  * @category   Mxm
  * @package    Mxm_Api
- * @copyright  Copyright (c) 2007-2012 Emailcenter UK. (http://www.emailcenteruk.com)
+ * @copyright  Copyright (c) 2007-2014 Emailcenter UK. (http://www.emailcenteruk.com)
  * @license    Commercial
+ *
+ * Services
+ * @property mixed file_upload http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:file_upload
+ * @property mixed file_transfer http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:file_transfer
+ *
+ * Navigation
+ * @property mixed tree http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:tree
+ * @property mixed folder http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:folder
+ *
+ * Emails
+ * @property mixed campaign http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:campaign
+ * @property mixed email_campaign http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:email_campaign
+ * @property mixed email_send http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:email_send
+ * @property mixed email_triggered http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:email_triggered
+ * @property mixed folder_recurring http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:folder_recurring
+ *
+ * Content
+ * @property mixed snippet http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:snippet
+ *
+ * Data
+ * @property mixed recipient http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:recipient
+ * @property mixed list http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:list
+ * @property mixed list_import http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:list_import
+ * @property mixed list_export http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:list_export
+ * @property mixed profile http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:profile
+ * @property mixed profile_field http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:profile_field
+ * @property mixed datatable http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:datatable
+ * @property mixed datatable_field http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:datatable_field
+ * @property mixed datatable_import http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:datatable_import
+ * @property mixed field_type http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:field_type
+ *
+ * Reporting
+ * @property mixed comparison_report http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:comparison_report
+ * @property mixed data_export http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:data_export
+ * @property mixed data_export_report http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:data_export_report
+ * @property mixed data_export_quick http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:data_export_quick
+ *
+ * Features
+ * @property mixed transactional http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:transactional
+ * @property mixed data_export_quick_transactional http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:data_export_quick_transactional
  */
-class Mxm_Api
+class Api
 {
-    /** @var array */
+    /**
+     * @var array
+     */
     protected $services = array();
 
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $url = null;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $username = null;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $password = null;
 
     /**
      * Construct
      *
-     * @param array $config object containing url, user, pass
+     * @param array $config array containing url, user, pass
      */
     public function __construct(array $config)
     {
@@ -40,13 +88,13 @@ class Mxm_Api
      * Get JsonClient for selected service
      *
      * @param string $service
-     * @return Mxm_Api_JsonClient
+     * @return ApiJsonClient
      */
     public function getInstance($service)
     {
         if (!isset($this->services[$service])) {
             $url = $this->url . $service;
-            $this->services[$service] = new Mxm_Api_JsonClient($url, $this->username, $this->password);
+            $this->services[$service] = new ApiJsonClient($url, $this->username, $this->password);
         }
         return $this->services[$service];
     }
@@ -55,7 +103,7 @@ class Mxm_Api
      * Magic get for service
      *
      * @param string $name
-     * @return Mxm_Api_JsonClient
+     * @return ApiJsonClient
      */
     public function __get($name)
     {
@@ -66,15 +114,24 @@ class Mxm_Api
 /**
  * MXM JSON API Client
  *
- * v1.5, config array version
- *
  * @category   Mxm
  * @package    Mxm_Api
- * @copyright  Copyright (c) 2007-2012 Emailcenter UK. (http://www.emailcenteruk.com)
+ * @copyright  Copyright (c) 2007-2014 Emailcenter UK. (http://www.emailcenteruk.com)
  * @license    Commercial
  */
-class Mxm_Api_JsonClient
+class ApiJsonClient
 {
+    const VERSION = '1.6';
+
+    /**
+     * @var string
+     */
+    private $lastRequest;
+
+    /**
+     * @var string
+     */
+    private $lastResponse;
 
     /**
      * Construct
@@ -100,6 +157,7 @@ class Mxm_Api_JsonClient
      *
      * @param array $data
      * @return string
+     * @throws \RuntimeException
      */
     protected function postRequest(array $data)
     {
@@ -110,7 +168,7 @@ class Mxm_Api_JsonClient
         $socket = @fsockopen($host, $port);
         if ($socket === false) {
             $error = error_get_last();
-            throw new Exception("Failed to connect to {$this->host} on port $port, {$error['message']}");
+            throw new \RuntimeException("Failed to connect to {$this->host} on port $port, {$error['message']}");
         }
 
         $body = http_build_query($data);
@@ -119,7 +177,7 @@ class Mxm_Api_JsonClient
             'Connection'     => 'close',
             'Content-type'   => 'application/x-www-form-urlencoded',
             'Content-length' => strlen($body),
-            'User-Agent'     => 'MxmJsonClient/1.5a PHP/' . phpversion()
+            'User-Agent'     => 'MxmJsonClient/' . self::VERSION  . ' PHP/' . phpversion()
         );
 
         if (!is_null($this->username) && !is_null($this->password)) {
@@ -136,7 +194,7 @@ class Mxm_Api_JsonClient
 
         if (@fwrite($socket, $request) === false) {
             $error = error_get_last();
-            throw new Exception("Failed to write to socket, {$error['message']}");
+            throw new \RuntimeException("Failed to write to socket, {$error['message']}");
         }
 
         $response = '';
@@ -159,11 +217,12 @@ class Mxm_Api_JsonClient
                 if (array_key_exists('msg', $message)) {
                     $content = $message['msg'];
                 }
-            } catch (Exception $e) {
+            } catch (\UnexpectedValueException $e) {
                 // Void
             }
-            throw new Exception($content, $code);
+            throw new \RuntimeException($content, $code);
         }
+
         return $content;
     }
 
@@ -191,7 +250,8 @@ class Mxm_Api_JsonClient
      * Decode JSON
      *
      * @param string $json
-     * @return mixed
+     * @return \stdClass
+     * @throws \UnexpectedValueException
      */
     protected function decodeJson($json)
     {
@@ -225,7 +285,7 @@ class Mxm_Api_JsonClient
         }
 
         if (!empty($error)) {
-            throw new Exception("Problem decoding json ($json), {$error}");
+            throw new \UnexpectedValueException("Problem decoding json ($json), {$error}");
         }
 
         return $result;
@@ -236,7 +296,7 @@ class Mxm_Api_JsonClient
      *
      * @param string $name
      * @param array $params
-     * @return mixed
+     * @return \stdClass
      */
     public function __call($name, $params)
     {
