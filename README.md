@@ -6,17 +6,11 @@ Self-contained client in PHP for simplifying access to the Maxemail API
 Installation
 ------------
 
-Including this package in your application is made easy by using [Composer](https://getcomposer.org/doc/05-repositories.md#loading-a-package-from-a-vcs-repository).
-Simply include this repository and the relevant requirement line in your `composer.json`.
+Including this package in your application is made easy by using [Composer](https://getcomposer.org).
+Simply include this requirement line in your `composer.json`.
 
 ```json
 {
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/emailcenter/mxm-api-php.git"
-        }
-    ],
     "require": {
         "emailcenter/mxm-api-php": "~2.0"
     }
