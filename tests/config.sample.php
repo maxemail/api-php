@@ -2,9 +2,10 @@
 $config = array();
 
 $config['api'] = array(
-    'url'  => 'https://maxemail.emailcenteruk.com',
-    'user' => 'api@user.com',
-    'pass' => 'apipass'
+    'host'   => 'maxemail.emailcenteruk.com',
+    'user'   => 'api@user.com',
+    'pass'   => 'apipass',
+    'useSsl' => true
 );
 
 return $config;

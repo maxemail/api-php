@@ -17,6 +17,31 @@ class JsonClient
     /**
      * @var string
      */
+    protected $service;
+
+    /**
+     * @var string
+     */
+    protected $host;
+
+    /**
+     * @var string
+     */
+    protected $username;
+
+    /**
+     * @var string
+     */
+    protected $password;
+
+    /**
+     * @var bool
+     */
+    protected $useSsl;
+
+    /**
+     * @var string
+     */
     private $lastRequest;
 
     /**
@@ -27,20 +52,22 @@ class JsonClient
     /**
      * Construct
      *
-     * @param string $url
-     * @param string $username
-     * @param string $password
+     * @param string $service
+     * @param array $config {
+     *     @var string $host
+     *     @var string $user
+     *     @var string $pass
+     *     @var bool   $useSsl
+     * }
      */
-    public function __construct($url, $username, $password)
+    public function __construct($service, $config)
     {
-        $this->url = $url;
+        $this->service = $service;
 
-        $parts = parse_url($url);
-        $this->scheme   = $parts['scheme'];
-        $this->host     = $parts['host'];
-        $this->path     = $parts['path'];
-        $this->username = $username;
-        $this->password = $password;
+        $this->host     = $config['host'];
+        $this->username = $config['user'];
+        $this->password = $config['pass'];
+        $this->useSsl   = (bool)$config['useSsl'];
     }
 
     /**
@@ -52,9 +79,8 @@ class JsonClient
      */
     protected function postRequest(array $data)
     {
-        $port = strtolower($this->scheme) == 'https' ? 443 : 80;
-        $host = strtolower($this->scheme) == 'https' ? 'ssl://' : '';
-        $host.= $this->host;
+        $port = $this->useSsl ? 443 : 80;
+        $host = ($this->useSsl ? 'ssl://' : '') . $this->host;
 
         $socket = @fsockopen($host, $port);
         if ($socket === false) {
@@ -76,7 +102,7 @@ class JsonClient
             $headers['Authorization'] = "Basic $basicAuth";
         }
 
-        $request = "POST {$this->path} HTTP/1.0\r\n";
+        $request = "POST /api/json/{$this->service} HTTP/1.0\r\n";
         foreach ($headers as $key => $value) {
             $request .= "$key: $value\r\n";
         }
