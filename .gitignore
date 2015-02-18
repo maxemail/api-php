@@ -1,4 +1,8 @@
 vendor
 
+# We don't need to be specific on packages
+# https://philsturgeon.uk/php/2014/11/04/composer-its-almost-always-about-the-lock-file/
+composer.lock
+
 ### Tests
 tests/config.php

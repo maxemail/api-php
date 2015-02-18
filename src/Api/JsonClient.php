@@ -10,7 +10,7 @@ namespace Mxm\Api;
  * @copyright  Copyright (c) 2007-2014 Emailcenter UK. (http://www.emailcenteruk.com)
  * @license    Commercial
  */
-class JsonClient
+class JsonClient implements \Psr\Log\LoggerAwareInterface
 {
     const VERSION = '2.0';
 
@@ -48,6 +48,11 @@ class JsonClient
      * @var string
      */
     private $lastResponse;
+
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    protected $logger;
 
     /**
      * Construct
@@ -108,6 +113,11 @@ class JsonClient
         }
         $request .= "\r\n$body";
         $this->lastRequest = $request;
+        $this->getLogger()->debug("Request: {$this->service}.{$data['method']}", [
+            'params'  => $data,
+            'host'    => $this->host,
+            'request' => $request
+        ]);
 
         if (@fwrite($socket, $request) === false) {
             $error = error_get_last();
@@ -121,6 +131,11 @@ class JsonClient
         @fclose($socket);
 
         $this->lastResponse = $response;
+        $this->getLogger()->debug("Response: {$this->service}.{$data['method']}", [
+            'params'   => $data,
+            'host'     => $this->host,
+            'response' => $response
+        ]);
 
         preg_match("|^HTTP/[\d\.x]+ (\d+)|", $response, $matches);
         $code = (int)$matches[1];
@@ -232,5 +247,32 @@ class JsonClient
         }
 
         return $this->decodeJson($json);
+    }
+
+    /**
+     * Sets a logger instance on the object
+     *
+     * @param \Psr\Log\LoggerInterface $logger
+     * @return $this
+     */
+    public function setLogger(\Psr\Log\LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+
+        return $this;
+    }
+
+    /**
+     * Gets the logger, creating a null logger if none defined
+     *
+     * @return \Psr\Log\LoggerInterface
+     */
+    public function getLogger()
+    {
+        if (!isset($this->logger)) {
+            $this->logger = new \Psr\Log\NullLogger();
+        }
+
+        return $this->logger;
     }
 }

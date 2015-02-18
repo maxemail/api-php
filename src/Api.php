@@ -52,7 +52,7 @@ use Mxm\Api\JsonClient;
  * @property mixed transactional http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:transactional
  * @property mixed data_export_quick_transactional http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:data_export_quick_transactional
  */
-class Api
+class Api implements \Psr\Log\LoggerAwareInterface
 {
     /**
      * @var string
@@ -75,9 +75,14 @@ class Api
     protected $useSsl = true;
 
     /**
-     * @var array
+     * @var JsonClient[]
      */
     protected $services = array();
+
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    protected $logger;
 
     /**
      * Construct
@@ -139,8 +144,40 @@ class Api
                 'pass' => $this->password,
                 'useSsl' => $this->useSsl
             ]);
+            $this->services[$service]->setLogger($this->getLogger());
         }
 
         return $this->services[$service];
+    }
+
+    /**
+     * Sets a logger instance on the object
+     *
+     * @param \Psr\Log\LoggerInterface $logger
+     * @return $this
+     */
+    public function setLogger(\Psr\Log\LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+
+        foreach ($this->services as $service) {
+            $service->setLogger($logger);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Gets the logger, creating a null logger if none defined
+     *
+     * @return \Psr\Log\LoggerInterface
+     */
+    public function getLogger()
+    {
+        if (!isset($this->logger)) {
+            $this->logger = new \Psr\Log\NullLogger();
+        }
+
+        return $this->logger;
     }
 }
