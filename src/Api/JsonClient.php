@@ -76,6 +76,30 @@ class JsonClient implements \Psr\Log\LoggerAwareInterface
     }
 
     /**
+     * Magic call for service method
+     *
+     * @param string $name
+     * @param array $params
+     * @return mixed
+     */
+    public function __call($name, array $params)
+    {
+        $data = array(
+            'method' => $name
+        );
+        foreach ($params as $i => $param) {
+            if (is_array($param)) {
+                $param = json_encode($param);
+            }
+            $data['arg' . $i] = $param;
+        }
+
+        $json = $this->postRequest($data);
+
+        return $this->decodeJson($json);
+    }
+
+    /**
      * Post request
      *
      * @param array $data
@@ -145,12 +169,13 @@ class JsonClient implements \Psr\Log\LoggerAwareInterface
 
         if ((int)$code != 200) {
             try {
-                $message = (array)$this->decodeJson($content);
-                if (array_key_exists('msg', $message)) {
-                    $content = $message['msg'];
+                $message = $this->decodeJson($content);
+                if ($message instanceof \stdClass && isset($message->msg)) {
+                    $content = $message->msg;
                 }
             } catch (\UnexpectedValueException $e) {
                 // Void
+                // Failed to decode, leave content as the raw response
             }
             throw new \RuntimeException($content, $code);
         }
@@ -182,23 +207,15 @@ class JsonClient implements \Psr\Log\LoggerAwareInterface
      * Decode JSON
      *
      * @param string $json
-     * @return \stdClass
+     * @return mixed
      * @throws \UnexpectedValueException
      */
     protected function decodeJson($json)
     {
         $result = json_decode($json, false);
 
-        // Error checking
-        $ver = version_compare(PHP_VERSION, '5.3');
-        if ($ver == '-1') {
-            // Less than php5.3
-            $error = '';
-            if ($result === null) {
-                $error = 'JSON was not able to be decoded';
-            }
-        } else {
-            // At least php5.3
+        if ($result === null) {
+            // Error checking
             switch (json_last_error()) {
                 case JSON_ERROR_DEPTH:
                     $error = 'Maximum stack depth exceeded';
@@ -211,42 +228,17 @@ class JsonClient implements \Psr\Log\LoggerAwareInterface
                     break;
                 case JSON_ERROR_NONE:
                 default:
+                    // Value is really null
                     $error = '';
                     break;
             }
-        }
 
-        if (!empty($error)) {
-            throw new \UnexpectedValueException("Problem decoding json ($json), {$error}");
+            if (!empty($error)) {
+                throw new \UnexpectedValueException("Problem decoding json ($json), {$error}");
+            }
         }
 
         return $result;
-    }
-
-    /**
-     * Magic call for service method
-     *
-     * @param string $name
-     * @param array $params
-     * @return \stdClass
-     */
-    public function __call($name, $params)
-    {
-        $data = array(
-            'method' => $name
-        );
-        foreach ($params as $i => $param) {
-            if (is_array($param)) {
-                $param = json_encode($param);
-            }
-            $data['arg' . $i] = $param;
-        }
-        $json = $this->postRequest($data);
-        if ($json == 'null') {
-            return null;
-        }
-
-        return $this->decodeJson($json);
     }
 
     /**
