@@ -3,6 +3,7 @@
 namespace Mxm;
 
 use Mxm\Api\JsonClient;
+use Mxm\Api\Helper;
 
 /**
  * MXM JSON API Client
@@ -80,6 +81,11 @@ class Api implements \Psr\Log\LoggerAwareInterface
     protected $services = array();
 
     /**
+     * @var Helper
+     */
+    protected $helper;
+
+    /**
      * @var \Psr\Log\LoggerInterface
      */
     protected $logger;
@@ -138,16 +144,45 @@ class Api implements \Psr\Log\LoggerAwareInterface
     protected function getInstance($service)
     {
         if (!isset($this->services[$service])) {
-            $this->services[$service] = new JsonClient($service, [
-                'host' => $this->host,
-                'user' => $this->username,
-                'pass' => $this->password,
-                'useSsl' => $this->useSsl
-            ]);
+            $this->services[$service] = new JsonClient($service, $this->getConfig());
             $this->services[$service]->setLogger($this->getLogger());
         }
 
         return $this->services[$service];
+    }
+
+    /**
+     * Get API config
+     *
+     * @return array {
+     *     @var string $host   Hostname
+     *     @var string $user   Username
+     *     @var string $pass   Password
+     *     @var bool   $useSsl Use secure connection
+     * }
+     */
+    public function getConfig()
+    {
+        return [
+            'host' => $this->host,
+            'user' => $this->username,
+            'pass' => $this->password,
+            'useSsl' => $this->useSsl
+        ];
+    }
+
+    /**
+     * Get API Helper
+     *
+     * @return Helper
+     */
+    public function getHelper()
+    {
+        if (!isset($this->helper)) {
+            $this->helper = new Helper($this);
+        }
+
+        return $this->helper;
     }
 
     /**
