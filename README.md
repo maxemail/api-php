@@ -26,7 +26,7 @@ Usage Example
 ```php
 // Instantiate Client:
 $config = array(
-    'url' => 'https://maxemail.emailcenteruk.com/',
+    'host' => 'maxemail.emailcenteruk.com',
     'user' => 'api@user.com',
     'pass' => 'apipass'
 );

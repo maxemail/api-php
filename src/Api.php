@@ -55,50 +55,62 @@ use Mxm\Api\JsonClient;
 class Api
 {
     /**
+     * @var string
+     */
+    protected $host;
+
+    /**
+     * @var string
+     */
+    protected $username;
+
+    /**
+     * @var string
+     */
+    protected $password;
+
+    /**
+     * @var bool
+     */
+    protected $useSsl = true;
+
+    /**
      * @var array
      */
     protected $services = array();
 
     /**
-     * @var string
-     */
-    protected $url = null;
-
-    /**
-     * @var string
-     */
-    protected $username = null;
-
-    /**
-     * @var string
-     */
-    protected $password = null;
-
-    /**
      * Construct
      *
-     * @param array $config array containing url, user, pass
+     * @param array $config {
+     *     @var string $host   Hostname, required
+     *     @var string $user   Username, required
+     *     @var string $pass   Password, required
+     *     @var bool   $useSsl Use secure connection, optional, default true
+     * }
      */
     public function __construct(array $config)
     {
-        $this->url      = rtrim($config['url'], '/') . '/api/json/';
+        // Validate hostname
+        // RFC 952 regex from http://stackoverflow.com/questions/106179/regular-expression-to-match-dns-hostname-or-ip-address
+        // Maxemail instances won't require RFC 1123 support
+        $valid952HostnameRegex = "/^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$/";
+
+        $this->host = filter_var($config['host'], FILTER_VALIDATE_REGEXP, [
+            'options' => [
+                'regexp' => $valid952HostnameRegex
+            ]
+        ]);
+        if ($this->host === false) {
+            throw new \InvalidArgumentException('Invalid hostname provided');
+        }
+
         $this->username = $config['user'];
         $this->password = $config['pass'];
-    }
 
-    /**
-     * Get JsonClient for selected service
-     *
-     * @param string $service
-     * @return JsonClient
-     */
-    public function getInstance($service)
-    {
-        if (!isset($this->services[$service])) {
-            $url = $this->url . $service;
-            $this->services[$service] = new JsonClient($url, $this->username, $this->password);
+        if (isset($config['useSsl'])) {
+            $this->useSsl = (bool)$config['useSsl'];
         }
-        return $this->services[$service];
     }
 
     /**
@@ -110,5 +122,25 @@ class Api
     public function __get($name)
     {
         return $this->getInstance($name);
+    }
+
+    /**
+     * Get JsonClient for selected service
+     *
+     * @param string $service
+     * @return JsonClient
+     */
+    protected function getInstance($service)
+    {
+        if (!isset($this->services[$service])) {
+            $this->services[$service] = new JsonClient($service, [
+                'host' => $this->host,
+                'user' => $this->username,
+                'pass' => $this->password,
+                'useSsl' => $this->useSsl
+            ]);
+        }
+
+        return $this->services[$service];
     }
 }
