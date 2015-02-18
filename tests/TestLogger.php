@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Simple logger to STDERR
+ * @link http://jamiehannaford.com/php/fig/logging/logging-with-psr-3/
+ */
 class TestLogger extends \Psr\Log\AbstractLogger
 {
     protected $stream;
