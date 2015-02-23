@@ -40,7 +40,7 @@ class Helper
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
-    public function download($type, $primaryId, array $options = [])
+    public function downloadFile($type, $primaryId, array $options = [])
     {
         $typePrimary = array(
             'file'       => 'key',
@@ -78,13 +78,26 @@ class Helper
             'url'  => $url,
             'user' => $config['user']
         ]);
-        $local = fopen($filename, 'w');
-        $remote = fopen($url, 'r', false, $context);
+        $local = @fopen($filename, 'w');
+        if ($local === false) {
+            throw new \RuntimeException('Unable to open local file');
+        }
+        $remote = @fopen($url, 'r', false, $context);
+        if ($remote === false) {
+            throw new \RuntimeException('Unable to open remote connection');
+        }
         while ($content = fread($remote, 101400)) {
-            fwrite($local, $content);
+            $written = @fwrite($local, $content);
+            if ($written === false) {
+                throw new \RuntimeException('Unable to write to local file');
+            }
         }
         fclose($local);
         fclose($remote);
+        $this->api->getLogger()->debug("Download complete {$type} {$primaryId}", [
+            'url'  => $url,
+            'user' => $config['user']
+        ]);
 
         // Get MIME
         $mime = (new \finfo(FILEINFO_MIME_TYPE))->file($filename);
