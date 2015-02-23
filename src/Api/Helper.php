@@ -80,16 +80,19 @@ class Helper
         ]);
         $local = @fopen($filename, 'w');
         if ($local === false) {
-            throw new \RuntimeException('Unable to open local file');
+            $error = error_get_last();
+            throw new \RuntimeException("Unable to open local file: {$error['message']}");
         }
         $remote = @fopen($url, 'r', false, $context);
         if ($remote === false) {
-            throw new \RuntimeException('Unable to open remote connection');
+            $error = error_get_last();
+            throw new \RuntimeException("Unable to open remote connection: {$error['message']}");
         }
         while ($content = fread($remote, 101400)) {
             $written = @fwrite($local, $content);
             if ($written === false) {
-                throw new \RuntimeException('Unable to write to local file');
+                $error = error_get_last();
+                throw new \RuntimeException("Unable to write to local file: {$error['message']}");
             }
         }
         fclose($local);
