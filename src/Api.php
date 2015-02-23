@@ -55,6 +55,8 @@ use Mxm\Api\Helper;
  */
 class Api implements \Psr\Log\LoggerAwareInterface
 {
+    const VERSION = '2.0';
+
     /**
      * @var string
      */

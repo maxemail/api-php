@@ -12,32 +12,12 @@ namespace Mxm\Api;
  */
 class JsonClient implements \Psr\Log\LoggerAwareInterface
 {
-    const VERSION = '2.0';
+    use ConnectionTrait;
 
     /**
      * @var string
      */
     protected $service;
-
-    /**
-     * @var string
-     */
-    protected $host;
-
-    /**
-     * @var string
-     */
-    protected $username;
-
-    /**
-     * @var string
-     */
-    protected $password;
-
-    /**
-     * @var bool
-     */
-    protected $useSsl;
 
     /**
      * @var string
@@ -108,34 +88,13 @@ class JsonClient implements \Psr\Log\LoggerAwareInterface
      */
     protected function postRequest(array $data)
     {
-        $port = $this->useSsl ? 443 : 80;
-        $host = ($this->useSsl ? 'ssl://' : '') . $this->host;
-
-        $socket = @fsockopen($host, $port);
-        if ($socket === false) {
-            $error = error_get_last();
-            throw new \RuntimeException("Failed to connect to {$this->host} on port $port, {$error['message']}");
-        }
+        $socket = $this->getConnection();
 
         $body = http_build_query($data);
-        $headers = array(
-            'Host'           => $this->host,
-            'Connection'     => 'close',
-            'Content-type'   => 'application/x-www-form-urlencoded',
-            'Content-length' => strlen($body),
-            'User-Agent'     => 'MxmJsonClient/' . self::VERSION  . ' PHP/' . phpversion()
-        );
+        $headers = $this->getHeaders(strlen($body));
 
-        if (!is_null($this->username) && !is_null($this->password)) {
-            $basicAuth                = base64_encode($this->username . ':' . $this->password);
-            $headers['Authorization'] = "Basic $basicAuth";
-        }
+        $request = $this->buildPostRequest("/api/json/{$this->service}", $headers, $body);
 
-        $request = "POST /api/json/{$this->service} HTTP/1.0\r\n";
-        foreach ($headers as $key => $value) {
-            $request .= "$key: $value\r\n";
-        }
-        $request .= "\r\n$body";
         $this->lastRequest = $request;
         $this->getLogger()->debug("Request: {$this->service}.{$data['method']}", [
             'params'  => $data,
