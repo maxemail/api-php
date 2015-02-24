@@ -14,6 +14,8 @@ use Mxm\Api;
  */
 class Helper
 {
+    use ConnectionTrait;
+
     /**
      * @var Api
      */
@@ -59,16 +61,17 @@ class Helper
         );
 
         // Build URL
-        $config = $this->api->getConfig();
-        $url = ($config['useSsl'] ? 'https' : 'http') .
-            "://{$config['host']}" .
+        $this->setConnectionConfig($this->api->getConfig());
+        $url = ($this->useSsl ? 'https' : 'http') .
+            "://{$this->host}" .
             "/download/{$type}/" .
             "{$typePrimary[$type]}/{$primaryId}";
 
         // Set up stream
+        $headers = $this->getHeaders('');
         $opts = array(
             'http' => array(
-                'header' => sprintf("Authorization: Basic %s\r\n", base64_encode($config['user'] . ':' . $config['pass']))
+                'header' => "Authorization: {$headers['Authorization']}"
             )
         );
         $context = stream_context_create($opts);
@@ -76,7 +79,7 @@ class Helper
         // Get file
         $this->api->getLogger()->debug("Download file {$type} {$primaryId}", [
             'url'  => $url,
-            'user' => $config['user']
+            'user' => $this->username
         ]);
         $local = @fopen($filename, 'w');
         if ($local === false) {
@@ -96,7 +99,7 @@ class Helper
         fclose($remote);
         $this->api->getLogger()->debug("Download complete {$type} {$primaryId}", [
             'url'  => $url,
-            'user' => $config['user']
+            'user' => $this->username
         ]);
 
         // Get MIME

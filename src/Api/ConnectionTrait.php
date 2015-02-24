@@ -35,6 +35,22 @@ trait ConnectionTrait
     protected $useSsl;
 
     /**
+     * @param array $config {
+     *     @var string $host
+     *     @var string $user
+     *     @var string $pass
+     *     @var bool   $useSsl
+     * }
+     */
+    protected function setConnectionConfig($config)
+    {
+        $this->host     = $config['host'];
+        $this->username = $config['user'];
+        $this->password = $config['pass'];
+        $this->useSsl   = (bool)$config['useSsl'];
+    }
+
+    /**
      * Get connection socket
      *
      * @return resource

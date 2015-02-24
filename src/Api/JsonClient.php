@@ -49,10 +49,7 @@ class JsonClient implements \Psr\Log\LoggerAwareInterface
     {
         $this->service = $service;
 
-        $this->host     = $config['host'];
-        $this->username = $config['user'];
-        $this->password = $config['pass'];
-        $this->useSsl   = (bool)$config['useSsl'];
+        $this->setConnectionConfig($config);
     }
 
     /**
