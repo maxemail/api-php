@@ -72,10 +72,9 @@ trait ConnectionTrait
     /**
      * Get request headers
      *
-     * @param int|null $contentLength bytes, null if unknown
      * @return array
      */
-    protected function getHeaders($contentLength)
+    protected function getHeaders()
     {
         $headers = array(
             'Host'           => $this->host,
@@ -83,10 +82,6 @@ trait ConnectionTrait
             'Content-type'   => 'application/x-www-form-urlencoded',
             'User-Agent'     => 'MxmJsonClient/' . Api::VERSION . ' PHP/' . phpversion()
         );
-
-        if ($contentLength > 0) {
-            $headers['Content-length'] = (int)$contentLength;
-        }
 
         if (!is_null($this->username) && !is_null($this->password)) {
             $basicAuth                = base64_encode($this->username . ':' . $this->password);

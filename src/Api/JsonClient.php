@@ -88,7 +88,8 @@ class JsonClient implements \Psr\Log\LoggerAwareInterface
         $socket = $this->getConnection();
 
         $body = http_build_query($data);
-        $headers = $this->getHeaders(strlen($body));
+        $headers = $this->getHeaders();
+        $headers['Content-length'] = strlen($body);
 
         $request = $this->buildPostRequest("/api/json/{$this->service}", $headers, $body);
 

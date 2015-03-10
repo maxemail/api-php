@@ -68,7 +68,7 @@ class Helper
             "{$typePrimary[$type]}/{$primaryId}";
 
         // Set up stream
-        $headers = $this->getHeaders('');
+        $headers = $this->getHeaders();
         $opts = array(
             'http' => array(
                 'header' => "Authorization: {$headers['Authorization']}"
