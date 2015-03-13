@@ -1,6 +1,7 @@
 {
     "name": "emailcenter/mxm-api-php",
     "description": "Maxemail API",
+    "licence" : "proprietary",
 
     "autoload": {
         "psr-4": {
