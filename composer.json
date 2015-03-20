@@ -14,6 +14,10 @@
         "psr/log" : "~1.0"
     },
 
+    "suggest": {
+        "ext-curl" : "cURL required to use the file upload helper"
+    },
+
     "autoload-dev": {
         "psr-4": {
             "Mxm\\": "tests/"

@@ -14,6 +14,9 @@ use Mxm\Api;
  */
 class Helper
 {
+    use ConnectionTrait;
+    use JsonTrait;
+
     /**
      * @var Api
      */
@@ -25,6 +28,85 @@ class Helper
     public function __construct(Api $api)
     {
         $this->api = $api;
+    }
+
+    /**
+     * Upload file
+     *
+     * Returns file key to use for list import, email content, etc.
+     *
+     * @param string $path
+     * @return string file key
+     */
+    public function uploadFile($path)
+    {
+        if (!is_readable($path)) {
+            throw new \InvalidArgumentException('File path is not readable: ' . $path);
+        }
+        $basename = basename($path);
+        $mime = (new \finfo(FILEINFO_MIME_TYPE))->file($path);
+        if ($mime === false) {
+            throw new \RuntimeException("MIME type could not be determined");
+        }
+
+        // Initialise
+        /** @var string $fileKey */
+        $fileKey = $this->api->file_upload->initialise()->key;
+
+        // Build request
+        $this->setConnectionConfig($this->api->getConfig());
+        $headers = $this->getHeaders();
+
+        $handleurl = ($this->useSsl ? 'https' : 'http') .
+            '://' .
+            $this->host .
+            '/api/json/file_upload';
+
+        $params = array(
+            'method' => 'handle',
+            'key'    => $fileKey,
+            'file'   => "@{$path};filename={$basename};type={$mime}"
+        );
+
+        // Write request
+        $this->api->getLogger()->debug("Upload file {$fileKey}", [
+            'fileKey' => $fileKey,
+            'path'    => $path,
+            'user'    => $this->username
+        ]);
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $handleurl);
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC) ;
+        curl_setopt($ch, CURLOPT_USERPWD, "{$this->username}:{$this->password}");
+        curl_setopt($ch, CURLOPT_USERAGENT, $headers['User-Agent']);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $response = curl_exec($ch);
+
+        // Read response
+        if ($response === false) {
+            $errorMsg = curl_error($ch);
+            curl_close($ch);
+            throw new \RuntimeException("Failed to upload file: {$errorMsg}");
+        }
+
+        $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        // Handle any API exceptions
+        // Valid response isn't needed, as 'handle' always returns true
+        $this->processJsonResponse($response, $responseCode);
+
+        curl_close($ch);
+
+        $this->api->getLogger()->debug("Upload complete {$fileKey}", [
+            'fileKey' => $fileKey,
+            'path'    => $path,
+            'user'    => $this->username
+        ]);
+
+        return $fileKey;
     }
 
     /**
@@ -59,16 +141,17 @@ class Helper
         );
 
         // Build URL
-        $config = $this->api->getConfig();
-        $url = ($config['useSsl'] ? 'https' : 'http') .
-            "://{$config['host']}" .
+        $this->setConnectionConfig($this->api->getConfig());
+        $url = ($this->useSsl ? 'https' : 'http') .
+            "://{$this->host}" .
             "/download/{$type}/" .
             "{$typePrimary[$type]}/{$primaryId}";
 
         // Set up stream
+        $headers = $this->getHeaders();
         $opts = array(
             'http' => array(
-                'header' => sprintf("Authorization: Basic %s\r\n", base64_encode($config['user'] . ':' . $config['pass']))
+                'header' => "Authorization: {$headers['Authorization']}"
             )
         );
         $context = stream_context_create($opts);
@@ -76,7 +159,7 @@ class Helper
         // Get file
         $this->api->getLogger()->debug("Download file {$type} {$primaryId}", [
             'url'  => $url,
-            'user' => $config['user']
+            'user' => $this->username
         ]);
         $local = @fopen($filename, 'w');
         if ($local === false) {
@@ -99,7 +182,7 @@ class Helper
         fclose($remote);
         $this->api->getLogger()->debug("Download complete {$type} {$primaryId}", [
             'url'  => $url,
-            'user' => $config['user']
+            'user' => $this->username
         ]);
 
         // Get MIME

@@ -12,32 +12,13 @@ namespace Mxm\Api;
  */
 class JsonClient implements \Psr\Log\LoggerAwareInterface
 {
-    const VERSION = '2.0';
+    use ConnectionTrait;
+    use JsonTrait;
 
     /**
      * @var string
      */
     protected $service;
-
-    /**
-     * @var string
-     */
-    protected $host;
-
-    /**
-     * @var string
-     */
-    protected $username;
-
-    /**
-     * @var string
-     */
-    protected $password;
-
-    /**
-     * @var bool
-     */
-    protected $useSsl;
 
     /**
      * @var string
@@ -69,10 +50,7 @@ class JsonClient implements \Psr\Log\LoggerAwareInterface
     {
         $this->service = $service;
 
-        $this->host     = $config['host'];
-        $this->username = $config['user'];
-        $this->password = $config['pass'];
-        $this->useSsl   = (bool)$config['useSsl'];
+        $this->setConnectionConfig($config);
     }
 
     /**
@@ -108,34 +86,14 @@ class JsonClient implements \Psr\Log\LoggerAwareInterface
      */
     protected function postRequest(array $data)
     {
-        $port = $this->useSsl ? 443 : 80;
-        $host = ($this->useSsl ? 'ssl://' : '') . $this->host;
-
-        $socket = @fsockopen($host, $port);
-        if ($socket === false) {
-            $error = error_get_last();
-            throw new \RuntimeException("Failed to connect to {$this->host} on port $port, {$error['message']}");
-        }
+        $socket = $this->getConnection();
 
         $body = http_build_query($data);
-        $headers = array(
-            'Host'           => $this->host,
-            'Connection'     => 'close',
-            'Content-type'   => 'application/x-www-form-urlencoded',
-            'Content-length' => strlen($body),
-            'User-Agent'     => 'MxmJsonClient/' . self::VERSION  . ' PHP/' . phpversion()
-        );
+        $headers = $this->getHeaders();
+        $headers['Content-length'] = strlen($body);
 
-        if (!is_null($this->username) && !is_null($this->password)) {
-            $basicAuth                = base64_encode($this->username . ':' . $this->password);
-            $headers['Authorization'] = "Basic $basicAuth";
-        }
+        $request = $this->buildPostRequest("/api/json/{$this->service}", $headers, $body);
 
-        $request = "POST /api/json/{$this->service} HTTP/1.0\r\n";
-        foreach ($headers as $key => $value) {
-            $request .= "$key: $value\r\n";
-        }
-        $request .= "\r\n$body";
         $this->lastRequest = $request;
         $this->getLogger()->debug("Request: {$this->service}.{$data['method']}", [
             'params'  => $data,
@@ -167,20 +125,7 @@ class JsonClient implements \Psr\Log\LoggerAwareInterface
         $parts   = preg_split('|(?:\r?\n){2}|m', $response, 2);
         $content = $parts[1];
 
-        if ((int)$code != 200) {
-            try {
-                $message = $this->decodeJson($content);
-                if ($message instanceof \stdClass && isset($message->msg)) {
-                    $content = $message->msg;
-                }
-            } catch (\UnexpectedValueException $e) {
-                // Void
-                // Failed to decode, leave content as the raw response
-            }
-            throw new \RuntimeException($content, $code);
-        }
-
-        return $content;
+        return $this->processJsonResponse($content, $code);
     }
 
     /**
@@ -201,44 +146,6 @@ class JsonClient implements \Psr\Log\LoggerAwareInterface
     public function getLastResponse()
     {
         return $this->lastResponse;
-    }
-
-    /**
-     * Decode JSON
-     *
-     * @param string $json
-     * @return mixed
-     * @throws \UnexpectedValueException
-     */
-    protected function decodeJson($json)
-    {
-        $result = json_decode($json, false);
-
-        if ($result === null) {
-            // Error checking
-            switch (json_last_error()) {
-                case JSON_ERROR_DEPTH:
-                    $error = 'Maximum stack depth exceeded';
-                    break;
-                case JSON_ERROR_CTRL_CHAR:
-                    $error = 'Unexpected control character found';
-                    break;
-                case JSON_ERROR_SYNTAX:
-                    $error = 'Syntax error, malformed JSON';
-                    break;
-                case JSON_ERROR_NONE:
-                default:
-                    // Value is really null
-                    $error = '';
-                    break;
-            }
-
-            if (!empty($error)) {
-                throw new \UnexpectedValueException("Problem decoding json ($json), {$error}");
-            }
-        }
-
-        return $result;
     }
 
     /**
