@@ -10,7 +10,7 @@ use Mxm\Api\Helper;
  *
  * @category   Mxm
  * @package    Api
- * @copyright  Copyright (c) 2007-2014 Emailcenter UK. (http://www.emailcenteruk.com)
+ * @copyright  Copyright (c) 2007-2015 Emailcenter UK. (http://www.emailcenteruk.com)
  * @license    Commercial
  *
  * Services
@@ -55,7 +55,7 @@ use Mxm\Api\Helper;
  */
 class Api implements \Psr\Log\LoggerAwareInterface
 {
-    const VERSION = '2.0';
+    const VERSION = '3.0';
 
     /**
      * @var string

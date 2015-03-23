@@ -7,7 +7,7 @@ namespace Mxm\Api;
  *
  * @category   Mxm
  * @package    Api
- * @copyright  Copyright (c) 2007-2014 Emailcenter UK. (http://www.emailcenteruk.com)
+ * @copyright  Copyright (c) 2007-2015 Emailcenter UK. (http://www.emailcenteruk.com)
  * @license    Commercial
  */
 class JsonClient implements \Psr\Log\LoggerAwareInterface
