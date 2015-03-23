@@ -37,3 +37,18 @@ $api = new \Mxm\Api($config);
 $result = $api->serviceName->method($arg1, $arg2);
 var_dump($result);
 ```
+
+Helpers
+-------
+
+The client also includes a *Helper* class to take care of common scenarios that
+are more complicated than the simple request-response model.
+
+The helper is accessed from the client by the `getHelper()` method:
+
+```php
+$api->getHelper()->downloadFile(...);
+```
+
+See the in-line documentation for helper methods for the required and optional
+parameters.
