@@ -12,7 +12,7 @@ Simply include this requirement line in your `composer.json`.
 ```json
 {
     "require": {
-        "emailcenter/mxm-api-php": "~2.0"
+        "emailcenter/mxm-api-php": "~3.0"
     }
 }
 ```
