@@ -63,14 +63,14 @@ class Helper
             '/api/json/file_upload';
 
 
-
-        //PHP 5.5. or later only. http://php.net/manual/en/class.curlfile.php
-        $file = new \CURLFile($path,$mime,$basename);
+        $file = "@{$path};filename={$basename};type={$mime}";
+        if (class_exists('\CURLFile')) { //PHP 5.5. or later only. http://php.net/manual/en/class.curlfile.php
+            $file = new \CURLFile($path, $mime, $basename);
+        }
 
         $params = array(
             'method' => 'handle',
             'key'    => $fileKey,
-            //'file'   => "@{$path};filename={$basename};type={$mime}"
             'file' => $file,
         );
 
