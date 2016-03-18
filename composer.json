@@ -20,7 +20,7 @@
 
     "autoload-dev": {
         "psr-4": {
-            "Mxm\\": "tests/"
+            "Mxm\\Test\\": "tests/unit/"
         }
     },
 
