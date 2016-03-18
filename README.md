@@ -35,12 +35,23 @@ $config = array(
     'pass' => 'apipass'
 );
 $api = new \Mxm\Api($config);
- 
- 
+
 // General:
 $result = $api->serviceName->method($arg1, $arg2);
 var_dump($result);
 ```
+
+Logging
+-------
+
+If you want more useful development-time debug info, throw the API a PSR-compatible logger:
+
+```php
+$logger = new Logger(); // Must implement \Psr\Log\LoggerInterface
+$api->setLogger($logger);
+```
+
+For a quick-start to logging (plus advanced multi-destination logging!), see [Phlib/Logger](https://github.com/phlib/logger)
 
 Helpers
 -------
