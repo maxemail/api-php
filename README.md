@@ -1,6 +1,9 @@
 Maxemail API Client for PHP
 ===========================
 
+[![Latest Stable Version](https://img.shields.io/packagist/v/emailcenter/mxm-api-php.svg?style=flat-square)](https://packagist.org/packages/emailcenter/mxm-api-php)
+[![Total Downloads](https://img.shields.io/packagist/dt/emailcenter/mxm-api-php.svg?style=flat-square)](https://packagist.org/packages/emailcenter/mxm-api-php)
+
 Self-contained client in PHP for simplifying access to the Maxemail API
 
 Installation
