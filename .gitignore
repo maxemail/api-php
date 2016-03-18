@@ -5,4 +5,4 @@ vendor
 composer.lock
 
 ### Tests
-tests/config.php
+tests/functional/config.php
