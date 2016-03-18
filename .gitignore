@@ -5,4 +5,5 @@ vendor
 composer.lock
 
 ### Tests
-tests/config.php
+phpunit.xml
+tests/functional/config.php
