@@ -1,6 +1,7 @@
 Maxemail API Client for PHP
 ===========================
 
+[![Build Status](https://img.shields.io/travis/emailcenter/mxm-api-php/master.svg?style=flat-square)](https://travis-ci.org/emailcenter/mxm-api-php)
 [![Latest Stable Version](https://img.shields.io/packagist/v/emailcenter/mxm-api-php.svg?style=flat-square)](https://packagist.org/packages/emailcenter/mxm-api-php)
 [![Total Downloads](https://img.shields.io/packagist/dt/emailcenter/mxm-api-php.svg?style=flat-square)](https://packagist.org/packages/emailcenter/mxm-api-php)
 
