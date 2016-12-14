@@ -7,8 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 
 ## [3.1.1] - 2016-12-14
-###
+### Changed
 - Update documentation URLs
+- Increase API user-agent version to 3.1
 
 ## [3.1.0] - 2016-03-18
 ### Added
