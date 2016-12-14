@@ -14,44 +14,45 @@ use Mxm\Api\Helper;
  * @license    Commercial
  *
  * Services
- * @property mixed file_upload http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:file_upload
- * @property mixed file_transfer http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:file_transfer
+ * @property mixed file_upload https://docs.emailcenteruk.com/mxm-dev/api/services/file-upload
+ * @property mixed file_transfer https://docs.emailcenteruk.com/mxm-dev/api/services/file-transfer
  *
  * Navigation
- * @property mixed tree http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:tree
- * @property mixed folder http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:folder
+ * @property mixed tree https://docs.emailcenteruk.com/mxm-dev/api/services/tree
+ * @property mixed folder https://docs.emailcenteruk.com/mxm-dev/api/services/folder
  *
  * Emails
- * @property mixed campaign http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:campaign
- * @property mixed email_campaign http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:email_campaign
- * @property mixed email_send http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:email_send
- * @property mixed email_triggered http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:email_triggered
- * @property mixed folder_recurring http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:folder_recurring
+ * @property mixed campaign https://docs.emailcenteruk.com/mxm-dev/api/services/campaign
+ * @property mixed email_campaign https://docs.emailcenteruk.com/mxm-dev/api/services/email-campaign
+ * @property mixed email_send https://docs.emailcenteruk.com/mxm-dev/api/services/email-send
+ * @property mixed email_triggered https://docs.emailcenteruk.com/mxm-dev/api/services/email-triggered
+ * @property mixed folder_recurring https://docs.emailcenteruk.com/mxm-dev/api/services/folder-recurring
  *
  * Content
- * @property mixed snippet http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:snippet
+ * @property mixed snippet https://docs.emailcenteruk.com/mxm-dev/api/services/snippet
  *
  * Data
- * @property mixed recipient http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:recipient
- * @property mixed list http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:list
- * @property mixed list_import http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:list_import
- * @property mixed list_export http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:list_export
- * @property mixed profile http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:profile
- * @property mixed profile_field http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:profile_field
- * @property mixed datatable http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:datatable
- * @property mixed datatable_field http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:datatable_field
- * @property mixed datatable_import http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:datatable_import
- * @property mixed field_type http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:field_type
+ * @property mixed recipient https://docs.emailcenteruk.com/mxm-dev/api/services/recipient
+ * @property mixed list https://docs.emailcenteruk.com/mxm-dev/api/services/list
+ * @property mixed list_import https://docs.emailcenteruk.com/mxm-dev/api/services/list-import
+ * @property mixed list_export https://docs.emailcenteruk.com/mxm-dev/api/services/list-export
+ * @property mixed profile https://docs.emailcenteruk.com/mxm-dev/api/services/profile
+ * @property mixed profile_field https://docs.emailcenteruk.com/mxm-dev/api/services/profile-field
+ * @property mixed datatable https://docs.emailcenteruk.com/mxm-dev/api/services/datatable
+ * @property mixed datatable_field https://docs.emailcenteruk.com/mxm-dev/api/services/datatable-field
+ * @property mixed datatable_import https://docs.emailcenteruk.com/mxm-dev/api/services/datatable-import
+ * @property mixed field_type https://docs.emailcenteruk.com/mxm-dev/api/services/field-type
  *
  * Reporting
- * @property mixed comparison_report http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:comparison_report
- * @property mixed data_export http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:data_export
- * @property mixed data_export_report http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:data_export_report
- * @property mixed data_export_quick http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:data_export_quick
+ * @property mixed comparison_report https://docs.emailcenteruk.com/mxm-dev/api/services/comparison-report
+ * @property mixed data_export https://docs.emailcenteruk.com/mxm-dev/api/services/data-export
+ * @property mixed data_export_report https://docs.emailcenteruk.com/mxm-dev/api/services/data-export-report
+ * @property mixed data_export_quick https://docs.emailcenteruk.com/mxm-dev/api/services/data-export-quick
+ * @property mixed data_export_quick_triggered https://docs.emailcenteruk.com/mxm-dev/api/services/data-export-quick-triggered
  *
  * Features
- * @property mixed transactional http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:transactional
- * @property mixed data_export_quick_transactional http://maxemail.emailcenteruk.com/manual/doku.php?id=maxemail:v6:webservices:data_export_quick_transactional
+ * @property mixed transactional https://docs.emailcenteruk.com/mxm-dev/api/services/transactional
+ * @property mixed data_export_quick_transactional https://docs.emailcenteruk.com/mxm-dev/api/services/data-export-quick-transactional
  */
 class Api implements \Psr\Log\LoggerAwareInterface
 {
