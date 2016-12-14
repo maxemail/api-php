@@ -15,7 +15,8 @@
     },
 
     "suggest": {
-        "ext-curl" : "cURL required to use the file upload helper"
+        "ext-curl" : "cURL required to use the file upload helper",
+        "psr/log-implmentation" : "^1.0"
     },
 
     "autoload-dev": {
