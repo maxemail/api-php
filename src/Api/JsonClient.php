@@ -95,7 +95,7 @@ class JsonClient implements \Psr\Log\LoggerAwareInterface
         $request = $this->buildPostRequest("/api/json/{$this->service}", $headers, $body);
 
         $this->lastRequest = $request;
-        $this->getLogger()->debug("Request: {$this->service}.{$data['method']}", [
+        $this->getLogger()->debug("Request: {$this->service}", [
             'params'  => $data,
             'host'    => $this->host,
             'request' => $request
@@ -113,7 +113,7 @@ class JsonClient implements \Psr\Log\LoggerAwareInterface
         @fclose($socket);
 
         $this->lastResponse = $response;
-        $this->getLogger()->debug("Response: {$this->service}.{$data['method']}", [
+        $this->getLogger()->debug("Response: {$this->service}", [
             'params'   => $data,
             'host'     => $this->host,
             'response' => $response

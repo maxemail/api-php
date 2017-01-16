@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [3.1.2] - 2017-01-16
+### Changed
+- Removed API method name from debug log message (still available in log context)
+
 ## [3.1.1] - 2016-12-14
 ### Changed
 - Update documentation URLs
