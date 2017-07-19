@@ -16,7 +16,7 @@
 
     "suggest": {
         "ext-curl" : "cURL required to use the file upload helper",
-        "psr/log-implmentation" : "^1.0"
+        "psr/log-implementation" : "A logger can be used to provide debug information"
     },
 
     "autoload-dev": {
