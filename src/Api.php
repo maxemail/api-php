@@ -8,10 +8,9 @@ use Mxm\Api\Helper;
 /**
  * MXM JSON API Client
  *
- * @category   Mxm
- * @package    Api
- * @copyright  Copyright (c) 2007-2015 Emailcenter UK. (http://www.emailcenteruk.com)
- * @license    Commercial
+ * @package    Mxm/Api
+ * @copyright  2007-2017 Emailcenter UK Ltd. (https://www.emailcenteruk.com)
+ * @license    LGPL-3.0
  *
  * Services
  * @property mixed file_upload https://docs.emailcenteruk.com/mxm-dev/api/services/file-upload
@@ -56,7 +55,7 @@ use Mxm\Api\Helper;
  */
 class Api implements \Psr\Log\LoggerAwareInterface
 {
-    const VERSION = '3.1';
+    const VERSION = '4.0';
 
     /**
      * @var string

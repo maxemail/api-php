@@ -7,10 +7,9 @@ use Mxm\Api;
 /**
  * MXM JSON API Client
  *
- * @category   Mxm
- * @package    Api
- * @copyright  Copyright (c) 2007-2015 Emailcenter UK. (http://www.emailcenteruk.com)
- * @license    Commercial
+ * @package    Mxm/Api
+ * @copyright  2007-2017 Emailcenter UK Ltd. (https://www.emailcenteruk.com)
+ * @license    LGPL-3.0
  */
 trait ConnectionTrait
 {

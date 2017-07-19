@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [4.x] - TBC
+### Added
+- Apply GNU LGPLv3 software licence
 ## [3.1.2] - 2017-01-16
 ### Changed
 - Removed API method name from debug log message (still available in log context)
