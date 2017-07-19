@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [4.x] - TBC
 ### Added
 - Apply GNU LGPLv3 software licence
+### Removed
+- Removed support for PHP 5.x as it is no longer
+[actively supported](https://php.net/supported-versions.php) by the PHP project 
+
 ## [3.1.2] - 2017-01-16
 ### Changed
 - Removed API method name from debug log message (still available in log context)
