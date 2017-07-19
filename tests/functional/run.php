@@ -1,6 +1,7 @@
 <?php
+declare(strict_types=1);
 
-$loader = require dirname(__DIR__) . '/vendor/autoload.php';
+$loader = require __DIR__ . '/../../vendor/autoload.php';
 
 $config = require __DIR__ . '/config.php';
 

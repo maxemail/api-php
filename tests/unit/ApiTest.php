@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 
-namespace Mxm\Test;
+namespace Mxm;
 
-use Mxm\Api;
+use PHPUnit\Framework\TestCase;
 
-class ApiTest extends \PHPUnit_Framework_TestCase
+class ApiTest extends TestCase
 {
     private $testConfig = [
         'host'   => 'maxemail.emailcenteruk.com',
@@ -36,7 +37,7 @@ class ApiTest extends \PHPUnit_Framework_TestCase
     public function testSetGetLogger()
     {
         /** @var \Psr\Log\LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
-        $logger = $this->getMock('\Psr\Log\LoggerInterface');
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
 
         $api = new Api($this->testConfig);
 

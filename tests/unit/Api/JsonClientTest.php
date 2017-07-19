@@ -1,10 +1,11 @@
 <?php
+declare(strict_types=1);
 
-namespace Mxm\Test\Api;
+namespace Mxm\Api;
 
-use Mxm\Api\JsonClient;
+use PHPUnit\Framework\TestCase;
 
-class JsonClientTest extends \PHPUnit_Framework_TestCase
+class JsonClientTest extends TestCase
 {
     private $testConfig = [
         'host'   => 'maxemail.emailcenteruk.com',
@@ -16,7 +17,7 @@ class JsonClientTest extends \PHPUnit_Framework_TestCase
     public function testSetGetLogger()
     {
         /** @var \Psr\Log\LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
-        $logger = $this->getMock('\Psr\Log\LoggerInterface');
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
 
         $api = new JsonClient('service', $this->testConfig);
 
