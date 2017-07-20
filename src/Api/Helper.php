@@ -38,7 +38,7 @@ class Helper
      * @param string $path
      * @return string file key
      */
-    public function uploadFile($path)
+    public function uploadFile(string $path): string
     {
         if (!is_readable($path)) {
             throw new \InvalidArgumentException('File path is not readable: ' . $path);
@@ -124,7 +124,7 @@ class Helper
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
-    public function downloadFile($type, $primaryId, array $options = [])
+    public function downloadFile(string $type, $primaryId, array $options = []): string
     {
         $typePrimary = array(
             'file'       => 'key',

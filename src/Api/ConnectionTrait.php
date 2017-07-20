@@ -74,7 +74,7 @@ trait ConnectionTrait
      *
      * @return array
      */
-    protected function getHeaders()
+    protected function getHeaders(): array
     {
         $headers = array(
             'Host'           => $this->host,
@@ -100,7 +100,7 @@ trait ConnectionTrait
      * @param string $body
      * @return string
      */
-    protected function buildPostRequest($uri, array $headers = [], $body = '')
+    protected function buildPostRequest(string $uri, array $headers = [], string $body = ''): string
     {
         $request = "POST {$uri} HTTP/1.0\r\n";
 

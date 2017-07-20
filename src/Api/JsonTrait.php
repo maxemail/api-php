@@ -22,7 +22,7 @@ trait JsonTrait
      * @return string
      * @throws \RuntimeException
      */
-    protected function processJsonResponse($body, $httpCode)
+    protected function processJsonResponse(string $body, int $httpCode): string
     {
         if ((int)$httpCode != 200) {
             try {
@@ -47,7 +47,7 @@ trait JsonTrait
      * @return mixed
      * @throws \UnexpectedValueException
      */
-    protected function decodeJson($json)
+    protected function decodeJson(string $json)
     {
         $result = json_decode($json, false);
 

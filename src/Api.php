@@ -133,7 +133,7 @@ class Api implements \Psr\Log\LoggerAwareInterface
      * @param string $name
      * @return JsonClient
      */
-    public function __get($name)
+    public function __get(string $name): JsonClient
     {
         return $this->getInstance($name);
     }
@@ -144,7 +144,7 @@ class Api implements \Psr\Log\LoggerAwareInterface
      * @param string $service
      * @return JsonClient
      */
-    protected function getInstance($service)
+    protected function getInstance(string $service): JsonClient
     {
         if (!isset($this->services[$service])) {
             $this->services[$service] = new JsonClient($service, $this->getConfig());
@@ -164,7 +164,7 @@ class Api implements \Psr\Log\LoggerAwareInterface
      *     @var bool   $useSsl Use secure connection
      * }
      */
-    public function getConfig()
+    public function getConfig(): array
     {
         return [
             'host' => $this->host,
@@ -179,7 +179,7 @@ class Api implements \Psr\Log\LoggerAwareInterface
      *
      * @return Helper
      */
-    public function getHelper()
+    public function getHelper(): Helper
     {
         if (!isset($this->helper)) {
             $this->helper = new Helper($this);
@@ -210,7 +210,7 @@ class Api implements \Psr\Log\LoggerAwareInterface
      *
      * @return \Psr\Log\LoggerInterface
      */
-    public function getLogger()
+    public function getLogger(): \Psr\Log\LoggerInterface
     {
         if (!isset($this->logger)) {
             $this->logger = new \Psr\Log\NullLogger();

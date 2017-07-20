@@ -60,7 +60,7 @@ class JsonClient implements \Psr\Log\LoggerAwareInterface
      * @param array $params
      * @return mixed
      */
-    public function __call($name, array $params)
+    public function __call(string $name, array $params)
     {
         $data = array(
             'method' => $name
@@ -84,7 +84,7 @@ class JsonClient implements \Psr\Log\LoggerAwareInterface
      * @return string
      * @throws \RuntimeException
      */
-    protected function postRequest(array $data)
+    protected function postRequest(array $data): string
     {
         $socket = $this->getConnection();
 
@@ -133,7 +133,7 @@ class JsonClient implements \Psr\Log\LoggerAwareInterface
      *
      * @return string
      */
-    public function getLastRequest()
+    public function getLastRequest(): string
     {
         return $this->lastRequest;
     }
@@ -143,7 +143,7 @@ class JsonClient implements \Psr\Log\LoggerAwareInterface
      *
      * @return string
      */
-    public function getLastResponse()
+    public function getLastResponse(): string
     {
         return $this->lastResponse;
     }
@@ -166,7 +166,7 @@ class JsonClient implements \Psr\Log\LoggerAwareInterface
      *
      * @return \Psr\Log\LoggerInterface
      */
-    public function getLogger()
+    public function getLogger(): \Psr\Log\LoggerInterface
     {
         if (!isset($this->logger)) {
             $this->logger = new \Psr\Log\NullLogger();
