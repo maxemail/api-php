@@ -62,9 +62,9 @@ class JsonClient implements \Psr\Log\LoggerAwareInterface
      */
     public function __call(string $name, array $params)
     {
-        $data = array(
+        $data = [
             'method' => $name
-        );
+        ];
         foreach ($params as $i => $param) {
             if (is_array($param)) {
                 $param = json_encode($param);

@@ -10,7 +10,7 @@ $logger = new \Phlib\Logger\LoggerType\CliColor('api-test');
 $api = new \Mxm\Api($config['api']);
 $api->setLogger($logger);
 
-$emailTree = $api->tree->fetchRoot('email', array());
+$emailTree = $api->tree->fetchRoot('email', []);
 
 $emailRoot = $emailTree[0];
 

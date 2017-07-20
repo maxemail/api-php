@@ -64,11 +64,11 @@ class Helper
 
         $file = new \CURLFile($path, $mime, $basename);
 
-        $params = array(
+        $params = [
             'method' => 'handle',
             'key'    => $fileKey,
             'file' => $file,
-        );
+        ];
 
         // Write request
         $this->api->getLogger()->debug("Upload file {$fileKey}", [
@@ -126,11 +126,11 @@ class Helper
      */
     public function downloadFile(string $type, $primaryId, array $options = []): string
     {
-        $typePrimary = array(
+        $typePrimary = [
             'file'       => 'key',
             'listexport' => 'id',
             'dataexport' => 'id',
-        );
+        ];
 
         if (!isset($typePrimary[$type])) {
             throw new \InvalidArgumentException("Invalid download type specified");
@@ -151,11 +151,11 @@ class Helper
 
         // Set up stream
         $headers = $this->getHeaders();
-        $opts = array(
-            'http' => array(
+        $opts = [
+            'http' => [
                 'header' => "Authorization: {$headers['Authorization']}"
-            )
-        );
+            ]
+        ];
         $context = stream_context_create($opts);
 
         // Get file

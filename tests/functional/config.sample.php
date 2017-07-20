@@ -1,11 +1,11 @@
 <?php
-$config = array();
+$config = [];
 
-$config['api'] = array(
+$config['api'] = [
     'host'   => 'maxemail.emailcenteruk.com',
     'user'   => 'api@user.com',
     'pass'   => 'apipass',
     'useSsl' => true
-);
+];
 
 return $config;

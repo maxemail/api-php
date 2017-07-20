@@ -76,12 +76,12 @@ trait ConnectionTrait
      */
     protected function getHeaders(): array
     {
-        $headers = array(
+        $headers = [
             'Host'           => $this->host,
             'Connection'     => 'close',
             'Content-type'   => 'application/x-www-form-urlencoded',
             'User-Agent'     => 'MxmJsonClient/' . Api::VERSION . ' PHP/' . phpversion()
-        );
+        ];
 
         if (!is_null($this->username) && !is_null($this->password)) {
             $basicAuth                = base64_encode($this->username . ':' . $this->password);

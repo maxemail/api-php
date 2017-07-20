@@ -81,7 +81,7 @@ class Api implements \Psr\Log\LoggerAwareInterface
     /**
      * @var JsonClient[]
      */
-    protected $services = array();
+    protected $services = [];
 
     /**
      * @var Helper
