@@ -1,13 +1,28 @@
 Maxemail API Client for PHP
 ===========================
 
-[![Build Status](https://img.shields.io/travis/emailcenter/mxm-api-php/master.svg?style=flat-square)](https://travis-ci.org/emailcenter/mxm-api-php)
-[![Codecov](https://img.shields.io/codecov/c/github/emailcenter/mxm-api-php.svg?style=flat-square)](https://codecov.io/gh/emailcenter/mxm-api-php)
-[![Latest Stable Version](https://img.shields.io/packagist/v/emailcenter/mxm-api-php.svg?style=flat-square)](https://packagist.org/packages/emailcenter/mxm-api-php)
-[![Total Downloads](https://img.shields.io/packagist/dt/emailcenter/mxm-api-php.svg?style=flat-square)](https://packagist.org/packages/emailcenter/mxm-api-php)
-![Licence](https://img.shields.io/github/license/emailcenter/mxm-api-php.svg?style=flat-square)
+[![Build Status](https://img.shields.io/travis/emailcenter/mxm-api-php/master.svg)](https://travis-ci.org/emailcenter/mxm-api-php)
+[![Codecov](https://img.shields.io/codecov/c/github/emailcenter/mxm-api-php.svg)](https://codecov.io/gh/emailcenter/mxm-api-php)
+[![Latest Stable Version](https://img.shields.io/packagist/v/emailcenter/mxm-api-php.svg)](https://packagist.org/packages/emailcenter/mxm-api-php)
+[![Total Downloads](https://img.shields.io/packagist/dt/emailcenter/mxm-api-php.svg)](https://packagist.org/packages/emailcenter/mxm-api-php)
+![Licence](https://img.shields.io/github/license/emailcenter/mxm-api-php.svg)
 
 Self-contained client in PHP for simplifying access to the Maxemail API
+
+Requirements
+------------
+
+![PHP](https://img.shields.io/badge/php-%5E7.0-brightgreen.svg)
+
+This package requires PHP 7.x . Please see previous releases if you
+require compatibility with an older version of PHP.
+
+Composer will verify any other environment requirements on install/update.
+
+When creating a new major version of this package, we MAY drop support for PHP
+versions which are no longer
+[actively supported](https://php.net/supported-versions.php) by the PHP project.
+
 
 Installation
 ------------
