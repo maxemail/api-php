@@ -26,6 +26,7 @@
     },
 
     "require-dev": {
+        "phlib/logger": "^3.0",
         "phpunit/phpunit" : "^6.2"
     }
 }

@@ -5,8 +5,7 @@ $loader = require __DIR__ . '/../../vendor/autoload.php';
 
 $config = require __DIR__ . '/config.php';
 
-require __DIR__ . '/TestLogger.php';
-$logger = new TestLogger();
+$logger = new \Phlib\Logger\LoggerType\CliColor('api-test');
 
 $api = new \Mxm\Api($config['api']);
 $api->setLogger($logger);
