@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 namespace Mxm\Api;
+use Mxm\Api\Exception;
 
 /**
  * MXM JSON API Client
@@ -82,7 +83,7 @@ class JsonClient implements \Psr\Log\LoggerAwareInterface
      *
      * @param array $data
      * @return string
-     * @throws \RuntimeException
+     * @throws Exception\RuntimeException
      */
     protected function postRequest(array $data): string
     {
@@ -103,7 +104,7 @@ class JsonClient implements \Psr\Log\LoggerAwareInterface
 
         if (@fwrite($socket, $request) === false) {
             $error = error_get_last();
-            throw new \RuntimeException("Failed to write to socket, {$error['message']}");
+            throw new Exception\RuntimeException("Failed to write to socket, {$error['message']}");
         }
 
         $response = '';

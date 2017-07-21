@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Mxm\Api;
 
 use Mxm\Api;
+use Mxm\Api\Exception;
 
 /**
  * MXM JSON API Client
@@ -41,12 +42,12 @@ class Helper
     public function uploadFile(string $path): string
     {
         if (!is_readable($path)) {
-            throw new \InvalidArgumentException('File path is not readable: ' . $path);
+            throw new Exception\InvalidArgumentException('File path is not readable: ' . $path);
         }
         $basename = basename($path);
         $mime = (new \finfo(FILEINFO_MIME_TYPE))->file($path);
         if ($mime === false) {
-            throw new \RuntimeException("MIME type could not be determined");
+            throw new Exception\RuntimeException("MIME type could not be determined");
         }
 
         // Initialise
@@ -91,7 +92,7 @@ class Helper
         if ($response === false) {
             $errorMsg = curl_error($ch);
             curl_close($ch);
-            throw new \RuntimeException("Failed to upload file: {$errorMsg}");
+            throw new Exception\RuntimeException("Failed to upload file: {$errorMsg}");
         }
 
         $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -121,8 +122,8 @@ class Helper
      *     @var string $dir     Directory to use for downloaded file(s), default sys_temp_dir
      * }
      * @return string filename
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
+     * @throws Exception\InvalidArgumentException
+     * @throws Exception\RuntimeException
      */
     public function downloadFile(string $type, $primaryId, array $options = []): string
     {
@@ -133,7 +134,7 @@ class Helper
         ];
 
         if (!isset($typePrimary[$type])) {
-            throw new \InvalidArgumentException("Invalid download type specified");
+            throw new Exception\InvalidArgumentException("Invalid download type specified");
         }
 
         // Create target file
@@ -166,18 +167,18 @@ class Helper
         $local = @fopen($filename, 'w');
         if ($local === false) {
             $error = error_get_last();
-            throw new \RuntimeException("Unable to open local file: {$error['message']}");
+            throw new Exception\RuntimeException("Unable to open local file: {$error['message']}");
         }
         $remote = @fopen($url, 'r', false, $context);
         if ($remote === false) {
             $error = error_get_last();
-            throw new \RuntimeException("Unable to open remote connection: {$error['message']}");
+            throw new Exception\RuntimeException("Unable to open remote connection: {$error['message']}");
         }
         while ($content = fread($remote, 101400)) {
             $written = @fwrite($local, $content);
             if ($written === false) {
                 $error = error_get_last();
-                throw new \RuntimeException("Unable to write to local file: {$error['message']}");
+                throw new Exception\RuntimeException("Unable to write to local file: {$error['message']}");
             }
         }
         fclose($local);
@@ -190,7 +191,7 @@ class Helper
         // Get MIME
         $mime = (new \finfo(FILEINFO_MIME_TYPE))->file($filename);
         if ($mime === false) {
-            throw new \RuntimeException("MIME type could not be determined");
+            throw new Exception\RuntimeException("MIME type could not be determined");
         }
 
         // Add extension to filename, optionally extract zip

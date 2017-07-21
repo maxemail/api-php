@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [4.x] - TBC
 ### Added
 - Apply GNU LGPLv3 software licence
+- Dedicated package-specific Exception classes. These extend the original SPL
+Exception classes, so no changes should be required in any implementation. This
+now means that all package exceptions implement `Mxm\Exception\Exception`.
 ### Removed
 - Removed support for PHP 5.x as it is no longer
 [actively supported](https://php.net/supported-versions.php) by the PHP project 

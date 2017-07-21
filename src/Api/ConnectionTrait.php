@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Mxm\Api;
 
 use Mxm\Api;
+use Mxm\Api\Exception;
 
 /**
  * MXM JSON API Client
@@ -63,7 +64,7 @@ trait ConnectionTrait
         $socket = @fsockopen($host, $port);
         if ($socket === false) {
             $error = error_get_last();
-            throw new \RuntimeException("Failed to connect to {$this->host} on port $port, {$error['message']}");
+            throw new Exception\RuntimeException("Failed to connect to {$this->host} on port $port, {$error['message']}");
         }
 
         return $socket;

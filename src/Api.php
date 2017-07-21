@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Mxm;
 
+use Mxm\Api\Exception;
 use Mxm\Api\JsonClient;
 use Mxm\Api\Helper;
 
@@ -116,7 +117,7 @@ class Api implements \Psr\Log\LoggerAwareInterface
             ]
         ]);
         if ($this->host === false) {
-            throw new \InvalidArgumentException('Invalid hostname provided');
+            throw new Exception\InvalidArgumentException('Invalid hostname provided');
         }
 
         $this->username = $config['user'];

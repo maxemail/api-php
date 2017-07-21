@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Mxm;
 
+use Mxm\Api\Exception\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class ApiTest extends TestCase
@@ -23,7 +24,7 @@ class ApiTest extends TestCase
 
     public function testConfigInvalidHostProtocol()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid hostname');
 
         $config = [

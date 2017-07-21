@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Mxm\Api;
 
-use Mxm\Api;
+use Mxm\Api\Exception;
 
 /**
  * MXM JSON API Client
@@ -20,7 +20,7 @@ trait JsonTrait
      * @param string $body
      * @param int $httpCode
      * @return string
-     * @throws \RuntimeException
+     * @throws Exception\RuntimeException
      */
     protected function processJsonResponse(string $body, int $httpCode): string
     {
@@ -30,11 +30,11 @@ trait JsonTrait
                 if ($message instanceof \stdClass && isset($message->msg)) {
                     $body = $message->msg;
                 }
-            } catch (\UnexpectedValueException $e) {
+            } catch (Exception\UnexpectedValueException $e) {
                 // Void
                 // Failed to decode, leave content as the raw response
             }
-            throw new \RuntimeException($body, $httpCode);
+            throw new Exception\RuntimeException($body, $httpCode);
         }
 
         return $body;
@@ -45,7 +45,7 @@ trait JsonTrait
      *
      * @param string $json
      * @return mixed
-     * @throws \UnexpectedValueException
+     * @throws Exception\UnexpectedValueException
      */
     protected function decodeJson(string $json)
     {
@@ -89,6 +89,6 @@ trait JsonTrait
                 break;
         }
 
-        throw new \UnexpectedValueException("Problem decoding JSON : {$error} : '{$json}'");
+        throw new Exception\UnexpectedValueException("Problem decoding JSON : {$error} : '{$json}'");
     }
 }
