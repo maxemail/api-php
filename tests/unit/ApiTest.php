@@ -21,12 +21,11 @@ class ApiTest extends TestCase
         $this->assertEquals($this->testConfig, $api->getConfig());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Invalid hostname
-     */
     public function testConfigInvalidHostProtocol()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid hostname');
+
         $config = [
             'host' => 'https://maxemail.emailcenteruk.com'
         ];
