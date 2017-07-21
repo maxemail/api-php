@@ -45,4 +45,10 @@ class ApiTest extends TestCase
 
         $this->assertEquals($logger, $api->getLogger());
     }
+
+    public function testMagicGet()
+    {
+        // @todo test getInstance() returns same JsonClient for same service, different for different services
+        $this->markTestSkipped();
+    }
 }

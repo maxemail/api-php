@@ -2,7 +2,8 @@
 declare(strict_types=1);
 
 namespace Mxm\Api;
-use Mxm\Api\Exception;
+
+use GuzzleHttp\Client;
 
 /**
  * MXM JSON API Client
@@ -11,47 +12,28 @@ use Mxm\Api\Exception;
  * @copyright  2007-2017 Emailcenter UK Ltd. (https://www.emailcenteruk.com)
  * @license    LGPL-3.0
  */
-class JsonClient implements \Psr\Log\LoggerAwareInterface
+class JsonClient
 {
-    use ConnectionTrait;
     use JsonTrait;
 
     /**
      * @var string
      */
-    protected $service;
+    private $service;
 
     /**
-     * @var string
+     * @var Client
      */
-    private $lastRequest;
+    private $httpClient;
 
     /**
-     * @var string
-     */
-    private $lastResponse;
-
-    /**
-     * @var \Psr\Log\LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * Construct
-     *
      * @param string $service
-     * @param array $config {
-     *     @var string $host
-     *     @var string $user
-     *     @var string $pass
-     *     @var bool   $useSsl
-     * }
+     * @param Client $httpClient
      */
-    public function __construct($service, $config)
+    public function __construct(string $service, Client $httpClient)
     {
         $this->service = $service;
-
-        $this->setConnectionConfig($config);
+        $this->httpClient = $httpClient;
     }
 
     /**
@@ -82,97 +64,13 @@ class JsonClient implements \Psr\Log\LoggerAwareInterface
      * Post request
      *
      * @param array $data
-     * @return string
-     * @throws Exception\RuntimeException
+     * @return string JSON response
      */
-    protected function postRequest(array $data): string
+    private function postRequest(array $data): string
     {
-        $socket = $this->getConnection();
-
-        $body = http_build_query($data);
-        $headers = $this->getHeaders();
-        $headers['Content-length'] = strlen($body);
-
-        $request = $this->buildPostRequest("/api/json/{$this->service}", $headers, $body);
-
-        $this->lastRequest = $request;
-        $this->getLogger()->debug("Request: {$this->service}", [
-            'params'  => $data,
-            'host'    => $this->host,
-            'request' => $request
+        $response = $this->httpClient->request('POST', $this->service, [
+            'form_params' => $data
         ]);
-
-        if (@fwrite($socket, $request) === false) {
-            $error = error_get_last();
-            throw new Exception\RuntimeException("Failed to write to socket, {$error['message']}");
-        }
-
-        $response = '';
-        while (!feof($socket)) {
-            $response .= fread($socket, 8192);
-        }
-        @fclose($socket);
-
-        $this->lastResponse = $response;
-        $this->getLogger()->debug("Response: {$this->service}", [
-            'params'   => $data,
-            'host'     => $this->host,
-            'response' => $response
-        ]);
-
-        preg_match("|^HTTP/[\d\.x]+ (\d+)|", $response, $matches);
-        $code = (int)$matches[1];
-
-        $parts   = preg_split('|(?:\r?\n){2}|m', $response, 2);
-        $content = $parts[1];
-
-        return $this->processJsonResponse($content, $code);
-    }
-
-    /**
-     * Last request
-     *
-     * @return string
-     */
-    public function getLastRequest(): string
-    {
-        return $this->lastRequest;
-    }
-
-    /**
-     * Last response
-     *
-     * @return string
-     */
-    public function getLastResponse(): string
-    {
-        return $this->lastResponse;
-    }
-
-    /**
-     * Sets a logger instance on the object
-     *
-     * @param \Psr\Log\LoggerInterface $logger
-     * @return $this
-     */
-    public function setLogger(\Psr\Log\LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-
-        return $this;
-    }
-
-    /**
-     * Gets the logger, creating a null logger if none defined
-     *
-     * @return \Psr\Log\LoggerInterface
-     */
-    public function getLogger(): \Psr\Log\LoggerInterface
-    {
-        if (!isset($this->logger)) {
-            $this->logger = new \Psr\Log\NullLogger();
-        }
-
-        return $this->logger;
+        return (string)$response->getBody();
     }
 }

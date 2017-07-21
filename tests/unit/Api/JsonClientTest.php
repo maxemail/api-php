@@ -7,22 +7,9 @@ use PHPUnit\Framework\TestCase;
 
 class JsonClientTest extends TestCase
 {
-    private $testConfig = [
-        'host'   => 'maxemail.emailcenteruk.com',
-        'user'   => 'api@user.com',
-        'pass'   => 'apipass',
-        'useSsl' => true
-    ];
-
-    public function testSetGetLogger()
+    public function testMagicCall()
     {
-        /** @var \Psr\Log\LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
-        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
-
-        $api = new JsonClient('service', $this->testConfig);
-
-        $api->setLogger($logger);
-
-        $this->assertEquals($logger, $api->getLogger());
+        // @todo test Guzzle Client is requested with correct POST method, URI and arguments
+        $this->markTestSkipped();
     }
 }

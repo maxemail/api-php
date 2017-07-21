@@ -4,8 +4,15 @@ declare(strict_types=1);
 namespace Mxm;
 
 use Mxm\Api\Exception;
-use Mxm\Api\JsonClient;
 use Mxm\Api\Helper;
+use Mxm\Api\JsonClient;
+use Mxm\Api\JsonTrait;
+use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\MessageFormatter;
+use GuzzleHttp\Middleware;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Log\LogLevel;
 
 /**
  * MXM JSON API Client
@@ -57,6 +64,8 @@ use Mxm\Api\Helper;
  */
 class Api implements \Psr\Log\LoggerAwareInterface
 {
+    use JsonTrait;
+
     const VERSION = '4.0';
 
     /**
@@ -93,6 +102,11 @@ class Api implements \Psr\Log\LoggerAwareInterface
      * @var \Psr\Log\LoggerInterface
      */
     protected $logger;
+
+    /**
+     * @var Client
+     */
+    private $httpClient;
 
     /**
      * Construct
@@ -147,9 +161,27 @@ class Api implements \Psr\Log\LoggerAwareInterface
      */
     protected function getInstance(string $service): JsonClient
     {
+        if ($this->httpClient === null) {
+            $stack = HandlerStack::create();
+            $this->addMaxemailErrorParser($stack);
+            $this->addLoggingHandler($stack);
+            $this->httpClient = new Client([
+                'base_uri' => ($this->useSsl ? 'https' : 'http') . "://{$this->host}/api/json/",
+                'auth' => [
+                    $this->username,
+                    $this->password
+                ],
+                'headers' => [
+                    'User-Agent'   => 'MxmJsonClient/' . self::VERSION . ' PHP/' . phpversion(),
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                    'Accept'       => 'application/json'
+                ],
+                'handler' => $stack
+            ]);
+        }
+
         if (!isset($this->services[$service])) {
-            $this->services[$service] = new JsonClient($service, $this->getConfig());
-            $this->services[$service]->setLogger($this->getLogger());
+            $this->services[$service] = new JsonClient($service, $this->httpClient);
         }
 
         return $this->services[$service];
@@ -199,10 +231,6 @@ class Api implements \Psr\Log\LoggerAwareInterface
     {
         $this->logger = $logger;
 
-        foreach ($this->services as $service) {
-            $service->setLogger($logger);
-        }
-
         return $this;
     }
 
@@ -218,5 +246,57 @@ class Api implements \Psr\Log\LoggerAwareInterface
         }
 
         return $this->logger;
+    }
+
+    /**
+     * @see https://michaelstivala.com/logging-guzzle-requests/
+     * @param HandlerStack $stack
+     * @return void
+     */
+    private function addLoggingHandler(HandlerStack $stack): void
+    {
+        $messageFormats = [
+            '{method}: {uri} HTTP/{version} {req_body}', // request
+            'RESPONSE: {code} - {res_body}' // response
+        ];
+
+        // Using push() to put middleware onto top of stack, so loggers are first to run after handler
+        // Order of loggers needs to be reversed, as last to put pushed on top will be first to execute
+        foreach (array_reverse($messageFormats, true) as $idx => $messageFormat) {
+            $middleware = Middleware::log(
+                $this->getLogger(),
+                new MessageFormatter($messageFormat),
+                LogLevel::DEBUG
+            );
+            $stack->push($middleware, 'log' . $idx);
+        };
+    }
+
+    /**
+     * Add parser for Maxemail 4xx-level errors
+     * @param HandlerStack $stack
+     */
+    private function addMaxemailErrorParser(HandlerStack $stack): void
+    {
+        $middleware = Middleware::mapResponse(function (ResponseInterface $response) use ($stack) {
+            $code = $response->getStatusCode();
+            if ($code < 400 || $code >= 500) {
+                // Allow success response to continue, and 500-level errors to be handled by Guzzle
+                return $response;
+            }
+
+            $message = (string)$response->getBody();
+            // Response body should be JSON with a 'msg' element detailing the error
+            try {
+                $error = $this->decodeJson($message);
+                if ($error instanceof \stdClass && isset($error->msg)) {
+                    $message = $error->msg;
+                }
+            } catch (\UnexpectedValueException $e) {
+                // Failed to decode, leave error message as the raw response body
+            }
+            throw new Exception\ClientException($message, $response->getStatusCode());
+        });
+        $stack->push($middleware, 'mxm-error');
     }
 }

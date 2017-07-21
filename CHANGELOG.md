@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Dedicated package-specific Exception classes. These extend the original SPL
 Exception classes, so no changes should be required in any implementation. This
 now means that all package exceptions implement `Mxm\Exception\Exception`.
+- Use [Guzzle](http://guzzlephp.org/) to handle HTTP connection. Exceptions
+thrown for networking errors (connection timeout, DNS errors, etc.) will be an
+instance of `GuzzleHttp\Exception\RequestException`. This extends
+`\RuntimeException` so any existing catch blocks will continue to function
+without any necessary changes. Errors returned by Maxemail as a response to an
+API call will now throw `Mxm\Api\Exception\ClientException` which extends the
+same `\RuntimeException` used previously.
 ### Removed
 - Removed support for PHP 5.x as it is no longer
 [actively supported](https://php.net/supported-versions.php) by the PHP project 

@@ -52,25 +52,6 @@ trait ConnectionTrait
     }
 
     /**
-     * Get connection socket
-     *
-     * @return resource
-     */
-    protected function getConnection()
-    {
-        $port = $this->useSsl ? 443 : 80;
-        $host = ($this->useSsl ? 'ssl://' : '') . $this->host;
-
-        $socket = @fsockopen($host, $port);
-        if ($socket === false) {
-            $error = error_get_last();
-            throw new Exception\RuntimeException("Failed to connect to {$this->host} on port $port, {$error['message']}");
-        }
-
-        return $socket;
-    }
-
-    /**
      * Get request headers
      *
      * @return array
@@ -90,29 +71,5 @@ trait ConnectionTrait
         }
 
         return $headers;
-    }
-
-    /**
-     * Build request string
-     * Body is optional, headers will not be terminated if body not provided
-     *
-     * @param string $uri
-     * @param array $headers
-     * @param string $body
-     * @return string
-     */
-    protected function buildPostRequest(string $uri, array $headers = [], string $body = ''): string
-    {
-        $request = "POST {$uri} HTTP/1.0\r\n";
-
-        foreach ($headers as $key => $value) {
-            $request .= "$key: $value\r\n";
-        }
-
-        if (!empty($body)) {
-            $request .= "\r\n$body";
-        }
-
-        return $request;
     }
 }
