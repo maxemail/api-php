@@ -18,22 +18,22 @@ trait ConnectionTrait
     /**
      * @var string
      */
-    protected $host;
+    private $host;
 
     /**
      * @var string
      */
-    protected $username;
+    private $username;
 
     /**
      * @var string
      */
-    protected $password;
+    private $password;
 
     /**
      * @var bool
      */
-    protected $useSsl;
+    private $useSsl;
 
     /**
      * @param array $config {
@@ -43,7 +43,7 @@ trait ConnectionTrait
      *     @var bool   $useSsl
      * }
      */
-    protected function setConnectionConfig($config)
+    private function setConnectionConfig($config)
     {
         $this->host     = $config['host'];
         $this->username = $config['user'];
@@ -56,7 +56,7 @@ trait ConnectionTrait
      *
      * @return array
      */
-    protected function getHeaders(): array
+    private function getHeaders(): array
     {
         $headers = [
             'Host'           => $this->host,

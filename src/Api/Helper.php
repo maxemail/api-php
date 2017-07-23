@@ -21,7 +21,7 @@ class Helper
     /**
      * @var Api
      */
-    protected $api;
+    private $api;
 
     /**
      * @param Api $api

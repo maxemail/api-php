@@ -65,37 +65,37 @@ class Api implements \Psr\Log\LoggerAwareInterface
     /**
      * @var string
      */
-    protected $host;
+    private $host;
 
     /**
      * @var string
      */
-    protected $username;
+    private $username;
 
     /**
      * @var string
      */
-    protected $password;
+    private $password;
 
     /**
      * @var bool
      */
-    protected $useSsl = true;
+    private $useSsl = true;
 
     /**
      * @var JsonClient[]
      */
-    protected $services = [];
+    private $services = [];
 
     /**
      * @var Helper
      */
-    protected $helper;
+    private $helper;
 
     /**
      * @var \Psr\Log\LoggerInterface
      */
-    protected $logger;
+    private $logger;
 
     /**
      * @var Client
@@ -153,7 +153,7 @@ class Api implements \Psr\Log\LoggerAwareInterface
      * @param string $service
      * @return JsonClient
      */
-    protected function getInstance(string $service): JsonClient
+    private function getInstance(string $service): JsonClient
     {
         if ($this->httpClient === null) {
             $stack = HandlerStack::create();
