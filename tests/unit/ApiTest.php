@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Mxm;
 
 use Mxm\Api\Exception\InvalidArgumentException;
+use Mxm\Api\Helper;
 use PHPUnit\Framework\TestCase;
 
 class ApiTest extends TestCase
@@ -46,9 +47,27 @@ class ApiTest extends TestCase
         $this->assertEquals($logger, $api->getLogger());
     }
 
-    public function testMagicGet()
+    public function testGetHelper()
     {
-        // @todo test getInstance() returns same JsonClient for same service, different for different services
-        $this->markTestSkipped();
+        $api = new Api($this->testConfig);
+
+        $helper = $api->getHelper();
+
+        $this->assertInstanceOf(Helper::class, $helper);
+    }
+
+    /**
+     * Test getInstance() returns same JsonClient for same service, different for different service
+     */
+    public function testGetInstance()
+    {
+        $api = new Api($this->testConfig);
+
+        $originalService = $api->service;
+        $sameService = $api->service;
+        $differentService = $api->different;
+
+        $this->assertSame($originalService, $sameService);
+        $this->assertNotSame($originalService, $differentService);
     }
 }
