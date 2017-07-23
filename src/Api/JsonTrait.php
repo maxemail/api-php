@@ -47,7 +47,7 @@ trait JsonTrait
      * @return mixed
      * @throws Exception\UnexpectedValueException
      */
-    protected function decodeJson(string $json)
+    protected static function decodeJson(string $json)
     {
         $result = json_decode($json, false);
         $errorCode = json_last_error();
