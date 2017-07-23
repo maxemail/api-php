@@ -27,7 +27,7 @@ class Middleware
      * @param HandlerStack $stack
      * @return void
      */
-    public static function addLogging(HandlerStack $stack, LoggerInterface $logger): void
+    public static function addLogging(HandlerStack $stack, LoggerInterface $logger)
     {
         $messageFormats = [
             '{method}: {uri} HTTP/{version} {req_body}', // request
@@ -50,7 +50,7 @@ class Middleware
      * Add parser for Maxemail 4xx-level errors
      * @param HandlerStack $stack
      */
-    public static function addMaxemailErrorParser(HandlerStack $stack): void
+    public static function addMaxemailErrorParser(HandlerStack $stack)
     {
         $middleware = GuzzleMiddleware::mapResponse(function (ResponseInterface $response) use ($stack) {
             $code = $response->getStatusCode();
