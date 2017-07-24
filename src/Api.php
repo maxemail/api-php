@@ -155,6 +155,18 @@ class Api implements \Psr\Log\LoggerAwareInterface
      */
     private function getInstance(string $service): JsonClient
     {
+        if (!isset($this->services[$service])) {
+            $this->services[$service] = new JsonClient($service, $this->getClient());
+        }
+
+        return $this->services[$service];
+    }
+
+    /**
+     * @return Client
+     */
+    private function getClient(): Client
+    {
         if ($this->httpClient === null) {
             $stack = HandlerStack::create();
             Middleware::addMaxemailErrorParser($stack);
@@ -174,11 +186,7 @@ class Api implements \Psr\Log\LoggerAwareInterface
             ]);
         }
 
-        if (!isset($this->services[$service])) {
-            $this->services[$service] = new JsonClient($service, $this->httpClient);
-        }
-
-        return $this->services[$service];
+        return $this->httpClient;
     }
 
     /**
@@ -209,7 +217,7 @@ class Api implements \Psr\Log\LoggerAwareInterface
     public function getHelper(): Helper
     {
         if (!isset($this->helper)) {
-            $this->helper = new Helper($this);
+            $this->helper = new Helper($this, $this->getClient());
         }
 
         return $this->helper;

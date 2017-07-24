@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Mxm\Api;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use Mxm\Api;
 use Mxm\Api\Exception;
 
@@ -24,11 +26,18 @@ class Helper
     private $api;
 
     /**
-     * @param Api $api
+     * @var Client
      */
-    public function __construct(Api $api)
+    private $httpClient;
+
+    /**
+     * @param Api $api
+     * @param Client $httpClient
+     */
+    public function __construct(Api $api, Client $httpClient)
     {
         $this->api = $api;
+        $this->httpClient = $httpClient;
     }
 
     /**
@@ -134,7 +143,7 @@ class Helper
         ];
 
         if (!isset($typePrimary[$type])) {
-            throw new Exception\InvalidArgumentException("Invalid download type specified");
+            throw new Exception\InvalidArgumentException('Invalid download type specified');
         }
 
         // Create target file
@@ -142,55 +151,53 @@ class Helper
             (isset($options['dir']) ? $options['dir'] : sys_get_temp_dir()),
             "mxm-{$type}-{$primaryId}-"
         );
-
-        // Build URL
-        $this->setConnectionConfig($this->api->getConfig());
-        $url = ($this->useSsl ? 'https' : 'http') .
-            "://{$this->host}" .
-            "/download/{$type}/" .
-            "{$typePrimary[$type]}/{$primaryId}";
-
-        // Set up stream
-        $headers = $this->getHeaders();
-        $opts = [
-            'http' => [
-                'header' => "Authorization: {$headers['Authorization']}"
-            ]
-        ];
-        $context = stream_context_create($opts);
-
-        // Get file
-        $this->api->getLogger()->debug("Download file {$type} {$primaryId}", [
-            'url'  => $url,
-            'user' => $this->username
-        ]);
         $local = @fopen($filename, 'w');
         if ($local === false) {
             $error = error_get_last();
             throw new Exception\RuntimeException("Unable to open local file: {$error['message']}");
         }
-        $remote = @fopen($url, 'r', false, $context);
-        if ($remote === false) {
-            $error = error_get_last();
-            throw new Exception\RuntimeException("Unable to open remote connection: {$error['message']}");
+
+        $logCtxt = [
+            'type' => $type,
+            'primaryId' => $primaryId,
+            'path' => $filename
+        ];
+        $this->api->getLogger()->debug("Download file '{$type}': {$primaryId}", $logCtxt);
+
+        // Make request
+        $uri = "/download/{$type}/" .
+            "{$typePrimary[$type]}/{$primaryId}";
+        try {
+            $response = $this->httpClient->request('GET', $uri, [
+                'headers' => [
+                    'Accept' => '*' // Override API's default 'application/json'
+                ],
+                'stream' => true
+            ]);
+        } catch (RequestException $e) {
+            fclose($local);
+            unlink($local);
+            throw $e;
         }
-        while ($content = fread($remote, 101400)) {
-            $written = @fwrite($local, $content);
+
+        // Write file to temp
+        $responseBody = $response->getBody();
+        while (!$responseBody->eof()) {
+            $written = @fwrite($local, $responseBody->read(101400));
             if ($written === false) {
                 $error = error_get_last();
+                fclose($local);
+                unlink($local);
                 throw new Exception\RuntimeException("Unable to write to local file: {$error['message']}");
             }
         }
         fclose($local);
-        fclose($remote);
-        $this->api->getLogger()->debug("Download complete {$type} {$primaryId}", [
-            'url'  => $url,
-            'user' => $this->username
-        ]);
+        $this->api->getLogger()->debug("Download complete '{$type}': {$primaryId}", $logCtxt);
 
         // Get MIME
         $mime = (new \finfo(FILEINFO_MIME_TYPE))->file($filename);
         if ($mime === false) {
+            unlink($local);
             throw new Exception\RuntimeException("MIME type could not be determined");
         }
 
