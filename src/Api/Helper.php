@@ -17,9 +17,6 @@ use Mxm\Api\Exception;
  */
 class Helper
 {
-    use ConnectionTrait;
-    use JsonTrait;
-
     /**
      * @var Api
      */
@@ -58,65 +55,52 @@ class Helper
         if ($mime === false) {
             throw new Exception\RuntimeException("MIME type could not be determined");
         }
+        $file = @fopen($path, 'r');
+        if ($file === false) {
+            $error = error_get_last();
+            throw new Exception\RuntimeException("Unable to open local file: {$error['message']}");
+        }
 
         // Initialise
         /** @var string $fileKey */
         $fileKey = $this->api->file_upload->initialise()->key;
 
         // Build request
-        $this->setConnectionConfig($this->api->getConfig());
-        $headers = $this->getHeaders();
-
-        $handleurl = ($this->useSsl ? 'https' : 'http') .
-            '://' .
-            $this->host .
-            '/api/json/file_upload';
-
-        $file = new \CURLFile($path, $mime, $basename);
-
-        $params = [
-            'method' => 'handle',
-            'key'    => $fileKey,
-            'file' => $file,
+        $uri = '/api/json/file_upload';
+        $multipart = [
+            [
+                'name' => 'method',
+                'contents' => 'handle'
+            ],
+            [
+                'name' => 'key',
+                'contents' => $fileKey
+            ],
+            [
+                'name' => 'file',
+                'contents' => $file,
+                'filename' => $basename
+            ]
+        ];
+        $logCtxt = [
+            'fileKey' => $fileKey,
+            'path'    => $path
         ];
 
-        // Write request
-        $this->api->getLogger()->debug("Upload file {$fileKey}", [
-            'fileKey' => $fileKey,
-            'path'    => $path,
-            'user'    => $this->username
-        ]);
+        $this->api->getLogger()->debug("Upload file: {$fileKey}", $logCtxt);
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $handleurl);
-        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC) ;
-        curl_setopt($ch, CURLOPT_USERPWD, "{$this->username}:{$this->password}");
-        curl_setopt($ch, CURLOPT_USERAGENT, $headers['User-Agent']);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $response = curl_exec($ch);
-
-        // Read response
-        if ($response === false) {
-            $errorMsg = curl_error($ch);
-            curl_close($ch);
-            throw new Exception\RuntimeException("Failed to upload file: {$errorMsg}");
+        // File upload
+        try {
+            $this->httpClient->request('POST', $uri, [
+                'multipart' => $multipart
+            ]);
+        } finally {
+            if (is_resource($file)) {
+                fclose($file);
+            }
         }
 
-        $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-        // Handle any API exceptions
-        // Valid response isn't needed, as 'handle' always returns true
-        $this->processJsonResponse($response, $responseCode);
-
-        curl_close($ch);
-
-        $this->api->getLogger()->debug("Upload complete {$fileKey}", [
-            'fileKey' => $fileKey,
-            'path'    => $path,
-            'user'    => $this->username
-        ]);
+        $this->api->getLogger()->debug("Upload complete: {$fileKey}", $logCtxt);
 
         return $fileKey;
     }

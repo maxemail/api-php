@@ -15,32 +15,6 @@ use Mxm\Api\Exception;
 trait JsonTrait
 {
     /**
-     * Process JSON API response
-     *
-     * @param string $body
-     * @param int $httpCode
-     * @return string
-     * @throws Exception\RuntimeException
-     */
-    private function processJsonResponse(string $body, int $httpCode): string
-    {
-        if ((int)$httpCode != 200) {
-            try {
-                $message = $this->decodeJson($body);
-                if ($message instanceof \stdClass && isset($message->msg)) {
-                    $body = $message->msg;
-                }
-            } catch (Exception\UnexpectedValueException $e) {
-                // Void
-                // Failed to decode, leave content as the raw response
-            }
-            throw new Exception\RuntimeException($body, $httpCode);
-        }
-
-        return $body;
-    }
-
-    /**
      * Decode JSON
      *
      * @param string $json
