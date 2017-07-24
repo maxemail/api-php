@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit bootstrap="vendor/autoload.php" colors="true">
+<phpunit bootstrap="vendor/autoload.php"
+         beStrictAboutTestsThatDoNotTestAnything="true"
+         beStrictAboutOutputDuringTests="true"
+         colors="true">
+    <php>
+        <!-- Configuration to enable functional tests -->
+        <var name="FUNC_ENABLED" value="false" />
+        <var name="FUNC_API_HOST" value="maxemail.emailcenteruk.com" />
+        <var name="FUNC_API_USERNAME" value="api@user.com" />
+        <var name="FUNC_API_PASSWORD" value="apipass" />
+        <var name="FUNC_API_SSL" value="true" />
+    </php>
     <testsuites>
         <testsuite name="Mxm">
-            <directory>tests/unit</directory>
+            <directory>tests/</directory>
         </testsuite>
     </testsuites>
     <filter>
