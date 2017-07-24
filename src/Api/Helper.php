@@ -7,6 +7,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Mxm\Api;
 use Mxm\Api\Exception;
+use Psr\Log\LogLevel;
 
 /**
  * MXM JSON API Client
@@ -28,6 +29,11 @@ class Helper
     private $httpClient;
 
     /**
+     * @var string
+     */
+    private $logLevel = LogLevel::DEBUG;
+
+    /**
      * @param Api $api
      * @param Client $httpClient
      */
@@ -35,6 +41,19 @@ class Helper
     {
         $this->api = $api;
         $this->httpClient = $httpClient;
+    }
+
+    /**
+     * Set the level used for helper logging
+     *
+     * @param string $level
+     * @return $this
+     */
+    public function setLogLevel(string $level)
+    {
+        $this->logLevel = $level;
+
+        return $this;
     }
 
     /**
@@ -87,7 +106,7 @@ class Helper
             'path'    => $path
         ];
 
-        $this->api->getLogger()->debug("Upload file: {$fileKey}", $logCtxt);
+        $this->api->getLogger()->log($this->logLevel, "Upload file: {$fileKey}", $logCtxt);
 
         // File upload
         try {
@@ -100,7 +119,7 @@ class Helper
             }
         }
 
-        $this->api->getLogger()->debug("Upload complete: {$fileKey}", $logCtxt);
+        $this->api->getLogger()->log($this->logLevel, "Upload complete: {$fileKey}", $logCtxt);
 
         return $fileKey;
     }
@@ -146,7 +165,7 @@ class Helper
             'primaryId' => $primaryId,
             'path' => $filename
         ];
-        $this->api->getLogger()->debug("Download file '{$type}': {$primaryId}", $logCtxt);
+        $this->api->getLogger()->log($this->logLevel, "Download file '{$type}': {$primaryId}", $logCtxt);
 
         // Make request
         $uri = "/download/{$type}/" .
@@ -176,7 +195,7 @@ class Helper
             }
         }
         fclose($local);
-        $this->api->getLogger()->debug("Download complete '{$type}': {$primaryId}", $logCtxt);
+        $this->api->getLogger()->log($this->logLevel, "Download complete '{$type}': {$primaryId}", $logCtxt);
 
         // Get MIME
         $mime = (new \finfo(FILEINFO_MIME_TYPE))->file($filename);
