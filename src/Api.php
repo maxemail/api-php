@@ -5,7 +5,7 @@ namespace Mxm;
 
 use Mxm\Api\Exception;
 use Mxm\Api\Helper;
-use Mxm\Api\JsonClient;
+use Mxm\Api\Service;
 use Mxm\Api\Middleware;
 use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
@@ -78,7 +78,7 @@ class Api implements \Psr\Log\LoggerAwareInterface
     private $password;
 
     /**
-     * @var JsonClient[]
+     * @var Service[]
      */
     private $services = [];
 
@@ -139,26 +139,26 @@ class Api implements \Psr\Log\LoggerAwareInterface
      * Magic get for service
      *
      * @param string $name
-     * @return JsonClient
+     * @return Service
      */
-    public function __get(string $name): JsonClient
+    public function __get(string $name): Service
     {
         return $this->getInstance($name);
     }
 
     /**
-     * Get JsonClient for selected service
+     * Get Service instance by name
      *
-     * @param string $service
-     * @return JsonClient
+     * @param string $serviceName
+     * @return Service
      */
-    private function getInstance(string $service): JsonClient
+    private function getInstance(string $serviceName): Service
     {
-        if (!isset($this->services[$service])) {
-            $this->services[$service] = new JsonClient($service, $this->getClient());
+        if (!isset($this->services[$serviceName])) {
+            $this->services[$serviceName] = new Service($serviceName, $this->getClient());
         }
 
-        return $this->services[$service];
+        return $this->services[$serviceName];
     }
 
     /**

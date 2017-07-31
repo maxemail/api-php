@@ -42,7 +42,7 @@ class MiddlwareTest extends TestCase
             new Response(200, [], json_encode('OK'))
         );
 
-        $service = new JsonClient('dummy_service', $this->httpClient);
+        $service = new Service('dummy_service', $this->httpClient);
         $result = $service->dummyMethod();
 
         $this->assertEquals('OK', $result);
@@ -56,7 +56,7 @@ class MiddlwareTest extends TestCase
             new Response(500, [], 'Internal server error')
         );
 
-        $service = new JsonClient('dummy_service', $this->httpClient);
+        $service = new Service('dummy_service', $this->httpClient);
         $service->dummyMethod();
     }
 
@@ -68,7 +68,7 @@ class MiddlwareTest extends TestCase
             new Response(400, [], 'Error')
         );
 
-        $service = new JsonClient('dummy_service', $this->httpClient);
+        $service = new Service('dummy_service', $this->httpClient);
         $service->dummyMethod();
     }
 
@@ -87,7 +87,7 @@ class MiddlwareTest extends TestCase
             new Response(400, [], json_encode($mxmError))
         );
 
-        $service = new JsonClient('dummy_service', $this->httpClient);
+        $service = new Service('dummy_service', $this->httpClient);
         $service->dummyMethod();
     }
 }

@@ -11,7 +11,7 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 
-class JsonClientTest extends TestCase
+class ServiceTest extends TestCase
 {
     /**
      * @var Client
@@ -47,7 +47,7 @@ class JsonClientTest extends TestCase
             new Response(200, [], json_encode('OK'))
         );
 
-        $service = new JsonClient('dummy_service', $this->httpClient);
+        $service = new Service('dummy_service', $this->httpClient);
         $service->dummyMethod(
             'var1', // check variables properly passed
             'var2', // another string to check values are in correct order

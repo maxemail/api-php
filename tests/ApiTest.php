@@ -110,7 +110,7 @@ class ApiTest extends TestCase
     }
 
     /**
-     * Test getInstance() returns same JsonClient for same service, different for different service
+     * Test getInstance() returns same Service instance for same name, different for different name
      */
     public function testGetInstance()
     {

@@ -12,7 +12,7 @@ use GuzzleHttp\Client;
  * @copyright  2007-2017 Emailcenter UK Ltd. (https://www.emailcenteruk.com)
  * @license    LGPL-3.0
  */
-class JsonClient
+class Service
 {
     use JsonTrait;
 
