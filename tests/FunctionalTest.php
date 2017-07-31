@@ -20,10 +20,9 @@ class FunctionalTest extends TestCase
         }
 
         $config = [
-            'host' => $GLOBALS['FUNC_API_HOST'],
-            'user' => $GLOBALS['FUNC_API_USER'],
-            'pass' => $GLOBALS['FUNC_API_PASS'],
-            'useSsl' => $GLOBALS['FUNC_API_SSL']
+            'uri' => $GLOBALS['FUNC_API_URI'],
+            'username' => $GLOBALS['FUNC_API_USERNAME'],
+            'password' => $GLOBALS['FUNC_API_PASSWORD']
         ];
         $this->api = new \Mxm\Api($config);
     }

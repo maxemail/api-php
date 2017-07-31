@@ -10,10 +10,9 @@ use PHPUnit\Framework\TestCase;
 class ApiTest extends TestCase
 {
     private $testConfig = [
-        'host'   => 'maxemail.emailcenteruk.com',
-        'user'   => 'api@user.com',
-        'pass'   => 'apipass',
-        'useSsl' => true
+        'uri'      => 'https://maxemail.example.com/',
+        'username' => 'api@user.com',
+        'password' => 'apipass'
     ];
 
     public function testConfigValid()
@@ -23,13 +22,67 @@ class ApiTest extends TestCase
         $this->assertEquals($this->testConfig, $api->getConfig());
     }
 
-    public function testConfigInvalidHostProtocol()
+    public function testConfigSupportDeprecatedUserPass()
+    {
+        $config = [
+            'user' => 'api@user.com',
+            'pass' => 'apipass'
+        ];
+
+        $api = new Api($config);
+
+        $this->assertEquals($config['user'], $api->getConfig()['username']);
+        $this->assertEquals($config['pass'], $api->getConfig()['password']);
+    }
+
+    public function testConfigDefaultHost()
+    {
+        $config = [
+            'username' => 'api@user.com',
+            'password' => 'apipass'
+        ];
+
+        $api = new Api($config);
+
+        $this->assertEquals('https://maxemail.emailcenteruk.com/', $api->getConfig()['uri']);
+    }
+
+    public function testConfigStripsUriPath()
+    {
+        $config = [
+            'uri' => 'http://maxemail.example.com/some/extra/path',
+            'username' => 'api@user.com',
+            'password' => 'apipass'
+        ];
+
+        $api = new Api($config);
+
+        $this->assertEquals('http://maxemail.example.com/', $api->getConfig()['uri']);
+    }
+
+    public function testConfigInvalidUri()
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid hostname');
+        $this->expectExceptionMessage('URI malformed');
 
         $config = [
-            'host' => 'https://maxemail.emailcenteruk.com'
+            'uri' => '//',
+            'username' => 'api@user.com',
+            'password' => 'apipass'
+        ];
+
+        new Api($config);
+    }
+
+    public function testConfigMissingUriProtocol()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('URI must contain protocol scheme and host');
+
+        $config = [
+            'uri' => 'maxemail.example.com',
+            'username' => 'api@user.com',
+            'password' => 'apipass'
         ];
 
         new Api($config);

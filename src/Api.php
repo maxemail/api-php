@@ -65,7 +65,7 @@ class Api implements \Psr\Log\LoggerAwareInterface
     /**
      * @var string
      */
-    private $host;
+    private $uri = 'https://maxemail.emailcenteruk.com/';
 
     /**
      * @var string
@@ -76,11 +76,6 @@ class Api implements \Psr\Log\LoggerAwareInterface
      * @var string
      */
     private $password;
-
-    /**
-     * @var bool
-     */
-    private $useSsl = true;
 
     /**
      * @var JsonClient[]
@@ -103,36 +98,40 @@ class Api implements \Psr\Log\LoggerAwareInterface
     private $httpClient;
 
     /**
-     * Construct
-     *
      * @param array $config {
-     *     @var string $host   Hostname, required
-     *     @var string $user   Username, required
-     *     @var string $pass   Password, required
-     *     @var bool   $useSsl Use secure connection, optional, default true
+     *     @var string $username Required
+     *     @var string $password Required
+     *     @var string $uri      Optional. Default https://maxemail.emailcenteruk.com/
+     *     @var string $user     @deprecated See username
+     *     @var string $pass     @deprecated See password
      * }
      */
     public function __construct(array $config)
     {
-        // Validate hostname
-        // RFC 952 regex from http://stackoverflow.com/questions/106179/regular-expression-to-match-dns-hostname-or-ip-address
-        // Maxemail instances won't require RFC 1123 support
-        $valid952HostnameRegex = "/^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$/";
-
-        $this->host = filter_var($config['host'], FILTER_VALIDATE_REGEXP, [
-            'options' => [
-                'regexp' => $valid952HostnameRegex
-            ]
-        ]);
-        if ($this->host === false) {
-            throw new Exception\InvalidArgumentException('Invalid hostname provided');
+        // Support deprecated key names from v3
+        if (!isset($config['username']) && isset($config['user'])) {
+            $config['username'] = $config['user'];
+        }
+        if (!isset($config['password']) && isset($config['pass'])) {
+            $config['password'] = $config['pass'];
         }
 
-        $this->username = $config['user'];
-        $this->password = $config['pass'];
+        // Must have user/pass
+        if (!isset($config['username']) || !isset($config['password'])) {
+            throw new Exception\InvalidArgumentException('API config requires username & password');
+        }
+        $this->username = $config['username'];
+        $this->password = $config['password'];
 
-        if (isset($config['useSsl'])) {
-            $this->useSsl = (bool)$config['useSsl'];
+        if (isset($config['uri'])) {
+            $parsed = parse_url($config['uri']);
+            if ($parsed === false) {
+                throw new Exception\InvalidArgumentException('URI malformed');
+            }
+            if (!isset($parsed['scheme']) || !isset($parsed['host'])) {
+                throw new Exception\InvalidArgumentException('URI must contain protocol scheme and host');
+            }
+            $this->uri = "{$parsed['scheme']}://{$parsed['host']}/";
         }
     }
 
@@ -172,7 +171,7 @@ class Api implements \Psr\Log\LoggerAwareInterface
             Middleware::addMaxemailErrorParser($stack);
             Middleware::addLogging($stack, $this->getLogger());
             $this->httpClient = new Client([
-                'base_uri' => ($this->useSsl ? 'https' : 'http') . "://{$this->host}/api/json/",
+                'base_uri' => $this->uri . 'api/json/',
                 'auth' => [
                     $this->username,
                     $this->password
@@ -202,10 +201,9 @@ class Api implements \Psr\Log\LoggerAwareInterface
     public function getConfig(): array
     {
         return [
-            'host' => $this->host,
-            'user' => $this->username,
-            'pass' => $this->password,
-            'useSsl' => $this->useSsl
+            'uri'      => $this->uri,
+            'username' => $this->username,
+            'password' => $this->password
         ];
     }
 

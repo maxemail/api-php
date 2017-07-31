@@ -39,11 +39,10 @@ Usage Example
 
 ```php
 // Instantiate Client:
-$config = array(
-    'host' => 'maxemail.emailcenteruk.com',
-    'user' => 'api@user.com',
-    'pass' => 'apipass'
-);
+$config = [
+    'username' => 'api@user.com',
+    'password' => 'apipass'
+];
 $api = new \Mxm\Api($config);
 
 // General:

@@ -22,9 +22,15 @@ same `\RuntimeException` used previously.
 - `Helper::setLogLevel()` can be used to increase the log level from the default
 of *debug*. This might be useful if you want to see the file transfer logs at
 *info* and filter out the raw HTTP client logs at *debug*.
+### Changed
+- Deprecate API config keys for *user* and *pass*, replaced with *username* and
+*password* respectively
 ### Removed
 - Removed support for PHP 5.x as it is no longer
-[actively supported](https://php.net/supported-versions.php) by the PHP project 
+[actively supported](https://php.net/supported-versions.php) by the PHP project
+- Remove API config key for *host*. Most implementations using the default
+instance of Maxemail will not need to make any other change. If connecting to a
+non-standard instance of Maxemail, a new key *uri* can be provided. 
 
 ## [3.1.2] - 2017-01-16
 ### Changed
