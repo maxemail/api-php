@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Mxm\Api;
 
-use Mxm\Api\Exception;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Middleware as GuzzleMiddleware;

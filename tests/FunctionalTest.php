@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Mxm;
+namespace Mxm\Api;
 
 use PHPUnit\Framework\TestCase;
 use Mxm\Api\Exception\ClientException;
@@ -9,9 +9,9 @@ use Mxm\Api\Exception\ClientException;
 class FunctionalTest extends TestCase
 {
     /**
-     * @var \Mxm\Api
+     * @var Client
      */
-    private $api;
+    private $client;
 
     protected function setUp()
     {
@@ -24,7 +24,7 @@ class FunctionalTest extends TestCase
             'username' => $GLOBALS['FUNC_API_USERNAME'],
             'password' => $GLOBALS['FUNC_API_PASSWORD']
         ];
-        $this->api = new \Mxm\Api($config);
+        $this->client = new Client($config);
     }
 
     /**
@@ -32,7 +32,7 @@ class FunctionalTest extends TestCase
      */
     public function testUserAuth()
     {
-        $user = $this->api->user->isLoggedIn();
+        $user = $this->client->user->isLoggedIn();
         $this->assertTrue($user);
     }
 
@@ -41,7 +41,7 @@ class FunctionalTest extends TestCase
      */
     public function testFetchTree()
     {
-        $tree = $this->api->tree->fetchRoot('email', []);
+        $tree = $this->client->tree->fetchRoot('email', []);
         $root = $tree[0];
 
         $this->assertEquals('email', $root->text);
@@ -57,7 +57,7 @@ class FunctionalTest extends TestCase
         $this->expectException(ClientException::class);
         $this->expectExceptionMessage('Invalid Node Class');
 
-        $this->api->tree->fetchRoot('notATree', []);
+        $this->client->tree->fetchRoot('notATree', []);
     }
 
     /**
@@ -66,9 +66,9 @@ class FunctionalTest extends TestCase
     public function testHelperUploadDownload()
     {
         $sampleFile = __DIR__ . '/__files/sample-file.csv';
-        $key = $this->api->getHelper()->uploadFile($sampleFile);
+        $key = $this->client->getHelper()->uploadFile($sampleFile);
 
-        $downloadFile = $this->api->getHelper()->downloadFile('file', $key);
+        $downloadFile = $this->client->getHelper()->downloadFile('file', $key);
 
         $this->assertFileEquals($sampleFile, $downloadFile);
         unlink($downloadFile);

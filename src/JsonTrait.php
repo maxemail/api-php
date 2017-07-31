@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace Mxm\Api;
 
-use Mxm\Api\Exception;
-
 /**
  * Maxemail API Client
  *

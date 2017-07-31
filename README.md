@@ -39,7 +39,7 @@ $config = [
     'username' => 'api@user.com',
     'password' => 'apipass'
 ];
-$api = new \Mxm\Api($config);
+$api = new \Mxm\Api\Client($config);
 
 // General:
 $result = $api->serviceName->method($arg1, $arg2);

@@ -5,8 +5,6 @@ namespace Mxm\Api;
 
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\RequestException;
-use Mxm\Api;
-use Mxm\Api\Exception;
 use Psr\Log\LogLevel;
 
 /**
@@ -19,7 +17,7 @@ use Psr\Log\LogLevel;
 class Helper
 {
     /**
-     * @var Api
+     * @var Client
      */
     private $api;
 
@@ -34,10 +32,10 @@ class Helper
     private $logLevel = LogLevel::DEBUG;
 
     /**
-     * @param Api $api
+     * @param Client $api
      * @param GuzzleClient $httpClient
      */
-    public function __construct(Api $api, GuzzleClient $httpClient)
+    public function __construct(Client $api, GuzzleClient $httpClient)
     {
         $this->api = $api;
         $this->httpClient = $httpClient;

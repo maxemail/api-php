@@ -1,10 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Mxm;
+namespace Mxm\Api;
 
 use Mxm\Api\Exception\InvalidArgumentException;
-use Mxm\Api\Helper;
 use PHPUnit\Framework\TestCase;
 
 class ApiTest extends TestCase
@@ -17,7 +16,7 @@ class ApiTest extends TestCase
 
     public function testConfigValid()
     {
-        $api = new Api($this->testConfig);
+        $api = new Client($this->testConfig);
 
         $this->assertEquals($this->testConfig, $api->getConfig());
     }
@@ -29,7 +28,7 @@ class ApiTest extends TestCase
             'pass' => 'apipass'
         ];
 
-        $api = new Api($config);
+        $api = new Client($config);
 
         $this->assertEquals($config['user'], $api->getConfig()['username']);
         $this->assertEquals($config['pass'], $api->getConfig()['password']);
@@ -42,7 +41,7 @@ class ApiTest extends TestCase
             'password' => 'apipass'
         ];
 
-        $api = new Api($config);
+        $api = new Client($config);
 
         $this->assertEquals('https://maxemail.emailcenteruk.com/', $api->getConfig()['uri']);
     }
@@ -55,7 +54,7 @@ class ApiTest extends TestCase
             'password' => 'apipass'
         ];
 
-        $api = new Api($config);
+        $api = new Client($config);
 
         $this->assertEquals('http://maxemail.example.com/', $api->getConfig()['uri']);
     }
@@ -71,7 +70,7 @@ class ApiTest extends TestCase
             'password' => 'apipass'
         ];
 
-        new Api($config);
+        new Client($config);
     }
 
     public function testConfigMissingUriProtocol()
@@ -85,7 +84,7 @@ class ApiTest extends TestCase
             'password' => 'apipass'
         ];
 
-        new Api($config);
+        new Client($config);
     }
 
     public function testSetGetLogger()
@@ -93,7 +92,7 @@ class ApiTest extends TestCase
         /** @var \Psr\Log\LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
         $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
 
-        $api = new Api($this->testConfig);
+        $api = new Client($this->testConfig);
 
         $api->setLogger($logger);
 
@@ -102,7 +101,7 @@ class ApiTest extends TestCase
 
     public function testGetHelper()
     {
-        $api = new Api($this->testConfig);
+        $api = new Client($this->testConfig);
 
         $helper = $api->getHelper();
 
@@ -114,7 +113,7 @@ class ApiTest extends TestCase
      */
     public function testGetInstance()
     {
-        $api = new Api($this->testConfig);
+        $api = new Client($this->testConfig);
 
         $originalService = $api->service;
         $sameService = $api->service;

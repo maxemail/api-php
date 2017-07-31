@@ -25,6 +25,8 @@ of *debug*. This might be useful if you want to see the file transfer logs at
 ### Changed
 - Deprecate API config keys for *user* and *pass*, replaced with *username* and
 *password* respectively
+- Primary class has changed from `Mxm\Api` to `Mxm\Api\Client`. See
+[README](README.md) for usage example including config changes above.
 ### Removed
 - Removed support for PHP 5.x as it is no longer
 [actively supported](https://php.net/supported-versions.php) by the PHP project

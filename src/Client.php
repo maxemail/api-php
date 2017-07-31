@@ -1,12 +1,8 @@
 <?php
 declare(strict_types=1);
 
-namespace Mxm;
+namespace Mxm\Api;
 
-use Mxm\Api\Exception;
-use Mxm\Api\Helper;
-use Mxm\Api\Service;
-use Mxm\Api\Middleware;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\HandlerStack;
 
@@ -58,7 +54,7 @@ use GuzzleHttp\HandlerStack;
  * @property mixed transactional https://docs.emailcenteruk.com/mxm-dev/api/services/transactional
  * @property mixed data_export_quick_transactional https://docs.emailcenteruk.com/mxm-dev/api/services/data-export-quick-transactional
  */
-class Api implements \Psr\Log\LoggerAwareInterface
+class Client implements \Psr\Log\LoggerAwareInterface
 {
     const VERSION = '4.0';
 
