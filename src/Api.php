@@ -7,7 +7,7 @@ use Mxm\Api\Exception;
 use Mxm\Api\Helper;
 use Mxm\Api\Service;
 use Mxm\Api\Middleware;
-use GuzzleHttp\Client;
+use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\HandlerStack;
 
 /**
@@ -93,7 +93,7 @@ class Api implements \Psr\Log\LoggerAwareInterface
     private $logger;
 
     /**
-     * @var Client
+     * @var GuzzleClient
      */
     private $httpClient;
 
@@ -162,15 +162,15 @@ class Api implements \Psr\Log\LoggerAwareInterface
     }
 
     /**
-     * @return Client
+     * @return GuzzleClient
      */
-    private function getClient(): Client
+    private function getClient(): GuzzleClient
     {
         if ($this->httpClient === null) {
             $stack = HandlerStack::create();
             Middleware::addMaxemailErrorParser($stack);
             Middleware::addLogging($stack, $this->getLogger());
-            $this->httpClient = new Client([
+            $this->httpClient = new GuzzleClient([
                 'base_uri' => $this->uri . 'api/json/',
                 'auth' => [
                     $this->username,

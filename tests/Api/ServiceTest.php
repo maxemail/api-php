@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Mxm\Api;
 
-use GuzzleHttp\Client;
+use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware as GuzzleMiddleware;
@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class ServiceTest extends TestCase
 {
     /**
-     * @var Client
+     * @var GuzzleClient
      */
     private $httpClient;
 
@@ -35,7 +35,7 @@ class ServiceTest extends TestCase
             GuzzleMiddleware::history($this->clientHistory)
         );
 
-        $this->httpClient = new Client([
+        $this->httpClient = new GuzzleClient([
             'base_uri' => 'https://example.com/api/json/',
             'handler' => $stack
         ]);

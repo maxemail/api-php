@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Mxm\Api;
 
-use GuzzleHttp\Client;
+use GuzzleHttp\Client as GuzzleClient;
 
 /**
  * Maxemail API Client
@@ -22,15 +22,15 @@ class Service
     private $service;
 
     /**
-     * @var Client
+     * @var GuzzleClient
      */
     private $httpClient;
 
     /**
      * @param string $service
-     * @param Client $httpClient
+     * @param GuzzleClient $httpClient
      */
-    public function __construct(string $service, Client $httpClient)
+    public function __construct(string $service, GuzzleClient $httpClient)
     {
         $this->service = $service;
         $this->httpClient = $httpClient;

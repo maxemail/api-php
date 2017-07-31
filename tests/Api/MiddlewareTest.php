@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Mxm\Api;
 
-use GuzzleHttp\Client;
+use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Handler\MockHandler;
@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 class MiddlwareTest extends TestCase
 {
     /**
-     * @var Client
+     * @var GuzzleClient
      */
     private $httpClient;
 
@@ -31,7 +31,7 @@ class MiddlwareTest extends TestCase
         $stack = HandlerStack::create($this->mockHandler);
         Middleware::addMaxemailErrorParser($stack);
 
-        $this->httpClient = new Client([
+        $this->httpClient = new GuzzleClient([
             'handler' => $stack
         ]);
     }

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Mxm\Api;
 
-use GuzzleHttp\Client;
+use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\RequestException;
 use Mxm\Api;
 use Mxm\Api\Exception;
@@ -24,7 +24,7 @@ class Helper
     private $api;
 
     /**
-     * @var Client
+     * @var GuzzleClient
      */
     private $httpClient;
 
@@ -35,9 +35,9 @@ class Helper
 
     /**
      * @param Api $api
-     * @param Client $httpClient
+     * @param GuzzleClient $httpClient
      */
-    public function __construct(Api $api, Client $httpClient)
+    public function __construct(Api $api, GuzzleClient $httpClient)
     {
         $this->api = $api;
         $this->httpClient = $httpClient;
