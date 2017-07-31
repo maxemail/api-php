@@ -11,9 +11,9 @@ use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 
 /**
- * MXM JSON API Client
+ * Maxemail API Client
  *
- * @package    Mxm/Api
+ * @package    Emailcenter/MaxemailApi
  * @copyright  2007-2017 Emailcenter UK Ltd. (https://www.emailcenteruk.com)
  * @license    LGPL-3.0
  *
@@ -177,7 +177,7 @@ class Api implements \Psr\Log\LoggerAwareInterface
                     $this->password
                 ],
                 'headers' => [
-                    'User-Agent'   => 'MxmJsonClient/' . self::VERSION . ' PHP/' . phpversion(),
+                    'User-Agent'   => 'MxmApiClient/' . self::VERSION . ' PHP/' . phpversion(),
                     'Content-Type' => 'application/x-www-form-urlencoded',
                     'Accept'       => 'application/json'
                 ],

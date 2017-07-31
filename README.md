@@ -1,5 +1,4 @@
-Maxemail API Client for PHP
-===========================
+# Emailcenter Maxemail API Client for PHP
 
 [![Build Status](https://img.shields.io/travis/emailcenter/mxm-api-php/master.svg)](https://travis-ci.org/emailcenter/mxm-api-php)
 [![Codecov](https://img.shields.io/codecov/c/github/emailcenter/mxm-api-php.svg)](https://codecov.io/gh/emailcenter/mxm-api-php)
@@ -9,8 +8,7 @@ Maxemail API Client for PHP
 
 Self-contained client in PHP for simplifying access to the Maxemail API
 
-Requirements
-------------
+## Requirements
 
 ![PHP](https://img.shields.io/badge/php-%5E7.0-brightgreen.svg)
 
@@ -24,8 +22,7 @@ versions which are no longer
 [actively supported](https://php.net/supported-versions.php) by the PHP project.
 
 
-Installation
-------------
+## Installation
 
 Including this package in your application is made easy by using
 [Composer](https://getcomposer.org).
@@ -34,8 +31,7 @@ Including this package in your application is made easy by using
 $ composer require emailcenter/mxm-api-php
 ```
 
-Usage Example
--------------
+## Usage Example
 
 ```php
 // Instantiate Client:
@@ -50,8 +46,7 @@ $result = $api->serviceName->method($arg1, $arg2);
 var_dump($result);
 ```
 
-Logging
--------
+## Logging
 
 If you want more useful development-time debug info, throw the API a PSR-compatible logger:
 
@@ -62,8 +57,7 @@ $api->setLogger($logger);
 
 For a quick-start to logging (plus advanced multi-destination logging!), see [Phlib/Logger](https://github.com/phlib/logger)
 
-Helpers
--------
+## Helpers
 
 The client also includes a *Helper* class to take care of common scenarios that
 are more complicated than the simple request-response model.

@@ -12,9 +12,9 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
 /**
- * MXM JSON API Client
+ * Maxemail API Client
  *
- * @package    Mxm/Api
+ * @package    Emailcenter/MaxemailApi
  * @copyright  2007-2017 Emailcenter UK Ltd. (https://www.emailcenteruk.com)
  * @license    LGPL-3.0
  */
