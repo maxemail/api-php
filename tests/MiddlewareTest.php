@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Mxm\Api;
+namespace Emailcenter\MaxemailApi;
 
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\ClientException;
@@ -9,7 +9,7 @@ use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
-use Mxm\Api\Exception\ClientException as MxmClientException;
+use Emailcenter\MaxemailApi\Exception\ClientException as MxmClientException;
 use PHPUnit\Framework\TestCase;
 
 class MiddlwareTest extends TestCase

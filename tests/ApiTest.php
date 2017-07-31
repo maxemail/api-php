@@ -1,9 +1,8 @@
 <?php
 declare(strict_types=1);
 
-namespace Mxm\Api;
+namespace Emailcenter\MaxemailApi;
 
-use Mxm\Api\Exception\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class ApiTest extends TestCase
@@ -61,7 +60,7 @@ class ApiTest extends TestCase
 
     public function testConfigInvalidUri()
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage('URI malformed');
 
         $config = [
@@ -75,7 +74,7 @@ class ApiTest extends TestCase
 
     public function testConfigMissingUriProtocol()
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage('URI must contain protocol scheme and host');
 
         $config = [

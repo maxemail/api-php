@@ -17,16 +17,17 @@ thrown for networking errors (connection timeout, DNS errors, etc.) will be an
 instance of `GuzzleHttp\Exception\RequestException`. This extends
 `\RuntimeException` so any existing catch blocks will continue to function
 without any necessary changes. Errors returned by Maxemail as a response to an
-API call will now throw `Mxm\Api\Exception\ClientException` which extends the
-same `\RuntimeException` used previously.
+API call will now throw `Emailcenter\MaxemailApi\Exception\ClientException`
+which extends the same `\RuntimeException` used previously.
 - `Helper::setLogLevel()` can be used to increase the log level from the default
 of *debug*. This might be useful if you want to see the file transfer logs at
 *info* and filter out the raw HTTP client logs at *debug*.
 ### Changed
+- Namespaces have been changed from `Mxm\Api` to `Emailcenter\MaxemailApi`.
 - Deprecate API config keys for *user* and *pass*, replaced with *username* and
 *password* respectively
-- Primary class has changed from `Mxm\Api` to `Mxm\Api\Client`. See
-[README](README.md) for usage example including config changes above.
+- Primary class has changed from `Mxm\Api` to `Emailcenter\MaxemailApi\Client`.
+See [README](README.md) for usage example including config changes above.
 ### Removed
 - Removed support for PHP 5.x as it is no longer
 [actively supported](https://php.net/supported-versions.php) by the PHP project

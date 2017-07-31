@@ -1,10 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace Mxm\Api;
+namespace Emailcenter\MaxemailApi;
 
 use PHPUnit\Framework\TestCase;
-use Mxm\Api\Exception\ClientException;
 
 class FunctionalTest extends TestCase
 {
@@ -54,7 +53,7 @@ class FunctionalTest extends TestCase
      */
     public function testFetchTreeError()
     {
-        $this->expectException(ClientException::class);
+        $this->expectException(Exception\ClientException::class);
         $this->expectExceptionMessage('Invalid Node Class');
 
         $this->client->tree->fetchRoot('notATree', []);

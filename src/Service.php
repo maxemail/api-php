@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Mxm\Api;
+namespace Emailcenter\MaxemailApi;
 
 use GuzzleHttp\Client as GuzzleClient;
 
