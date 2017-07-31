@@ -85,7 +85,6 @@ class Helper
         $fileKey = $this->api->file_upload->initialise()->key;
 
         // Build request
-        $uri = '/api/json/file_upload';
         $multipart = [
             [
                 'name' => 'method',
@@ -110,7 +109,7 @@ class Helper
 
         // File upload
         try {
-            $this->httpClient->request('POST', $uri, [
+            $this->httpClient->request('POST', 'file_upload', [
                 'multipart' => $multipart
             ]);
         } finally {
