@@ -1,17 +1,17 @@
 <?php
+declare(strict_types=1);
 
-namespace Mxm;
+namespace Emailcenter\MaxemailApi;
 
-use Mxm\Api\JsonClient;
-use Mxm\Api\Helper;
+use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\HandlerStack;
 
 /**
- * MXM JSON API Client
+ * Maxemail API Client
  *
- * @category   Mxm
- * @package    Api
- * @copyright  Copyright (c) 2007-2015 Emailcenter UK. (http://www.emailcenteruk.com)
- * @license    Commercial
+ * @package    Emailcenter/MaxemailApi
+ * @copyright  2007-2017 Emailcenter UK Ltd. (https://www.emailcenteruk.com)
+ * @license    LGPL-3.0
  *
  * Services
  * @property mixed file_upload https://docs.emailcenteruk.com/mxm-dev/api/services/file-upload
@@ -54,76 +54,80 @@ use Mxm\Api\Helper;
  * @property mixed transactional https://docs.emailcenteruk.com/mxm-dev/api/services/transactional
  * @property mixed data_export_quick_transactional https://docs.emailcenteruk.com/mxm-dev/api/services/data-export-quick-transactional
  */
-class Api implements \Psr\Log\LoggerAwareInterface
+class Client implements \Psr\Log\LoggerAwareInterface
 {
-    const VERSION = '3.1';
+    const VERSION = '4.0';
 
     /**
      * @var string
      */
-    protected $host;
+    private $uri = 'https://maxemail.emailcenteruk.com/';
 
     /**
      * @var string
      */
-    protected $username;
+    private $username;
 
     /**
      * @var string
      */
-    protected $password;
+    private $password;
 
     /**
-     * @var bool
+     * @var Service[]
      */
-    protected $useSsl = true;
-
-    /**
-     * @var JsonClient[]
-     */
-    protected $services = array();
+    private $services = [];
 
     /**
      * @var Helper
      */
-    protected $helper;
+    private $helper;
 
     /**
      * @var \Psr\Log\LoggerInterface
      */
-    protected $logger;
+    private $logger;
 
     /**
-     * Construct
-     *
+     * @var GuzzleClient
+     */
+    private $httpClient;
+
+    /**
      * @param array $config {
-     *     @var string $host   Hostname, required
-     *     @var string $user   Username, required
-     *     @var string $pass   Password, required
-     *     @var bool   $useSsl Use secure connection, optional, default true
+     *     @var string $username Required
+     *     @var string $password Required
+     *     @var string $uri      Optional. Default https://maxemail.emailcenteruk.com/
+     *     @var string $user     @deprecated See username
+     *     @var string $pass     @deprecated See password
      * }
      */
     public function __construct(array $config)
     {
-        // Validate hostname
-        // RFC 952 regex from http://stackoverflow.com/questions/106179/regular-expression-to-match-dns-hostname-or-ip-address
-        // Maxemail instances won't require RFC 1123 support
-        $valid952HostnameRegex = "/^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$/";
-
-        $this->host = filter_var($config['host'], FILTER_VALIDATE_REGEXP, [
-            'options' => [
-                'regexp' => $valid952HostnameRegex
-            ]
-        ]);
-        if ($this->host === false) {
-            throw new \InvalidArgumentException('Invalid hostname provided');
+        // Support deprecated key names from v3
+        if (!isset($config['username']) && isset($config['user'])) {
+            $config['username'] = $config['user'];
+        }
+        if (!isset($config['password']) && isset($config['pass'])) {
+            $config['password'] = $config['pass'];
         }
 
-        $this->username = $config['user'];
-        $this->password = $config['pass'];
+        // Must have user/pass
+        if (!isset($config['username']) || !isset($config['password'])) {
+            throw new Exception\InvalidArgumentException('API config requires username & password');
+        }
+        $this->username = $config['username'];
+        $this->password = $config['password'];
 
-        if (isset($config['useSsl'])) {
-            $this->useSsl = (bool)$config['useSsl'];
+        if (isset($config['uri'])) {
+            $parsed = parse_url($config['uri']);
+            if ($parsed === false) {
+                throw new Exception\InvalidArgumentException('URI malformed');
+            }
+            if (!isset($parsed['scheme']) || !isset($parsed['host'])) {
+                throw new Exception\InvalidArgumentException('URI must contain protocol scheme and host');
+            }
+            $this->uri = "{$parsed['scheme']}://{$parsed['host']}/";
         }
     }
 
@@ -131,27 +135,53 @@ class Api implements \Psr\Log\LoggerAwareInterface
      * Magic get for service
      *
      * @param string $name
-     * @return JsonClient
+     * @return Service
      */
-    public function __get($name)
+    public function __get(string $name): Service
     {
         return $this->getInstance($name);
     }
 
     /**
-     * Get JsonClient for selected service
+     * Get Service instance by name
      *
-     * @param string $service
-     * @return JsonClient
+     * @param string $serviceName
+     * @return Service
      */
-    protected function getInstance($service)
+    private function getInstance(string $serviceName): Service
     {
-        if (!isset($this->services[$service])) {
-            $this->services[$service] = new JsonClient($service, $this->getConfig());
-            $this->services[$service]->setLogger($this->getLogger());
+        if (!isset($this->services[$serviceName])) {
+            $this->services[$serviceName] = new Service($serviceName, $this->getClient());
         }
 
-        return $this->services[$service];
+        return $this->services[$serviceName];
+    }
+
+    /**
+     * @return GuzzleClient
+     */
+    private function getClient(): GuzzleClient
+    {
+        if ($this->httpClient === null) {
+            $stack = HandlerStack::create();
+            Middleware::addMaxemailErrorParser($stack);
+            Middleware::addLogging($stack, $this->getLogger());
+            $this->httpClient = new GuzzleClient([
+                'base_uri' => $this->uri . 'api/json/',
+                'auth' => [
+                    $this->username,
+                    $this->password
+                ],
+                'headers' => [
+                    'User-Agent'   => 'MxmApiClient/' . self::VERSION . ' PHP/' . phpversion(),
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                    'Accept'       => 'application/json'
+                ],
+                'handler' => $stack
+            ]);
+        }
+
+        return $this->httpClient;
     }
 
     /**
@@ -164,13 +194,12 @@ class Api implements \Psr\Log\LoggerAwareInterface
      *     @var bool   $useSsl Use secure connection
      * }
      */
-    public function getConfig()
+    public function getConfig(): array
     {
         return [
-            'host' => $this->host,
-            'user' => $this->username,
-            'pass' => $this->password,
-            'useSsl' => $this->useSsl
+            'uri'      => $this->uri,
+            'username' => $this->username,
+            'password' => $this->password
         ];
     }
 
@@ -179,10 +208,10 @@ class Api implements \Psr\Log\LoggerAwareInterface
      *
      * @return Helper
      */
-    public function getHelper()
+    public function getHelper(): Helper
     {
         if (!isset($this->helper)) {
-            $this->helper = new Helper($this);
+            $this->helper = new Helper($this, $this->getClient());
         }
 
         return $this->helper;
@@ -198,10 +227,6 @@ class Api implements \Psr\Log\LoggerAwareInterface
     {
         $this->logger = $logger;
 
-        foreach ($this->services as $service) {
-            $service->setLogger($logger);
-        }
-
         return $this;
     }
 
@@ -210,7 +235,7 @@ class Api implements \Psr\Log\LoggerAwareInterface
      *
      * @return \Psr\Log\LoggerInterface
      */
-    public function getLogger()
+    public function getLogger(): \Psr\Log\LoggerInterface
     {
         if (!isset($this->logger)) {
             $this->logger = new \Psr\Log\NullLogger();
