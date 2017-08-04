@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Emailcenter\MaxemailApi;
 
 use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware as GuzzleMiddleware;
@@ -42,6 +43,9 @@ class HelperTest extends TestCase
 
         // This allows fopen() to be overloaded after it's first used normally in other tests
         $this->defineFunctionMock(__NAMESPACE__, 'fopen');
+        $this->defineFunctionMock(__NAMESPACE__, 'fwrite');
+        $this->defineFunctionMock(__NAMESPACE__, 'fclose');
+        $this->defineFunctionMock(__NAMESPACE__, 'unlink');
     }
 
     public function testUpload()
@@ -273,6 +277,133 @@ class HelperTest extends TestCase
         $this->expectExceptionMessage('Invalid download type specified');
 
         $this->getHelperWithMockHandler()->downloadFile('unknown', 123);
+    }
+
+    /**
+     * Use exception to stop method early
+     */
+    public function testDownloadTmpFileLocation()
+    {
+        $this->expectException(\Exception::class);
+
+        $fopenMock = $this->getFunctionMock(__NAMESPACE__, 'fopen');
+        $fopenMock->expects($this->once())
+            ->with($this->stringStartsWith(realpath(sys_get_temp_dir())), 'w')
+            ->willReturn(false);
+
+        $this->getHelperWithMockHandler()->downloadFile('file', 123);
+    }
+
+    /**
+     * Use exception to stop method early
+     */
+    public function testDownloadTmpFileLocationCustom()
+    {
+        $this->expectException(\Exception::class);
+
+        $directory = __DIR__ . '/__files';
+
+        $fopenMock = $this->getFunctionMock(__NAMESPACE__, 'fopen');
+        $fopenMock->expects($this->once())
+            ->with($this->stringStartsWith($directory), 'w')
+            ->willReturn(false);
+
+        $this->getHelperWithMockHandler()->downloadFile('file', 123, ['dir' => $directory]);
+    }
+
+    public function testDownloadTmpFileUnableToOpen()
+    {
+        $this->expectException(Exception\RuntimeException::class);
+        $this->expectExceptionMessage('Unable to open local file');
+
+        $fopenMock = $this->getFunctionMock(__NAMESPACE__, 'fopen');
+        $fopenMock->expects($this->once())
+            ->willReturn(false);
+
+        $this->getHelperWithMockHandler()->downloadFile('file', 123);
+    }
+
+    public function testDownloadTmpFileDeletedRequestError()
+    {
+        $this->expectException(ClientException::class);
+        $this->expectExceptionMessage('400 Bad Request');
+
+        $this->mockHandler->append(
+            new Response(400, [], 'Error')
+        );
+
+        $directory = __DIR__ . '/__files';
+
+        $tmpFile = '';
+        $tmpResource = null;
+
+        $fopenMock = $this->getFunctionMock(__NAMESPACE__, 'fopen');
+        $fopenMock->expects($this->once())
+            ->willReturnCallback(function ($filename, $mode) use (&$tmpFile, &$tmpResource) {
+                $tmpFile = $filename;
+                $tmpResource = \fopen($filename, $mode);
+                return $tmpResource;
+            });
+
+        $fcloseMock = $this->getFunctionMock(__NAMESPACE__, 'fclose');
+        $fcloseMock->expects($this->once())
+            ->willReturnCallback(function ($resource) use (&$tmpResource) {
+                $this->assertSame($tmpResource, $resource);
+                return \fclose($tmpResource);
+            });
+
+        $unlinkMock = $this->getFunctionMock(__NAMESPACE__, 'unlink');
+        $unlinkMock->expects($this->once())
+            ->willReturnCallback(function ($filename) use (&$tmpFile) {
+                $this->assertSame($tmpFile, $filename);
+                return \unlink($tmpFile);
+            });
+
+        $this->getHelperWithMockHandler()->downloadFile('file', 'abc123def456', ['dir' => $directory]);
+    }
+
+    public function testDownloadTmpFileDeletedWriteError()
+    {
+        $this->expectException(Exception\RuntimeException::class);
+        $this->expectExceptionMessage('Unable to write to local file');
+
+        $sampleFile = __DIR__ . '/__files/sample-file.csv';
+        $this->mockHandler->append(
+            new Response(200, [], fopen($sampleFile, 'r'))
+        );
+
+        $directory = __DIR__ . '/__files';
+
+        $tmpFile = '';
+        $tmpResource = null;
+
+        $fopenMock = $this->getFunctionMock(__NAMESPACE__, 'fopen');
+        $fopenMock->expects($this->once())
+            ->willReturnCallback(function ($filename, $mode) use (&$tmpFile, &$tmpResource) {
+                $tmpFile = $filename;
+                $tmpResource = \fopen($filename, $mode);
+                return $tmpResource;
+            });
+
+        $fwriteMock = $this->getFunctionMock(__NAMESPACE__, 'fwrite');
+        $fwriteMock->expects($this->once())
+            ->willReturn(false);
+
+        $fcloseMock = $this->getFunctionMock(__NAMESPACE__, 'fclose');
+        $fcloseMock->expects($this->once())
+            ->willReturnCallback(function ($resource) use (&$tmpResource) {
+                $this->assertSame($tmpResource, $resource);
+                return \fclose($tmpResource);
+            });
+
+        $unlinkMock = $this->getFunctionMock(__NAMESPACE__, 'unlink');
+        $unlinkMock->expects($this->once())
+            ->willReturnCallback(function ($filename) use (&$tmpFile) {
+                $this->assertSame($tmpFile, $filename);
+                return \unlink($tmpFile);
+            });
+
+        $this->getHelperWithMockHandler()->downloadFile('file', 'abc123def456', ['dir' => $directory]);
     }
 
     /**

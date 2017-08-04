@@ -148,6 +148,7 @@ class Helper
         );
         $local = @fopen($filename, 'w');
         if ($local === false) {
+            unlink($filename);
             $error = error_get_last();
             throw new Exception\RuntimeException("Unable to open local file: {$error['message']}");
         }
@@ -171,7 +172,7 @@ class Helper
             ]);
         } catch (RequestException $e) {
             fclose($local);
-            unlink($local);
+            unlink($filename);
             throw $e;
         }
 
@@ -182,7 +183,7 @@ class Helper
             if ($written === false) {
                 $error = error_get_last();
                 fclose($local);
-                unlink($local);
+                unlink($filename);
                 throw new Exception\RuntimeException("Unable to write to local file: {$error['message']}");
             }
         }
@@ -192,7 +193,7 @@ class Helper
         // Get MIME
         $mime = (new \finfo(FILEINFO_MIME_TYPE))->file($filename);
         if ($mime === false) {
-            unlink($local);
+            unlink($filename);
             throw new Exception\RuntimeException("MIME type could not be determined");
         }
 
