@@ -67,11 +67,6 @@ class Helper
         if (!is_readable($path)) {
             throw new Exception\InvalidArgumentException('File path is not readable: ' . $path);
         }
-        $basename = basename($path);
-        $mime = (new \finfo(FILEINFO_MIME_TYPE))->file($path);
-        if ($mime === false) {
-            throw new Exception\RuntimeException("MIME type could not be determined");
-        }
         $file = @fopen($path, 'r');
         if ($file === false) {
             $error = error_get_last();
@@ -95,7 +90,7 @@ class Helper
             [
                 'name' => 'file',
                 'contents' => $file,
-                'filename' => $basename
+                'filename' => basename($path)
             ]
         ];
         $logCtxt = [
