@@ -5,10 +5,13 @@ namespace Emailcenter\MaxemailApi;
 
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Psr7\Response;
+use phpmock\phpunit\PHPMock;
 use PHPUnit\Framework\TestCase;
 
 class HelperTest extends TestCase
 {
+    use PHPMock;
+
     /**
      * @var Client|\PHPUnit_Framework_MockObject_MockObject
      */
@@ -29,6 +32,9 @@ class HelperTest extends TestCase
         $this->client = $this->createMock(Client::class);
         $this->httpClient = $this->createMock(GuzzleClient::class);
         $this->helper = new Helper($this->client, $this->httpClient);
+
+        // This allows fopen() to be overloaded after it's first used normally in other tests
+        $this->defineFunctionMock(__NAMESPACE__, 'fopen');
     }
 
     public function testUpload()
@@ -88,5 +94,30 @@ class HelperTest extends TestCase
         $actual = $this->helper->uploadFile($sampleFile);
 
         $this->assertEquals($key, $actual);
+    }
+
+    public function testUploadUnreadable()
+    {
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage('File path is not readable');
+
+        $sampleFile = __DIR__ . '/__files/does-not-exist';
+
+        $this->helper->uploadFile($sampleFile);
+    }
+
+    public function testUploadUnableToOpen()
+    {
+        $this->expectException(Exception\RuntimeException::class);
+        $this->expectExceptionMessage('Unable to open local file');
+
+        $sampleFile = __DIR__ . '/__files/sample-file.csv';
+
+        $fopenMock = $this->getFunctionMock(__NAMESPACE__, 'fopen');
+        $fopenMock->expects($this->once())
+            ->with($sampleFile, 'r')
+            ->willReturn(false);
+
+        $this->helper->uploadFile($sampleFile);
     }
 }
