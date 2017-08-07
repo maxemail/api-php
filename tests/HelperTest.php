@@ -67,42 +67,31 @@ class HelperTest extends TestCase
             ->with('initialise', [])
             ->willReturn((object)['key' => $key]);
 
-        // HTTP Client is used to perform multipart upload
-        // Can't use MockHandler and History middleware,
-        // as once the request has been handled the file stream cannot be read again
-        $checkMultipart = function($options) use ($key) {
-            $this->assertCount(1, $options);
-            $this->assertArrayHasKey('multipart', $options);
+        // Use a Closure to save the request body at the point of handling the request
+        // Using the Request instance saved by the history middleware isn't an option,
+        // as the file handle will be closed by then
+        $requestBody = '';
+        $this->mockHandler->append(
+            function (Request $request) use (&$requestBody) {
+                $requestBody = (string)$request->getBody();
+                return new Response(200, [], '');
+            }
+        );
 
-            $methodParam = $options['multipart'][0];
-            $this->assertArrayHasKey('name', $methodParam);
-            $this->assertEquals('method', $methodParam['name']);
-            $this->assertArrayHasKey('contents', $methodParam);
-            $this->assertEquals('handle', $methodParam['contents']);
+        $actual = $this->getHelperWithMockHandler()->uploadFile($sampleFile);
 
-            $keyParam = $options['multipart'][1];
-            $this->assertArrayHasKey('name', $keyParam);
-            $this->assertEquals('key', $keyParam['name']);
-            $this->assertArrayHasKey('contents', $keyParam);
-            $this->assertEquals($key, $keyParam['contents']);
+        $this->assertCount(1, $this->clientHistory);
 
-            $fileParam = $options['multipart'][2];
-            $this->assertArrayHasKey('name', $fileParam);
-            $this->assertEquals('file', $fileParam['name']);
-            $this->assertArrayHasKey('filename', $fileParam);
-            $this->assertEquals('sample-file.csv', $fileParam['filename']);
-            $this->assertArrayHasKey('contents', $fileParam);
-            $this->assertInternalType('resource', $fileParam['contents']);
+        /** @var Request $request */
+        $request = $this->clientHistory[0]['request'];
 
-            return true;
-        };
-        $uploadResponse = new Response(200, [], '');
-        $this->httpClientMock->expects($this->once())
-            ->method('request')
-            ->with('POST', 'file_upload', $this->callback($checkMultipart))
-            ->willReturn($uploadResponse);
-
-        $actual = $this->getHelperWithMockClient()->uploadFile($sampleFile);
+        // Check request is multipart and body contains expected parameters
+        $this->assertTrue($request->hasHeader('Content-Type'));
+        $this->assertStringStartsWith('multipart/form-data', $request->getHeader('Content-Type')[0]);
+        $this->assertRegExp("/name=\"method\".*\r\n\r\nhandle\r\n/sU", $requestBody);
+        $this->assertRegExp("/name=\"key\".*\r\n\r\n{$key}\r\n/sU", $requestBody);
+        $fileContents = file_get_contents($sampleFile);
+        $this->assertRegExp("/name=\"file\".*\r\n\r\n{$fileContents}\r\n/sU", $requestBody);
 
         $this->assertEquals($key, $actual);
     }
