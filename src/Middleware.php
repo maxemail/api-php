@@ -46,6 +46,36 @@ class Middleware
     }
 
     /**
+     * Read Maxemail's deprecation notices from the HTTP Warning header
+     * to log as warning and trigger deprecation notice
+     *
+     * @param HandlerStack $stack
+     * @param LoggerInterface $logger
+     */
+    public static function addWarningLogging(HandlerStack $stack, LoggerInterface $logger)
+    {
+        $middleware = GuzzleMiddleware::mapResponse(function (ResponseInterface $response) use ($stack, $logger) {
+            if ($response->hasHeader('Warning')) {
+                foreach ($response->getHeader('Warning') as $message) {
+                    // Code, agent, message, [date]
+                    $parts = str_getcsv($message, ' ', '"', '\\');
+                    if ($parts[0] != 299) {
+                        continue;
+                    }
+                    if (stripos($parts[1], 'mxmapi/') !== 0) {
+                        continue;
+                    }
+                    $logger->warning($parts[2]);
+                    trigger_error($parts[2], E_USER_DEPRECATED);
+                }
+            }
+
+            return $response;
+        });
+        $stack->push($middleware, 'mxm-deprecated');
+    }
+
+    /**
      * Add parser for Maxemail 4xx-level errors
      * @param HandlerStack $stack
      */

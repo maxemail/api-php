@@ -165,6 +165,7 @@ class Client implements \Psr\Log\LoggerAwareInterface
         if ($this->httpClient === null) {
             $stack = HandlerStack::create();
             Middleware::addMaxemailErrorParser($stack);
+            Middleware::addWarningLogging($stack, $this->getLogger());
             Middleware::addLogging($stack, $this->getLogger());
             $this->httpClient = new GuzzleClient([
                 'base_uri' => $this->uri . 'api/json/',
