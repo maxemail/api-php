@@ -23,23 +23,34 @@ class HelperTest extends TestCase
     private $apiClientMock;
 
     /**
-     * @var GuzzleClient|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private $httpClientMock;
-
-    /**
      * @var MockHandler
      */
     private $mockHandler;
 
     private $clientHistory = [];
 
+    /**
+     * @var Helper
+     */
+    private $helper;
+
     protected function setUp()
     {
         $this->apiClientMock = $this->createMock(Client::class);
-        $this->httpClientMock = $this->createMock(GuzzleClient::class);
 
         $this->mockHandler = new MockHandler();
+
+        $stack = HandlerStack::create($this->mockHandler);
+        $stack->push(
+            GuzzleMiddleware::history($this->clientHistory)
+        );
+
+        $httpClient = new GuzzleClient([
+            'base_uri' => 'https://example.com/api/json/',
+            'handler' => $stack
+        ]);
+
+        $this->helper = new Helper($this->apiClientMock, $httpClient);
 
         // This allows fopen() to be overloaded after it's first used normally in other tests
         $this->defineFunctionMock(__NAMESPACE__, 'fopen');
@@ -78,7 +89,7 @@ class HelperTest extends TestCase
             }
         );
 
-        $actual = $this->getHelperWithMockHandler()->uploadFile($sampleFile);
+        $actual = $this->helper->uploadFile($sampleFile);
 
         $this->assertCount(1, $this->clientHistory);
 
@@ -103,7 +114,7 @@ class HelperTest extends TestCase
 
         $sampleFile = __DIR__ . '/__files/does-not-exist';
 
-        $this->getHelperWithMockClient()->uploadFile($sampleFile);
+        $this->helper->uploadFile($sampleFile);
     }
 
     public function testUploadUnableToOpen()
@@ -118,7 +129,7 @@ class HelperTest extends TestCase
             ->with($sampleFile, 'r')
             ->willReturn(false);
 
-        $this->getHelperWithMockClient()->uploadFile($sampleFile);
+        $this->helper->uploadFile($sampleFile);
     }
 
     public function testDownloadCsv()
@@ -130,7 +141,7 @@ class HelperTest extends TestCase
             new Response(200, [], fopen($sampleFile, 'r'))
         );
 
-        $downloadedFile = $this->getHelperWithMockHandler()->downloadFile('file', $key);
+        $downloadedFile = $this->helper->downloadFile('file', $key);
 
         $this->assertCount(1, $this->clientHistory);
 
@@ -154,7 +165,7 @@ class HelperTest extends TestCase
             new Response(200, [], fopen($responseFile, 'r'))
         );
 
-        $downloadedFile = $this->getHelperWithMockHandler()->downloadFile('file', $key);
+        $downloadedFile = $this->helper->downloadFile('file', $key);
 
         $this->assertCount(1, $this->clientHistory);
 
@@ -177,7 +188,7 @@ class HelperTest extends TestCase
             new Response(200, [], fopen($sampleFile, 'r'))
         );
 
-        $downloadedFile = $this->getHelperWithMockHandler()->downloadFile('file', $key, ['extract' => false]);
+        $downloadedFile = $this->helper->downloadFile('file', $key, ['extract' => false]);
 
         $this->assertCount(1, $this->clientHistory);
 
@@ -200,7 +211,7 @@ class HelperTest extends TestCase
             new Response(200, [], fopen($sampleFile, 'r'))
         );
 
-        $downloadedFilename = $this->getHelperWithMockHandler()->downloadFile('file', $key);
+        $downloadedFilename = $this->helper->downloadFile('file', $key);
 
         $this->assertCount(1, $this->clientHistory);
 
@@ -223,7 +234,7 @@ class HelperTest extends TestCase
             new Response(200, [], fopen($sampleFile, 'r'))
         );
 
-        $downloadedFile = $this->getHelperWithMockHandler()->downloadFile('listexport', $key);
+        $downloadedFile = $this->helper->downloadFile('listexport', $key);
 
         $this->assertCount(1, $this->clientHistory);
 
@@ -246,7 +257,7 @@ class HelperTest extends TestCase
             new Response(200, [], fopen($sampleFile, 'r'))
         );
 
-        $downloadedFile = $this->getHelperWithMockHandler()->downloadFile('dataexport', $key);
+        $downloadedFile = $this->helper->downloadFile('dataexport', $key);
 
         $this->assertCount(1, $this->clientHistory);
 
@@ -265,7 +276,7 @@ class HelperTest extends TestCase
         $this->expectException(Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid download type specified');
 
-        $this->getHelperWithMockHandler()->downloadFile('unknown', 123);
+        $this->helper->downloadFile('unknown', 123);
     }
 
     /**
@@ -280,7 +291,7 @@ class HelperTest extends TestCase
             ->with($this->stringStartsWith(realpath(sys_get_temp_dir())), 'w')
             ->willReturn(false);
 
-        $this->getHelperWithMockHandler()->downloadFile('file', 123);
+        $this->helper->downloadFile('file', 123);
     }
 
     /**
@@ -297,7 +308,7 @@ class HelperTest extends TestCase
             ->with($this->stringStartsWith($directory), 'w')
             ->willReturn(false);
 
-        $this->getHelperWithMockHandler()->downloadFile('file', 123, ['dir' => $directory]);
+        $this->helper->downloadFile('file', 123, ['dir' => $directory]);
     }
 
     public function testDownloadTmpFileUnableToOpen()
@@ -309,7 +320,7 @@ class HelperTest extends TestCase
         $fopenMock->expects($this->once())
             ->willReturn(false);
 
-        $this->getHelperWithMockHandler()->downloadFile('file', 123);
+        $this->helper->downloadFile('file', 123);
     }
 
     public function testDownloadTmpFileDeletedRequestError()
@@ -348,7 +359,7 @@ class HelperTest extends TestCase
                 return \unlink($tmpFile);
             });
 
-        $this->getHelperWithMockHandler()->downloadFile('file', 'abc123def456', ['dir' => $directory]);
+        $this->helper->downloadFile('file', 'abc123def456', ['dir' => $directory]);
     }
 
     public function testDownloadTmpFileDeletedWriteError()
@@ -392,36 +403,6 @@ class HelperTest extends TestCase
                 return \unlink($tmpFile);
             });
 
-        $this->getHelperWithMockHandler()->downloadFile('file', 'abc123def456', ['dir' => $directory]);
-    }
-
-    /**
-     * Get a Helper which uses a mock HTTP Client
-     *
-     * @return Helper
-     */
-    private function getHelperWithMockClient(): Helper
-    {
-        return new Helper($this->apiClientMock, $this->httpClientMock);
-    }
-
-    /**
-     * Get a Helper which uses an HTTP Client using the MockHandler and storing history
-     *
-     * @return Helper
-     */
-    private function getHelperWithMockHandler(): Helper
-    {
-        $stack = HandlerStack::create($this->mockHandler);
-        $stack->push(
-            GuzzleMiddleware::history($this->clientHistory)
-        );
-
-        $httpClient = new GuzzleClient([
-            'base_uri' => 'https://example.com/api/json/',
-            'handler' => $stack
-        ]);
-
-        return new Helper($this->apiClientMock, $httpClient);
+        $this->helper->downloadFile('file', 'abc123def456', ['dir' => $directory]);
     }
 }
