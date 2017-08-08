@@ -22,6 +22,8 @@ which extends the same `\RuntimeException` used previously.
 - `Helper::setLogLevel()` can be used to increase the log level from the default
 of *debug*. This might be useful if you want to see the file transfer logs at
 *info* and filter out the raw HTTP client logs at *debug*.
+- Deprecated API methods will be logged at *warning* level and trigger a PHP
+`E_USER_DEPRECATED` error.
 ### Changed
 - Namespaces have been changed from `Mxm\Api` to `Emailcenter\MaxemailApi`.
 - Deprecate API config keys for *user* and *pass*, replaced with *username* and

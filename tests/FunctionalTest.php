@@ -59,6 +59,14 @@ class FunctionalTest extends TestCase
         $this->client->tree->fetchRoot('notATree', []);
     }
 
+    public function testDeprecatedMethod()
+    {
+        $this->expectException(\PHPUnit\Framework\Error\Deprecated::class);
+        $this->expectExceptionMessage('fetchRecentlyCompleted Deprecated');
+
+        $this->client->email_campaign->fetchRecentlyCompleted();
+    }
+
     /**
      * The file uploaded should be identical to the file then downloaded
      */
