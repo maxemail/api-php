@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## [4.x] - TBC
+## [4.0.0] - 2017-08-08
 ### Added
 - Apply GNU LGPLv3 software licence
 - Dedicated package-specific Exception classes. These extend the original SPL
