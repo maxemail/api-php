@@ -100,11 +100,12 @@ class Client implements \Psr\Log\LoggerAwareInterface
 
     /**
      * @param array $config {
-     *     @var string $username Required
-     *     @var string $password Required
-     *     @var string $uri      Optional. Default https://maxemail.emailcenteruk.com/
-     *     @var string $user     @deprecated See username
-     *     @var string $pass     @deprecated See password
+     *     @var string $username     Required
+     *     @var string $password     Required
+     *     @var string $uri          Optional. Default https://maxemail.emailcenteruk.com/
+     *     @var string $user         @deprecated See username
+     *     @var string $pass         @deprecated See password
+     *     @var bool   $debugLogging Optional. Enable logging of request/response. Default false
      * }
      */
     public function __construct(array $config)
@@ -133,6 +134,10 @@ class Client implements \Psr\Log\LoggerAwareInterface
                 throw new Exception\InvalidArgumentException('URI must contain protocol scheme and host');
             }
             $this->uri = "{$parsed['scheme']}://{$parsed['host']}/";
+        }
+
+        if (isset($config['debugLogging'])) {
+            $this->debugLoggingEnabled = (bool)$config['debugLogging'];
         }
     }
 
@@ -250,12 +255,5 @@ class Client implements \Psr\Log\LoggerAwareInterface
         }
 
         return $this->logger;
-    }
-
-    public function enableDebugLogging(bool $enable = true): Client
-    {
-        $this->debugLoggingEnabled = $enable;
-
-        return $this;
     }
 }
