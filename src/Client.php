@@ -198,13 +198,12 @@ class Client implements \Psr\Log\LoggerAwareInterface
     }
 
     /**
-     * Get API config
+     * Get API connection config
      *
      * @return array {
-     *     @var string $host   Hostname
-     *     @var string $user   Username
-     *     @var string $pass   Password
-     *     @var bool   $useSsl Use secure connection
+     *     @var string $uri
+     *     @var string $username
+     *     @var string $password
      * }
      */
     public function getConfig(): array
