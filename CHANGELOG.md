@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [4.0.1] - 2017-08-21
 ### Changed
 - HTTP Client debug logging is disabled by default to save resources if not
 needed. Enable via the constructor's `debugLogging` option.
