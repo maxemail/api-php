@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Changed
+- HTTP Client debug logging is disabled by default to save resources if not
+needed. Enable by calling `enableDebugLogging()` before first call to an API
+service or helper.
 
 ## [4.0.0] - 2017-08-08
 ### Added

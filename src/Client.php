@@ -94,6 +94,11 @@ class Client implements \Psr\Log\LoggerAwareInterface
     private $httpClient;
 
     /**
+     * @var bool
+     */
+    private $debugLoggingEnabled = false;
+
+    /**
      * @param array $config {
      *     @var string $username Required
      *     @var string $password Required
@@ -166,7 +171,9 @@ class Client implements \Psr\Log\LoggerAwareInterface
             $stack = HandlerStack::create();
             Middleware::addMaxemailErrorParser($stack);
             Middleware::addWarningLogging($stack, $this->getLogger());
-            Middleware::addLogging($stack, $this->getLogger());
+            if ($this->debugLoggingEnabled) {
+                Middleware::addLogging($stack, $this->getLogger());
+            }
             $this->httpClient = new GuzzleClient([
                 'base_uri' => $this->uri . 'api/json/',
                 'auth' => [
@@ -243,5 +250,12 @@ class Client implements \Psr\Log\LoggerAwareInterface
         }
 
         return $this->logger;
+    }
+
+    public function enableDebugLogging(bool $enable = true): Client
+    {
+        $this->debugLoggingEnabled = $enable;
+
+        return $this;
     }
 }
