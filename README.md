@@ -1,10 +1,10 @@
 # Maxemail API Client for PHP
 
-[![Build Status](https://img.shields.io/travis/emailcenter/mxm-api-php/master.svg)](https://travis-ci.org/emailcenter/mxm-api-php)
-[![Codecov](https://img.shields.io/codecov/c/github/emailcenter/mxm-api-php.svg)](https://codecov.io/gh/emailcenter/mxm-api-php)
-[![Latest Stable Version](https://img.shields.io/packagist/v/emailcenter/mxm-api-php.svg)](https://packagist.org/packages/emailcenter/mxm-api-php)
-[![Total Downloads](https://img.shields.io/packagist/dt/emailcenter/mxm-api-php.svg)](https://packagist.org/packages/emailcenter/mxm-api-php)
-![Licence](https://img.shields.io/github/license/emailcenter/mxm-api-php.svg)
+[![Build Status](https://img.shields.io/travis/maxemail/api-php/master.svg)](https://travis-ci.org/maxemail/api-php)
+[![Codecov](https://img.shields.io/codecov/c/github/maxemail/api-php.svg)](https://codecov.io/gh/maxemail/api-php)
+[![Latest Stable Version](https://img.shields.io/packagist/v/maxemail/api-php.svg)](https://packagist.org/packages/maxemail/api-php)
+[![Total Downloads](https://img.shields.io/packagist/dt/maxemail/api-php.svg)](https://packagist.org/packages/maxemail/api-php)
+![Licence](https://img.shields.io/github/license/maxemail/api-php.svg)
 
 Self-contained client in PHP for simplifying access to the Maxemail API
 
