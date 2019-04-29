@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Emailcenter\MaxemailApi;
+namespace Maxemail\Api;
 
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Handler\MockHandler;

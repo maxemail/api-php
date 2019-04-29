@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Emailcenter\MaxemailApi;
+namespace Maxemail\Api;
 
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\ClientException;
@@ -9,7 +9,7 @@ use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
-use Emailcenter\MaxemailApi\Exception\ClientException as MxmClientException;
+use Maxemail\Api\Exception\ClientException as MxmClientException;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 

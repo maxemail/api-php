@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Emailcenter\MaxemailApi\Exception;
+namespace Maxemail\Api\Exception;
 
 /**
  * Maxemail API Client

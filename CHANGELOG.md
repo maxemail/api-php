@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Changed
 - Package name changed to `maxemail/api-php`
+- Namespaces have been changed from `Emailcenter\MaxemailApi` to
+  `Maxemail\Api`. Sorry.
 
 ## [4.0.1] - 2017-08-21
 ### Changed

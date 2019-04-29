@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Emailcenter\MaxemailApi;
+namespace Maxemail\Api;
 
 /**
  * Maxemail API Client

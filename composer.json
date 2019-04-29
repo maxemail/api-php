@@ -5,7 +5,7 @@
 
     "autoload": {
         "psr-4": {
-            "Emailcenter\\MaxemailApi\\": "src/"
+            "Maxemail\\Api\\": "src/"
         }
     },
 
@@ -21,7 +21,7 @@
 
     "autoload-dev": {
         "psr-4": {
-            "Emailcenter\\MaxemailApi\\": "tests/"
+            "Maxemail\\Api\\": "tests/"
         }
     },
 
