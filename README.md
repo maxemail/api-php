@@ -1,4 +1,4 @@
-# Emailcenter Maxemail API Client for PHP
+# Maxemail API Client for PHP
 
 [![Build Status](https://img.shields.io/travis/emailcenter/mxm-api-php/master.svg)](https://travis-ci.org/emailcenter/mxm-api-php)
 [![Codecov](https://img.shields.io/codecov/c/github/emailcenter/mxm-api-php.svg)](https://codecov.io/gh/emailcenter/mxm-api-php)
@@ -28,7 +28,7 @@ Including this package in your application is made easy by using
 [Composer](https://getcomposer.org).
 
 ```sh
-$ composer require emailcenter/mxm-api-php
+$ composer require maxemail/api-php
 ```
 
 ## Usage Example

@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Changed
+- Package name changed to `maxemail/api-php`
 
 ## [4.0.1] - 2017-08-21
 ### Changed

@@ -1,6 +1,6 @@
 {
-    "name": "emailcenter/mxm-api-php",
-    "description": "Emailcenter Maxemail API Client",
+    "name": "maxemail/api-php",
+    "description": "Maxemail API Client",
     "license" : "LGPL-3.0",
 
     "autoload": {
