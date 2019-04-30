@@ -62,9 +62,9 @@ class FunctionalTest extends TestCase
     public function testDeprecatedMethod()
     {
         $this->expectException(\PHPUnit\Framework\Error\Deprecated::class);
-        $this->expectExceptionMessage('fetchRecentlyCompleted Deprecated');
+        $this->expectExceptionMessage('searchLists Deprecated');
 
-        $this->client->email_campaign->fetchRecentlyCompleted();
+        $this->client->recipient->searchLists('test@example.com');
     }
 
     /**
