@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Package name changed to `maxemail/api-php`
 - Namespaces have been changed from `Emailcenter\MaxemailApi` to
   `Maxemail\Api`. Sorry.
+### Removed
+- Removed support for PHP 7.0 as it is no longer
+[actively supported](https://php.net/supported-versions.php) by the PHP project
+
 
 ## [4.0.1] - 2017-08-21
 ### Changed
