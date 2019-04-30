@@ -61,7 +61,7 @@ class Client implements \Psr\Log\LoggerAwareInterface
     /**
      * @var string
      */
-    private $uri = 'https://maxemail.emailcenteruk.com/';
+    private $uri = 'https://mxm.xtremepush.com/';
 
     /**
      * @var string
@@ -102,7 +102,7 @@ class Client implements \Psr\Log\LoggerAwareInterface
      * @param array $config {
      *     @var string $username     Required
      *     @var string $password     Required
-     *     @var string $uri          Optional. Default https://maxemail.emailcenteruk.com/
+     *     @var string $uri          Optional. Default https://mxm.xtremepush.com/
      *     @var string $user         @deprecated See username
      *     @var string $pass         @deprecated See password
      *     @var bool   $debugLogging Optional. Enable logging of request/response. Default false
