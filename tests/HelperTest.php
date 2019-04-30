@@ -13,6 +13,9 @@ use GuzzleHttp\Psr7\Response;
 use phpmock\phpunit\PHPMock;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @runTestsInSeparateProcesses Used so global functions can be mocked after already accessed in other tests
+ */
 class HelperTest extends TestCase
 {
     use PHPMock;
@@ -51,12 +54,6 @@ class HelperTest extends TestCase
         ]);
 
         $this->helper = new Helper($this->apiClientMock, $httpClient);
-
-        // This allows fopen() to be overloaded after it's first used normally in other tests
-        $this->defineFunctionMock(__NAMESPACE__, 'fopen');
-        $this->defineFunctionMock(__NAMESPACE__, 'fwrite');
-        $this->defineFunctionMock(__NAMESPACE__, 'fclose');
-        $this->defineFunctionMock(__NAMESPACE__, 'unlink');
     }
 
     public function testUpload()
