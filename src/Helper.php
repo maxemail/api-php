@@ -47,7 +47,7 @@ class Helper
      * @param string $level
      * @return $this
      */
-    public function setLogLevel(string $level)
+    public function setLogLevel(string $level): self
     {
         $this->logLevel = $level;
 

@@ -24,9 +24,10 @@ class Middleware
     /**
      * @see https://michaelstivala.com/logging-guzzle-requests/
      * @param HandlerStack $stack
+     * @param LoggerInterface $logger
      * @return void
      */
-    public static function addLogging(HandlerStack $stack, LoggerInterface $logger)
+    public static function addLogging(HandlerStack $stack, LoggerInterface $logger): void
     {
         $messageFormats = [
             '{method}: {uri} HTTP/{version} {req_body}', // request
@@ -51,8 +52,9 @@ class Middleware
      *
      * @param HandlerStack $stack
      * @param LoggerInterface $logger
+     * @return void
      */
-    public static function addWarningLogging(HandlerStack $stack, LoggerInterface $logger)
+    public static function addWarningLogging(HandlerStack $stack, LoggerInterface $logger): void
     {
         $middleware = GuzzleMiddleware::mapResponse(function (ResponseInterface $response) use ($logger) {
             if ($response->hasHeader('Warning')) {
@@ -78,8 +80,9 @@ class Middleware
     /**
      * Add parser for Maxemail 4xx-level errors
      * @param HandlerStack $stack
+     * @return void
      */
-    public static function addMaxemailErrorParser(HandlerStack $stack)
+    public static function addMaxemailErrorParser(HandlerStack $stack): void
     {
         $middleware = GuzzleMiddleware::mapResponse(function (ResponseInterface $response) {
             $code = $response->getStatusCode();
