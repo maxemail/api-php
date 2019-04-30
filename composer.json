@@ -11,6 +11,10 @@
 
     "require": {
         "php" : "^7.0",
+        "ext-fileinfo": "*",
+        "ext-json" : "*",
+        "ext-zip": "*",
+
         "psr/log" : "^1.0",
         "guzzlehttp/guzzle": "^6.3"
     },
