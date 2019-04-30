@@ -13,7 +13,7 @@ use Maxemail\Api\Exception\ClientException as MxmClientException;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
-class MiddlwareTest extends TestCase
+class MiddlewareTest extends TestCase
 {
     /**
      * @var GuzzleClient
