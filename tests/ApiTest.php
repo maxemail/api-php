@@ -42,7 +42,7 @@ class ApiTest extends TestCase
 
         $api = new Client($config);
 
-        $this->assertEquals('https://maxemail.emailcenteruk.com/', $api->getConfig()['uri']);
+        $this->assertEquals('https://mxm.xtremepush.com/', $api->getConfig()['uri']);
     }
 
     public function testConfigStripsUriPath()

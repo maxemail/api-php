@@ -14,6 +14,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 [actively supported](https://php.net/supported-versions.php) by the PHP project
 
 
+## [4.1.0] - 2019-05-01
+### Changed
+- Default Maxemail URI changed to `https://mxm.xtremepush.com/`. This will
+  only affect implementations using the default URI but with no impact, as the
+  old and new domains resolve to the same Maxemail instance.
+
 ## [4.0.1] - 2017-08-21
 ### Changed
 - HTTP Client debug logging is disabled by default to save resources if not
