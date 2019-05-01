@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Changed
+- Default Maxemail URI changed to `https://mxm.xtremepush.com/`. This will
+  only affect implementations using the default URI but with no impact, as the
+  old and new domains resolve to the same Maxemail instance.
 
 ## [4.0.1] - 2017-08-21
 ### Changed
