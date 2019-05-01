@@ -10,7 +10,7 @@
     },
 
     "require": {
-        "php" : "^7.0",
+        "php" : "^7.1",
         "ext-fileinfo": "*",
         "ext-json" : "*",
         "ext-zip": "*",
@@ -31,7 +31,7 @@
 
     "require-dev": {
         "phlib/logger": "^3.0",
-        "phpunit/phpunit" : "^6.2",
+        "phpunit/phpunit" : "^7",
         "php-mock/php-mock-phpunit": "^2.0"
     }
 }

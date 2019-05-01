@@ -235,7 +235,7 @@ class Client implements \Psr\Log\LoggerAwareInterface
      * @param \Psr\Log\LoggerInterface $logger
      * @return $this
      */
-    public function setLogger(\Psr\Log\LoggerInterface $logger)
+    public function setLogger(\Psr\Log\LoggerInterface $logger): self
     {
         $this->logger = $logger;
 
