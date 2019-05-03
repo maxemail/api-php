@@ -39,7 +39,7 @@ $config = [
     'username' => 'api@user.com',
     'password' => 'apipass'
 ];
-$api = new \Emailcenter\MaxemailApi\Client($config);
+$api = new \Maxemail\Api\Client($config);
 
 // General:
 $result = $api->serviceName->method($arg1, $arg2);
