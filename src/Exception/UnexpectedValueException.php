@@ -6,8 +6,8 @@ namespace Maxemail\Api\Exception;
 /**
  * Maxemail API Client
  *
- * @package    Emailcenter/MaxemailApi
- * @copyright  2007-2017 Emailcenter UK Ltd. (https://www.emailcenteruk.com)
+ * @package    Maxemail\Api
+ * @copyright  2007-2019 Emailcenter UK Ltd. (https://maxemail.xtremepush.com)
  * @license    LGPL-3.0
  */
 class UnexpectedValueException extends \UnexpectedValueException implements Exception

@@ -14,6 +14,12 @@ use phpmock\phpunit\PHPMock;
 use PHPUnit\Framework\TestCase;
 
 /**
+ * Maxemail API Client
+ *
+ * @package    Maxemail\Api
+ * @copyright  2007-2019 Emailcenter UK Ltd. (https://maxemail.xtremepush.com)
+ * @license    LGPL-3.0
+ *
  * @runTestsInSeparateProcesses Used so global functions can be mocked after already accessed in other tests
  */
 class HelperTest extends TestCase

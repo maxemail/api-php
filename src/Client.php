@@ -9,50 +9,50 @@ use GuzzleHttp\HandlerStack;
 /**
  * Maxemail API Client
  *
- * @package    Emailcenter/MaxemailApi
- * @copyright  2007-2017 Emailcenter UK Ltd. (https://www.emailcenteruk.com)
+ * @package    Maxemail\Api
+ * @copyright  2007-2019 Emailcenter UK Ltd. (https://maxemail.xtremepush.com)
  * @license    LGPL-3.0
  *
  * Services
- * @property mixed file_upload https://docs.emailcenteruk.com/mxm-dev/api/services/file-upload
- * @property mixed file_transfer https://docs.emailcenteruk.com/mxm-dev/api/services/file-transfer
+ * @property mixed file_upload https://docs.maxemail.xtremepush.com/mxm-dev/api/services/file-upload
+ * @property mixed file_transfer https://docs.maxemail.xtremepush.com/mxm-dev/api/services/file-transfer
  *
  * Navigation
- * @property mixed tree https://docs.emailcenteruk.com/mxm-dev/api/services/tree
- * @property mixed folder https://docs.emailcenteruk.com/mxm-dev/api/services/folder
+ * @property mixed tree https://docs.maxemail.xtremepush.com/mxm-dev/api/services/tree
+ * @property mixed folder https://docs.maxemail.xtremepush.com/mxm-dev/api/services/folder
  *
  * Emails
- * @property mixed campaign https://docs.emailcenteruk.com/mxm-dev/api/services/campaign
- * @property mixed email_campaign https://docs.emailcenteruk.com/mxm-dev/api/services/email-campaign
- * @property mixed email_send https://docs.emailcenteruk.com/mxm-dev/api/services/email-send
- * @property mixed email_triggered https://docs.emailcenteruk.com/mxm-dev/api/services/email-triggered
- * @property mixed folder_recurring https://docs.emailcenteruk.com/mxm-dev/api/services/folder-recurring
+ * @property mixed campaign https://docs.maxemail.xtremepush.com/mxm-dev/api/services/campaign
+ * @property mixed email_campaign https://docs.maxemail.xtremepush.com/mxm-dev/api/services/email-campaign
+ * @property mixed email_send https://docs.maxemail.xtremepush.com/mxm-dev/api/services/email-send
+ * @property mixed email_triggered https://docs.maxemail.xtremepush.com/mxm-dev/api/services/email-triggered
+ * @property mixed folder_recurring https://docs.maxemail.xtremepush.com/mxm-dev/api/services/folder-recurring
  *
  * Content
- * @property mixed snippet https://docs.emailcenteruk.com/mxm-dev/api/services/snippet
+ * @property mixed snippet https://docs.maxemail.xtremepush.com/mxm-dev/api/services/snippet
  *
  * Data
- * @property mixed recipient https://docs.emailcenteruk.com/mxm-dev/api/services/recipient
- * @property mixed list https://docs.emailcenteruk.com/mxm-dev/api/services/list
- * @property mixed list_import https://docs.emailcenteruk.com/mxm-dev/api/services/list-import
- * @property mixed list_export https://docs.emailcenteruk.com/mxm-dev/api/services/list-export
- * @property mixed profile https://docs.emailcenteruk.com/mxm-dev/api/services/profile
- * @property mixed profile_field https://docs.emailcenteruk.com/mxm-dev/api/services/profile-field
- * @property mixed datatable https://docs.emailcenteruk.com/mxm-dev/api/services/datatable
- * @property mixed datatable_field https://docs.emailcenteruk.com/mxm-dev/api/services/datatable-field
- * @property mixed datatable_import https://docs.emailcenteruk.com/mxm-dev/api/services/datatable-import
- * @property mixed field_type https://docs.emailcenteruk.com/mxm-dev/api/services/field-type
+ * @property mixed recipient https://docs.maxemail.xtremepush.com/mxm-dev/api/services/recipient
+ * @property mixed list https://docs.maxemail.xtremepush.com/mxm-dev/api/services/list
+ * @property mixed list_import https://docs.maxemail.xtremepush.com/mxm-dev/api/services/list-import
+ * @property mixed list_export https://docs.maxemail.xtremepush.com/mxm-dev/api/services/list-export
+ * @property mixed profile https://docs.maxemail.xtremepush.com/mxm-dev/api/services/profile
+ * @property mixed profile_field https://docs.maxemail.xtremepush.com/mxm-dev/api/services/profile-field
+ * @property mixed datatable https://docs.maxemail.xtremepush.com/mxm-dev/api/services/datatable
+ * @property mixed datatable_field https://docs.maxemail.xtremepush.com/mxm-dev/api/services/datatable-field
+ * @property mixed datatable_import https://docs.maxemail.xtremepush.com/mxm-dev/api/services/datatable-import
+ * @property mixed field_type https://docs.maxemail.xtremepush.com/mxm-dev/api/services/field-type
  *
  * Reporting
- * @property mixed comparison_report https://docs.emailcenteruk.com/mxm-dev/api/services/comparison-report
- * @property mixed data_export https://docs.emailcenteruk.com/mxm-dev/api/services/data-export
- * @property mixed data_export_report https://docs.emailcenteruk.com/mxm-dev/api/services/data-export-report
- * @property mixed data_export_quick https://docs.emailcenteruk.com/mxm-dev/api/services/data-export-quick
- * @property mixed data_export_quick_triggered https://docs.emailcenteruk.com/mxm-dev/api/services/data-export-quick-triggered
+ * @property mixed comparison_report https://docs.maxemail.xtremepush.com/mxm-dev/api/services/comparison-report
+ * @property mixed data_export https://docs.maxemail.xtremepush.com/mxm-dev/api/services/data-export
+ * @property mixed data_export_report https://docs.maxemail.xtremepush.com/mxm-dev/api/services/data-export-report
+ * @property mixed data_export_quick https://docs.maxemail.xtremepush.com/mxm-dev/api/services/data-export-quick
+ * @property mixed data_export_quick_triggered https://docs.maxemail.xtremepush.com/mxm-dev/api/services/data-export-quick-triggered
  *
  * Features
- * @property mixed transactional https://docs.emailcenteruk.com/mxm-dev/api/services/transactional
- * @property mixed data_export_quick_transactional https://docs.emailcenteruk.com/mxm-dev/api/services/data-export-quick-transactional
+ * @property mixed transactional https://docs.maxemail.xtremepush.com/mxm-dev/api/services/transactional
+ * @property mixed data_export_quick_transactional https://docs.maxemail.xtremepush.com/mxm-dev/api/services/data-export-quick-transactional
  */
 class Client implements \Psr\Log\LoggerAwareInterface
 {
