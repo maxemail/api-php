@@ -1,6 +1,6 @@
 # Maxemail API Client for PHP
 
-[![Build Status](https://img.shields.io/travis/maxemail/api-php/master.svg)](https://travis-ci.org/maxemail/api-php)
+[![Build Status](https://img.shields.io/travis/com/maxemail/api-php/main.svg)](https://travis-ci.com/maxemail/api-php)
 [![Codecov](https://img.shields.io/codecov/c/github/maxemail/api-php.svg)](https://codecov.io/gh/maxemail/api-php)
 [![Latest Stable Version](https://img.shields.io/packagist/v/maxemail/api-php.svg)](https://packagist.org/packages/maxemail/api-php)
 [![Total Downloads](https://img.shields.io/packagist/dt/maxemail/api-php.svg)](https://packagist.org/packages/maxemail/api-php)
