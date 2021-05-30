@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+- Add support for PHP v8 (`^7.1 | ^8.0`).
 
 ## [5.0.0] - 2019-05-03
 ### Changed

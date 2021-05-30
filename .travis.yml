@@ -1,14 +1,21 @@
 language: php
 
 php:
-  - '7.1'
-  - '7.2'
-  - '7.3'
+  - 7.1
+  - 7.2
+  - 7.3
+  - 7.4
+  - 8.0
 
-before_script: composer install
+env:
+  global:
+    - XDEBUG_MODE=coverage # Required for Xdebug v3
+
+before_script:
+  - composer install
 
 script:
-    - ./vendor/bin/phpunit --coverage-clover=coverage.xml
+  - ./vendor/bin/phpunit --coverage-clover=coverage.xml
 
 after_success:
-    - bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -s https://codecov.io/bash)
