@@ -30,7 +30,7 @@
     },
 
     "require-dev": {
-        "phlib/logger": "^3.0",
+        "phlib/logger": "^3|^4",
         "phpunit/phpunit" : "^7|^8",
         "php-mock/php-mock-phpunit": "^2.0"
     }
