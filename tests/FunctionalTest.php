@@ -19,7 +19,7 @@ class FunctionalTest extends TestCase
      */
     private $client;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!getenv('FUNC_ENABLED')) {
             $this->markTestSkipped('Functional tests are disabled');

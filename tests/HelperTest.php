@@ -11,6 +11,7 @@ use GuzzleHttp\Middleware as GuzzleMiddleware;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use phpmock\phpunit\PHPMock;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -27,7 +28,7 @@ class HelperTest extends TestCase
     use PHPMock;
 
     /**
-     * @var Client|\PHPUnit_Framework_MockObject_MockObject
+     * @var Client|MockObject
      */
     private $apiClientMock;
 
@@ -43,7 +44,7 @@ class HelperTest extends TestCase
      */
     private $helper;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->apiClientMock = $this->createMock(Client::class);
 
@@ -67,7 +68,7 @@ class HelperTest extends TestCase
         $sampleFile = __DIR__ . '/__files/sample-file.csv';
         $key = 'abc123def456';
 
-        /** @var Service|\PHPUnit_Framework_MockObject_MockObject $fileUploadService */
+        /** @var Service|MockObject $fileUploadService */
         $fileUploadService = $this->createMock(Service::class);
 
         // The API client will be used to initialise the upload

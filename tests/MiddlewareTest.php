@@ -10,6 +10,7 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use Maxemail\Api\Exception\ClientException as MxmClientException;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
@@ -37,7 +38,7 @@ class MiddlewareTest extends TestCase
      */
     private $handlerStack;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->mockHandler = new MockHandler();
 
@@ -56,7 +57,7 @@ class MiddlewareTest extends TestCase
         $this->expectException(\PHPUnit\Framework\Error\Deprecated::class);
         $this->expectExceptionMessage($warningMsg);
 
-        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
+        /** @var LoggerInterface|MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects($this->once())
             ->method('warning')
@@ -76,7 +77,7 @@ class MiddlewareTest extends TestCase
         $warningMsg = 'some warning with no agent';
         $warning = "299 - \"{$warningMsg}\"";
 
-        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
+        /** @var LoggerInterface|MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects($this->never())
             ->method($this->anything());
@@ -95,7 +96,7 @@ class MiddlewareTest extends TestCase
         $warningMsg = 'some other system';
         $warning = "299 other/1.2.3 \"{$warningMsg}\"";
 
-        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
+        /** @var LoggerInterface|MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects($this->never())
             ->method($this->anything());
@@ -114,7 +115,7 @@ class MiddlewareTest extends TestCase
         $warningMsg = 'something which looks like Maxemail';
         $warning = "199 MxmApi/v100 \"{$warningMsg}\"";
 
-        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
+        /** @var LoggerInterface|MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects($this->never())
             ->method($this->anything());
@@ -130,7 +131,7 @@ class MiddlewareTest extends TestCase
 
     public function testWarningLoggerSkipsNoWarning()
     {
-        /** @var LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
+        /** @var LoggerInterface|MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects($this->never())
             ->method($this->anything());

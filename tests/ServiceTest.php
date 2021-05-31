@@ -32,7 +32,7 @@ class ServiceTest extends TestCase
 
     private $clientHistory = [];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->mockHandler = new MockHandler();
 

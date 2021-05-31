@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Maxemail\Api;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -95,7 +96,7 @@ class ApiTest extends TestCase
 
     public function testSetGetLogger()
     {
-        /** @var \Psr\Log\LoggerInterface|\PHPUnit_Framework_MockObject_MockObject $logger */
+        /** @var \Psr\Log\LoggerInterface|MockObject $logger */
         $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
 
         $api = new Client($this->testConfig);
