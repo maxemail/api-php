@@ -21,14 +21,14 @@ class FunctionalTest extends TestCase
 
     protected function setUp()
     {
-        if (!$GLOBALS['FUNC_ENABLED']) {
+        if (!getenv('FUNC_ENABLED')) {
             $this->markTestSkipped('Functional tests are disabled');
         }
 
         $config = [
-            'uri' => $GLOBALS['FUNC_API_URI'],
-            'username' => $GLOBALS['FUNC_API_USERNAME'],
-            'password' => $GLOBALS['FUNC_API_PASSWORD']
+            'uri' => getenv('FUNC_API_URI'),
+            'username' => getenv('FUNC_API_USERNAME'),
+            'password' => getenv('FUNC_API_PASSWORD')
         ];
         $this->client = new Client($config);
     }
