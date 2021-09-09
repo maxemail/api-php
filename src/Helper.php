@@ -143,7 +143,7 @@ class Helper
 
         // Create target file
         $filename = tempnam(
-            (isset($options['dir']) ? $options['dir'] : sys_get_temp_dir()),
+            ($options['dir'] ?? sys_get_temp_dir()),
             "mxm-{$type}-{$primaryId}-"
         );
         $local = @fopen($filename, 'w');
