@@ -1,9 +1,9 @@
 # Maxemail API Client for PHP
 
-[![Build Status](https://img.shields.io/travis/com/maxemail/api-php/main.svg)](https://travis-ci.com/maxemail/api-php)
-[![Codecov](https://img.shields.io/codecov/c/github/maxemail/api-php.svg)](https://codecov.io/gh/maxemail/api-php)
-[![Latest Stable Version](https://img.shields.io/packagist/v/maxemail/api-php.svg)](https://packagist.org/packages/maxemail/api-php)
-[![Total Downloads](https://img.shields.io/packagist/dt/maxemail/api-php.svg)](https://packagist.org/packages/maxemail/api-php)
+[![Code Checks](https://img.shields.io/github/workflow/status/maxemail/api-php/CodeChecks?logo=github)](https://github.com/maxemail/api-php/actions/workflows/code-checks.yml)
+[![Codecov](https://img.shields.io/codecov/c/github/maxemail/api-php.svg?logo=codecov)](https://codecov.io/gh/maxemail/api-php)
+[![Latest Stable Version](https://img.shields.io/packagist/v/maxemail/api-php.svg?logo=packagist)](https://packagist.org/packages/maxemail/api-php)
+[![Total Downloads](https://img.shields.io/packagist/dt/maxemail/api-php.svg?logo=packagist)](https://packagist.org/packages/maxemail/api-php)
 ![Licence](https://img.shields.io/github/license/maxemail/api-php.svg)
 
 Self-contained client in PHP for simplifying access to the Maxemail API
