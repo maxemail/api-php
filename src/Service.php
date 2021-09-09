@@ -57,7 +57,7 @@ class Service
 
         $json = $this->postRequest($data);
 
-        return $this->decodeJson($json);
+        return static::decodeJson($json);
     }
 
     /**
