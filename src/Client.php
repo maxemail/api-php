@@ -56,7 +56,7 @@ use GuzzleHttp\HandlerStack;
  */
 class Client implements \Psr\Log\LoggerAwareInterface
 {
-    const VERSION = '4.0';
+    const VERSION = '5.0';
 
     /**
      * @var string
