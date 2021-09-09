@@ -54,6 +54,7 @@ class MiddlewareTest extends TestCase
         $warningMsg = 'dummyMethod Deprecated: some example description';
         $warning = "299 MxmApi/v100 \"{$warningMsg}\"";
 
+        // @todo phpunit > v7, change to `expectDeprecation()` etc.
         $this->expectException(\PHPUnit\Framework\Error\Deprecated::class);
         $this->expectExceptionMessage($warningMsg);
 

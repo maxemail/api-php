@@ -103,6 +103,7 @@ class HelperTest extends TestCase
         // Check request is multipart and body contains expected parameters
         $this->assertTrue($request->hasHeader('Content-Type'));
         $this->assertStringStartsWith('multipart/form-data', $request->getHeader('Content-Type')[0]);
+        // @todo phpunit > v8, change to `assertMatchesRegularExpression()`
         $this->assertRegExp("/name=\"method\".*\r\n\r\nhandle\r\n/sU", $requestBody);
         $this->assertRegExp("/name=\"key\".*\r\n\r\n{$key}\r\n/sU", $requestBody);
         $fileContents = file_get_contents($sampleFile);

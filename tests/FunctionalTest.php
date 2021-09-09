@@ -68,6 +68,7 @@ class FunctionalTest extends TestCase
 
     public function testDeprecatedMethod()
     {
+        // @todo phpunit > v7, change to `expectDeprecation()` etc.
         $this->expectException(\PHPUnit\Framework\Error\Deprecated::class);
         $this->expectExceptionMessage('searchLists Deprecated');
 

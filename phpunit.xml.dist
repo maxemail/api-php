@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<phpunit bootstrap="vendor/autoload.php"
-         beStrictAboutTestsThatDoNotTestAnything="true"
-         beStrictAboutOutputDuringTests="true"
-         colors="true">
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+    bootstrap="vendor/autoload.php"
+    beStrictAboutOutputDuringTests="true"
+    colors="true"
+>
     <php>
         <!-- Configuration to enable functional tests -->
         <env name="FUNC_ENABLED" value="false" />
@@ -11,14 +13,22 @@
         <env name="FUNC_API_USERNAME" value="api@user.com" />
         <env name="FUNC_API_PASSWORD" value="apipass" />
     </php>
+
     <testsuites>
         <testsuite name="Mxm">
-            <directory>tests/</directory>
+            <directory>tests</directory>
         </testsuite>
     </testsuites>
+    <!-- `filter` element is only used to support PHPUnit <=8 for PHP <=7.2 -->
     <filter>
         <whitelist>
             <directory suffix=".php">src/</directory>
         </whitelist>
     </filter>
+    <!-- END -->
+    <coverage>
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+    </coverage>
 </phpunit>
