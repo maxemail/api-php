@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [5.1.0] - 2021-08-09
 ### Added
 - Add support for Guzzle v7. Guzzle v6 is retained as an optional dependency to
   avoid breaking BC for PHP v7.1 in this package.
