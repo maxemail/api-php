@@ -16,7 +16,7 @@
         "ext-zip": "*",
 
         "psr/log" : "^1.0",
-        "guzzlehttp/guzzle": "^6.3"
+        "guzzlehttp/guzzle": "^6 || ^7"
     },
 
     "suggest": {
