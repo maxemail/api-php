@@ -11,6 +11,8 @@ use PHPUnit\Framework\TestCase;
  * @package    Maxemail\Api
  * @copyright  2007-2019 Emailcenter UK Ltd. (https://maxemail.xtremepush.com)
  * @license    LGPL-3.0
+ *
+ * @group functional
  */
 class FunctionalTest extends TestCase
 {
