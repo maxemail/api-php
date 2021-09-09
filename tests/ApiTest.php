@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Maxemail\Api;
@@ -16,41 +17,41 @@ use PHPUnit\Framework\TestCase;
 class ApiTest extends TestCase
 {
     private $testConfig = [
-        'uri'      => 'https://maxemail.example.com/',
+        'uri' => 'https://maxemail.example.com/',
         'username' => 'api@user.com',
-        'password' => 'apipass'
+        'password' => 'apipass',
     ];
 
     public function testConfigValid()
     {
         $api = new Client($this->testConfig);
 
-        $this->assertEquals($this->testConfig, $api->getConfig());
+        $this->assertSame($this->testConfig, $api->getConfig());
     }
 
     public function testConfigSupportDeprecatedUserPass()
     {
         $config = [
             'user' => 'api@user.com',
-            'pass' => 'apipass'
+            'pass' => 'apipass',
         ];
 
         $api = new Client($config);
 
-        $this->assertEquals($config['user'], $api->getConfig()['username']);
-        $this->assertEquals($config['pass'], $api->getConfig()['password']);
+        $this->assertSame($config['user'], $api->getConfig()['username']);
+        $this->assertSame($config['pass'], $api->getConfig()['password']);
     }
 
     public function testConfigDefaultHost()
     {
         $config = [
             'username' => 'api@user.com',
-            'password' => 'apipass'
+            'password' => 'apipass',
         ];
 
         $api = new Client($config);
 
-        $this->assertEquals('https://mxm.xtremepush.com/', $api->getConfig()['uri']);
+        $this->assertSame('https://mxm.xtremepush.com/', $api->getConfig()['uri']);
     }
 
     public function testConfigStripsUriPath()
@@ -58,12 +59,12 @@ class ApiTest extends TestCase
         $config = [
             'uri' => 'http://maxemail.example.com/some/extra/path',
             'username' => 'api@user.com',
-            'password' => 'apipass'
+            'password' => 'apipass',
         ];
 
         $api = new Client($config);
 
-        $this->assertEquals('http://maxemail.example.com/', $api->getConfig()['uri']);
+        $this->assertSame('http://maxemail.example.com/', $api->getConfig()['uri']);
     }
 
     public function testConfigInvalidUri()
@@ -74,7 +75,7 @@ class ApiTest extends TestCase
         $config = [
             'uri' => '//',
             'username' => 'api@user.com',
-            'password' => 'apipass'
+            'password' => 'apipass',
         ];
 
         new Client($config);
@@ -88,7 +89,7 @@ class ApiTest extends TestCase
         $config = [
             'uri' => 'maxemail.example.com',
             'username' => 'api@user.com',
-            'password' => 'apipass'
+            'password' => 'apipass',
         ];
 
         new Client($config);
@@ -103,7 +104,7 @@ class ApiTest extends TestCase
 
         $api->setLogger($logger);
 
-        $this->assertEquals($logger, $api->getLogger());
+        $this->assertSame($logger, $api->getLogger());
     }
 
     public function testGetHelper()

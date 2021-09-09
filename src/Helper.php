@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Maxemail\Api;
@@ -31,22 +32,12 @@ class Helper
      */
     private $logLevel = LogLevel::DEBUG;
 
-    /**
-     * @param Client $api
-     * @param GuzzleClient $httpClient
-     */
     public function __construct(Client $api, GuzzleClient $httpClient)
     {
         $this->api = $api;
         $this->httpClient = $httpClient;
     }
 
-    /**
-     * Set the level used for helper logging
-     *
-     * @param string $level
-     * @return $this
-     */
     public function setLogLevel(string $level): self
     {
         $this->logLevel = $level;
@@ -59,7 +50,6 @@ class Helper
      *
      * Returns file key to use for list import, email content, etc.
      *
-     * @param string $path
      * @return string file key
      */
     public function uploadFile(string $path): string
@@ -81,21 +71,21 @@ class Helper
         $multipart = [
             [
                 'name' => 'method',
-                'contents' => 'handle'
+                'contents' => 'handle',
             ],
             [
                 'name' => 'key',
-                'contents' => $fileKey
+                'contents' => $fileKey,
             ],
             [
                 'name' => 'file',
                 'contents' => $file,
-                'filename' => basename($path)
-            ]
+                'filename' => basename($path),
+            ],
         ];
         $logCtxt = [
             'fileKey' => $fileKey,
-            'path'    => $path
+            'path' => $path,
         ];
 
         $this->api->getLogger()->log($this->logLevel, "Upload file: {$fileKey}", $logCtxt);
@@ -103,7 +93,7 @@ class Helper
         // File upload
         try {
             $this->httpClient->request('POST', 'file_upload', [
-                'multipart' => $multipart
+                'multipart' => $multipart,
             ]);
         } finally {
             if (is_resource($file)) {
@@ -119,20 +109,17 @@ class Helper
     /**
      * Download file by type
      *
-     * @param string $type
      * @param string|int $primaryId
      * @param array $options {
      *     @var bool   $extract Whether to extract a compressed download, default true
      *     @var string $dir     Directory to use for downloaded file(s), default sys_temp_dir
      * }
      * @return string filename
-     * @throws Exception\InvalidArgumentException
-     * @throws Exception\RuntimeException
      */
     public function downloadFile(string $type, $primaryId, array $options = []): string
     {
         $typePrimary = [
-            'file'       => 'key',
+            'file' => 'key',
             'listexport' => 'id',
             'dataexport' => 'id',
         ];
@@ -156,7 +143,7 @@ class Helper
         $logCtxt = [
             'type' => $type,
             'primaryId' => $primaryId,
-            'path' => $filename
+            'path' => $filename,
         ];
         $this->api->getLogger()->log($this->logLevel, "Download file '{$type}': {$primaryId}", $logCtxt);
 
@@ -166,9 +153,9 @@ class Helper
         try {
             $response = $this->httpClient->request('GET', $uri, [
                 'headers' => [
-                    'Accept' => '*' // Override API's default 'application/json'
+                    'Accept' => '*', // Override API's default 'application/json'
                 ],
-                'stream' => true
+                'stream' => true,
             ]);
         } catch (RequestException $e) {
             fclose($local);
@@ -190,17 +177,16 @@ class Helper
         fclose($local);
         $this->api->getLogger()->log($this->logLevel, "Download complete '{$type}': {$primaryId}", $logCtxt);
 
-        // Get MIME
         $mime = (new \finfo(FILEINFO_MIME_TYPE))->file($filename);
         if ($mime === false) {
             unlink($filename);
-            throw new Exception\RuntimeException("MIME type could not be determined");
+            throw new Exception\RuntimeException('MIME type could not be determined');
         }
 
         // Add extension to filename, optionally extract zip
         switch (true) {
-            case (strpos($mime, 'zip')) :
-                if (!isset($options['extract']) || $options['extract'] == true) {
+            case (strpos($mime, 'zip')):
+                if (!isset($options['extract']) || $options['extract'] === true) {
                     // Maxemail only compresses CSV files, and only contains one file in a zip
                     $zip = new \ZipArchive();
                     $zip->open($filename);
@@ -218,14 +204,14 @@ class Helper
 
                 break;
 
-            case (strpos($mime, 'pdf')) :
+            case (strpos($mime, 'pdf')):
                 rename($filename, $filename . '.pdf');
                 $filename = $filename . '.pdf';
                 break;
 
-            case (strpos($mime, 'csv')) :
+            case (strpos($mime, 'csv')):
                 // no break
-            case ($mime == 'text/plain') :
+            case ($mime === 'text/plain'):
                 rename($filename, $filename . '.csv');
                 $filename = $filename . '.csv';
                 break;

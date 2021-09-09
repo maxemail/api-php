@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Maxemail\Api;
@@ -44,7 +45,7 @@ class ServiceTest extends TestCase
 
         $this->httpClient = new GuzzleClient([
             'base_uri' => 'https://example.com/api/json/',
-            'handler' => $stack
+            'handler' => $stack,
         ]);
     }
 
@@ -59,7 +60,11 @@ class ServiceTest extends TestCase
             'var1', // check variables properly passed
             'var2', // another string to check values are in correct order
             123, // int to check typing
-            ['foo' => ['bar' => 'bob']] // array to check encoding
+            [
+                'foo' => [ // array to check encoding
+                    'bar' => 'bob',
+                ],
+            ]
         );
 
         $expectedParams = [
@@ -67,7 +72,11 @@ class ServiceTest extends TestCase
             'arg0' => 'var1',
             'arg1' => 'var2',
             'arg2' => 123,
-            'arg3' => json_encode(['foo' => ['bar' => 'bob']])
+            'arg3' => json_encode([
+                'foo' => [
+                    'bar' => 'bob',
+                ],
+            ]),
         ];
 
         $this->assertCount(1, $this->clientHistory);
@@ -75,8 +84,8 @@ class ServiceTest extends TestCase
         /** @var Request $request */
         $request = $this->clientHistory[0]['request'];
 
-        $this->assertEquals('POST', $request->getMethod());
-        $this->assertEquals('/api/json/dummy_service', $request->getUri()->getPath());
-        $this->assertEquals(http_build_query($expectedParams), (string)$request->getBody());
+        $this->assertSame('POST', $request->getMethod());
+        $this->assertSame('/api/json/dummy_service', $request->getUri()->getPath());
+        $this->assertSame(http_build_query($expectedParams), (string)$request->getBody());
     }
 }

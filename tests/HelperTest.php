@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Maxemail\Api;
@@ -57,7 +58,7 @@ class HelperTest extends TestCase
 
         $httpClient = new GuzzleClient([
             'base_uri' => 'https://example.com/api/json/',
-            'handler' => $stack
+            'handler' => $stack,
         ]);
 
         $this->helper = new Helper($this->apiClientMock, $httpClient);
@@ -109,7 +110,7 @@ class HelperTest extends TestCase
         $fileContents = file_get_contents($sampleFile);
         $this->assertRegExp("/name=\"file\".*\r\n\r\n{$fileContents}\r\n/sU", $requestBody);
 
-        $this->assertEquals($key, $actual);
+        $this->assertSame($key, $actual);
     }
 
     public function testUploadUnreadable()
@@ -153,9 +154,9 @@ class HelperTest extends TestCase
         /** @var Request $request */
         $request = $this->clientHistory[0]['request'];
 
-        $this->assertEquals('GET', $request->getMethod());
-        $this->assertEquals('/download/file/key/' . $key, $request->getUri()->getPath());
-        $this->assertEquals(['*'], $request->getHeader('Accept'));
+        $this->assertSame('GET', $request->getMethod());
+        $this->assertSame('/download/file/key/' . $key, $request->getUri()->getPath());
+        $this->assertSame(['*'], $request->getHeader('Accept'));
 
         $this->assertFileEquals($sampleFile, $downloadedFile);
     }
@@ -177,9 +178,9 @@ class HelperTest extends TestCase
         /** @var Request $request */
         $request = $this->clientHistory[0]['request'];
 
-        $this->assertEquals('GET', $request->getMethod());
-        $this->assertEquals('/download/file/key/' . $key, $request->getUri()->getPath());
-        $this->assertEquals(['*'], $request->getHeader('Accept'));
+        $this->assertSame('GET', $request->getMethod());
+        $this->assertSame('/download/file/key/' . $key, $request->getUri()->getPath());
+        $this->assertSame(['*'], $request->getHeader('Accept'));
 
         $this->assertFileEquals($expectedFile, $downloadedFile);
     }
@@ -193,16 +194,18 @@ class HelperTest extends TestCase
             new Response(200, [], fopen($sampleFile, 'r'))
         );
 
-        $downloadedFile = $this->helper->downloadFile('file', $key, ['extract' => false]);
+        $downloadedFile = $this->helper->downloadFile('file', $key, [
+            'extract' => false,
+        ]);
 
         $this->assertCount(1, $this->clientHistory);
 
         /** @var Request $request */
         $request = $this->clientHistory[0]['request'];
 
-        $this->assertEquals('GET', $request->getMethod());
-        $this->assertEquals('/download/file/key/' . $key, $request->getUri()->getPath());
-        $this->assertEquals(['*'], $request->getHeader('Accept'));
+        $this->assertSame('GET', $request->getMethod());
+        $this->assertSame('/download/file/key/' . $key, $request->getUri()->getPath());
+        $this->assertSame(['*'], $request->getHeader('Accept'));
 
         $this->assertFileEquals($sampleFile, $downloadedFile);
     }
@@ -223,9 +226,9 @@ class HelperTest extends TestCase
         /** @var Request $request */
         $request = $this->clientHistory[0]['request'];
 
-        $this->assertEquals('GET', $request->getMethod());
-        $this->assertEquals('/download/file/key/' . $key, $request->getUri()->getPath());
-        $this->assertEquals(['*'], $request->getHeader('Accept'));
+        $this->assertSame('GET', $request->getMethod());
+        $this->assertSame('/download/file/key/' . $key, $request->getUri()->getPath());
+        $this->assertSame(['*'], $request->getHeader('Accept'));
 
         $this->assertFileEquals($sampleFile, $downloadedFilename);
     }
@@ -246,9 +249,9 @@ class HelperTest extends TestCase
         /** @var Request $request */
         $request = $this->clientHistory[0]['request'];
 
-        $this->assertEquals('GET', $request->getMethod());
-        $this->assertEquals('/download/listexport/id/' . $key, $request->getUri()->getPath());
-        $this->assertEquals(['*'], $request->getHeader('Accept'));
+        $this->assertSame('GET', $request->getMethod());
+        $this->assertSame('/download/listexport/id/' . $key, $request->getUri()->getPath());
+        $this->assertSame(['*'], $request->getHeader('Accept'));
 
         $this->assertFileEquals($sampleFile, $downloadedFile);
     }
@@ -269,9 +272,9 @@ class HelperTest extends TestCase
         /** @var Request $request */
         $request = $this->clientHistory[0]['request'];
 
-        $this->assertEquals('GET', $request->getMethod());
-        $this->assertEquals('/download/dataexport/id/' . $key, $request->getUri()->getPath());
-        $this->assertEquals(['*'], $request->getHeader('Accept'));
+        $this->assertSame('GET', $request->getMethod());
+        $this->assertSame('/download/dataexport/id/' . $key, $request->getUri()->getPath());
+        $this->assertSame(['*'], $request->getHeader('Accept'));
 
         $this->assertFileEquals($sampleFile, $downloadedFile);
     }
@@ -313,7 +316,9 @@ class HelperTest extends TestCase
             ->with($this->stringStartsWith($directory), 'w')
             ->willReturn(false);
 
-        $this->helper->downloadFile('file', 123, ['dir' => $directory]);
+        $this->helper->downloadFile('file', 123, [
+            'dir' => $directory,
+        ]);
     }
 
     public function testDownloadTmpFileUnableToOpen()
@@ -364,7 +369,9 @@ class HelperTest extends TestCase
                 return \unlink($tmpFile);
             });
 
-        $this->helper->downloadFile('file', 'abc123def456', ['dir' => $directory]);
+        $this->helper->downloadFile('file', 'abc123def456', [
+            'dir' => $directory,
+        ]);
     }
 
     public function testDownloadTmpFileDeletedWriteError()
@@ -408,6 +415,8 @@ class HelperTest extends TestCase
                 return \unlink($tmpFile);
             });
 
-        $this->helper->downloadFile('file', 'abc123def456', ['dir' => $directory]);
+        $this->helper->downloadFile('file', 'abc123def456', [
+            'dir' => $directory,
+        ]);
     }
 }

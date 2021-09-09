@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Maxemail\Api;
@@ -56,7 +57,7 @@ use GuzzleHttp\HandlerStack;
  */
 class Client implements \Psr\Log\LoggerAwareInterface
 {
-    const VERSION = '5.0';
+    public const VERSION = '5.0';
 
     /**
      * @var string
@@ -141,23 +142,11 @@ class Client implements \Psr\Log\LoggerAwareInterface
         }
     }
 
-    /**
-     * Magic get for service
-     *
-     * @param string $name
-     * @return Service
-     */
     public function __get(string $name): Service
     {
         return $this->getInstance($name);
     }
 
-    /**
-     * Get Service instance by name
-     *
-     * @param string $serviceName
-     * @return Service
-     */
     private function getInstance(string $serviceName): Service
     {
         if (!isset($this->services[$serviceName])) {
@@ -167,9 +156,6 @@ class Client implements \Psr\Log\LoggerAwareInterface
         return $this->services[$serviceName];
     }
 
-    /**
-     * @return GuzzleClient
-     */
     private function getClient(): GuzzleClient
     {
         if ($this->httpClient === null) {
@@ -183,14 +169,14 @@ class Client implements \Psr\Log\LoggerAwareInterface
                 'base_uri' => $this->uri . 'api/json/',
                 'auth' => [
                     $this->username,
-                    $this->password
+                    $this->password,
                 ],
                 'headers' => [
-                    'User-Agent'   => 'MxmApiClient/' . self::VERSION . ' PHP/' . phpversion(),
+                    'User-Agent' => 'MxmApiClient/' . self::VERSION . ' PHP/' . PHP_VERSION,
                     'Content-Type' => 'application/x-www-form-urlencoded',
-                    'Accept'       => 'application/json'
+                    'Accept' => 'application/json',
                 ],
-                'handler' => $stack
+                'handler' => $stack,
             ]);
         }
 
@@ -209,17 +195,12 @@ class Client implements \Psr\Log\LoggerAwareInterface
     public function getConfig(): array
     {
         return [
-            'uri'      => $this->uri,
+            'uri' => $this->uri,
             'username' => $this->username,
-            'password' => $this->password
+            'password' => $this->password,
         ];
     }
 
-    /**
-     * Get API Helper
-     *
-     * @return Helper
-     */
     public function getHelper(): Helper
     {
         if (!isset($this->helper)) {
@@ -229,12 +210,6 @@ class Client implements \Psr\Log\LoggerAwareInterface
         return $this->helper;
     }
 
-    /**
-     * Sets a logger instance on the object
-     *
-     * @param \Psr\Log\LoggerInterface $logger
-     * @return $this
-     */
     public function setLogger(\Psr\Log\LoggerInterface $logger): self
     {
         $this->logger = $logger;
@@ -242,11 +217,6 @@ class Client implements \Psr\Log\LoggerAwareInterface
         return $this;
     }
 
-    /**
-     * Gets the logger, creating a null logger if none defined
-     *
-     * @return \Psr\Log\LoggerInterface
-     */
     public function getLogger(): \Psr\Log\LoggerInterface
     {
         if (!isset($this->logger)) {

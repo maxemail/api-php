@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Maxemail\Api;
@@ -23,15 +24,12 @@ class Middleware
 
     /**
      * @see https://michaelstivala.com/logging-guzzle-requests/
-     * @param HandlerStack $stack
-     * @param LoggerInterface $logger
-     * @return void
      */
     public static function addLogging(HandlerStack $stack, LoggerInterface $logger): void
     {
         $messageFormats = [
             '{method}: {uri} HTTP/{version} {req_body}', // request
-            'RESPONSE: {code} - {res_body}' // response
+            'RESPONSE: {code} - {res_body}', // response
         ];
 
         // Using push() to put middleware onto top of stack, so loggers are first to run after handler
@@ -49,10 +47,6 @@ class Middleware
     /**
      * Read Maxemail's deprecation notices from the HTTP Warning header
      * to log as warning and trigger deprecation notice
-     *
-     * @param HandlerStack $stack
-     * @param LoggerInterface $logger
-     * @return void
      */
     public static function addWarningLogging(HandlerStack $stack, LoggerInterface $logger): void
     {
@@ -61,7 +55,7 @@ class Middleware
                 foreach ($response->getHeader('Warning') as $message) {
                     // Code, agent, message, [date]
                     $parts = str_getcsv($message, ' ', '"', '\\');
-                    if ($parts[0] != 299) {
+                    if ($parts[0] !== '299') {
                         continue;
                     }
                     if (stripos($parts[1], 'mxmapi/') !== 0) {
@@ -79,8 +73,6 @@ class Middleware
 
     /**
      * Add parser for Maxemail 4xx-level errors
-     * @param HandlerStack $stack
-     * @return void
      */
     public static function addMaxemailErrorParser(HandlerStack $stack): void
     {

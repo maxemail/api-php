@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Maxemail\Api;
@@ -13,11 +14,7 @@ namespace Maxemail\Api;
 trait JsonTrait
 {
     /**
-     * Decode JSON
-     *
-     * @param string $json
      * @return mixed
-     * @throws Exception\UnexpectedValueException
      */
     private static function decodeJson(string $json)
     {

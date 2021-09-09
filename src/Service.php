@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Maxemail\Api;
@@ -26,10 +27,6 @@ class Service
      */
     private $httpClient;
 
-    /**
-     * @param string $service
-     * @param GuzzleClient $httpClient
-     */
     public function __construct(string $service, GuzzleClient $httpClient)
     {
         $this->service = $service;
@@ -37,16 +34,14 @@ class Service
     }
 
     /**
-     * Magic call for service method
+     * Call service method
      *
-     * @param string $name
-     * @param array $params
      * @return mixed
      */
     public function __call(string $name, array $params)
     {
         $data = [
-            'method' => $name
+            'method' => $name,
         ];
         foreach ($params as $i => $param) {
             if (is_array($param)) {
@@ -61,15 +56,12 @@ class Service
     }
 
     /**
-     * Post request
-     *
-     * @param array $data
      * @return string JSON response
      */
     private function postRequest(array $data): string
     {
         $response = $this->httpClient->request('POST', $this->service, [
-            'form_params' => $data
+            'form_params' => $data,
         ]);
         return (string)$response->getBody();
     }

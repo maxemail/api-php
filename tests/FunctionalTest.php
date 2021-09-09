@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Maxemail\Api;
@@ -30,7 +31,7 @@ class FunctionalTest extends TestCase
         $config = [
             'uri' => getenv('FUNC_API_URI'),
             'username' => getenv('FUNC_API_USERNAME'),
-            'password' => getenv('FUNC_API_PASSWORD')
+            'password' => getenv('FUNC_API_PASSWORD'),
         ];
         $this->client = new Client($config);
     }
@@ -52,7 +53,7 @@ class FunctionalTest extends TestCase
         $tree = $this->client->tree->fetchRoot('email', []);
         $root = $tree[0];
 
-        $this->assertEquals('email', $root->text);
+        $this->assertSame('email', $root->text);
         $this->assertTrue($root->rootNode);
     }
 

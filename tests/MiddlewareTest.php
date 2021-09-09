@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Maxemail\Api;
@@ -45,7 +46,7 @@ class MiddlewareTest extends TestCase
         $this->handlerStack = HandlerStack::create($this->mockHandler);
 
         $this->httpClient = new GuzzleClient([
-            'handler' => $this->handlerStack
+            'handler' => $this->handlerStack,
         ]);
     }
 
@@ -66,7 +67,13 @@ class MiddlewareTest extends TestCase
 
         Middleware::addWarningLogging($this->handlerStack, $logger);
         $this->mockHandler->append(
-            new Response(200, ['Warning' => $warning], json_encode('OK'))
+            new Response(
+                200,
+                [
+                    'Warning' => $warning,
+                ],
+                json_encode('OK')
+            )
         );
 
         $service = new Service('dummy_service', $this->httpClient);
@@ -85,7 +92,13 @@ class MiddlewareTest extends TestCase
 
         Middleware::addWarningLogging($this->handlerStack, $logger);
         $this->mockHandler->append(
-            new Response(200, ['Warning' => $warning], json_encode('OK'))
+            new Response(
+                200,
+                [
+                    'Warning' => $warning,
+                ],
+                json_encode('OK')
+            )
         );
 
         $service = new Service('dummy_service', $this->httpClient);
@@ -104,7 +117,13 @@ class MiddlewareTest extends TestCase
 
         Middleware::addWarningLogging($this->handlerStack, $logger);
         $this->mockHandler->append(
-            new Response(200, ['Warning' => $warning], json_encode('OK'))
+            new Response(
+                200,
+                [
+                    'Warning' => $warning,
+                ],
+                json_encode('OK')
+            )
         );
 
         $service = new Service('dummy_service', $this->httpClient);
@@ -123,7 +142,13 @@ class MiddlewareTest extends TestCase
 
         Middleware::addWarningLogging($this->handlerStack, $logger);
         $this->mockHandler->append(
-            new Response(200, ['Warning' => $warning], json_encode('OK'))
+            new Response(
+                200,
+                [
+                    'Warning' => $warning,
+                ],
+                json_encode('OK')
+            )
         );
 
         $service = new Service('dummy_service', $this->httpClient);
@@ -156,7 +181,7 @@ class MiddlewareTest extends TestCase
         $service = new Service('dummy_service', $this->httpClient);
         $result = $service->dummyMethod();
 
-        $this->assertEquals('OK', $result);
+        $this->assertSame('OK', $result);
     }
 
     public function testErrorHandlerSkips500()
@@ -195,7 +220,7 @@ class MiddlewareTest extends TestCase
         Middleware::addMaxemailErrorParser($this->handlerStack);
         $mxmError = [
             'success' => 'false',
-            'msg' => $errorMsg
+            'msg' => $errorMsg,
         ];
         $this->mockHandler->append(
             new Response(400, [], json_encode($mxmError))
