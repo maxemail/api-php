@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [5.1.1] - 2021-08-10
 ### Fixed
 - Clean-up temporary local file for any errors while trying to download a file.
 
