@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Maxemail\Api;
 
 use GuzzleHttp\Client as GuzzleClient;
-use GuzzleHttp\Exception\RequestException;
 use Psr\Log\LogLevel;
 
 /**
@@ -157,7 +156,7 @@ class Helper
                 ],
                 'stream' => true,
             ]);
-        } catch (RequestException $e) {
+        } catch (\Throwable $e) {
             fclose($local);
             unlink($filename);
             throw $e;
