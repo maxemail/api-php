@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Functional tests" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
+    <CommandLine>
+      <envs>
+        <env name="FUNC_ENABLED" value="1" />
+      </envs>
+    </CommandLine>
+    <TestRunner configuration_file="$PROJECT_DIR$/phpunit.xml" scope="XML" options="--verbose --group=functional" />
+    <method v="2" />
+  </configuration>
+</component>
