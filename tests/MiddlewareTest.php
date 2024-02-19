@@ -56,7 +56,14 @@ class MiddlewareTest extends TestCase
         $warning = "299 MxmApi/v100 \"{$warningMsg}\"";
 
         // @todo phpunit > v7, change to `expectDeprecation()` etc.
-        $this->expectException(\PHPUnit\Framework\Error\Deprecated::class);
+        // Requires convertDeprecationsToExceptions='true' in PHPUnit config
+        if (version_compare(\PHPUnit\Runner\Version::id(), '8.0.0') < 0) {
+            // PHPUnit v7
+            $this->expectException(\PHPUnit\Framework\Error\Deprecated::class);
+        } else {
+            // PHPUnit v8+
+            $this->expectDeprecation();
+        }
         $this->expectExceptionMessage($warningMsg);
 
         /** @var LoggerInterface|MockObject $logger */

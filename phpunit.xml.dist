@@ -4,8 +4,10 @@
     xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
     bootstrap="vendor/autoload.php"
     beStrictAboutOutputDuringTests="true"
+    convertDeprecationsToExceptions="true"
     colors="true"
 >
+    <!-- convertDeprecationsToExceptions is required for MiddlewareTest::testWarningLoggerCreatesLog -->
     <php>
         <!-- Configuration to enable functional tests -->
         <env name="FUNC_ENABLED" value="false" />
