@@ -1,6 +1,6 @@
 # Maxemail API Client for PHP
 
-[![Code Checks](https://img.shields.io/github/workflow/status/maxemail/api-php/CodeChecks?logo=github)](https://github.com/maxemail/api-php/actions/workflows/code-checks.yml)
+[![Code Checks](https://img.shields.io/github/actions/workflow/status/maxemail/api-php/code-checks.yml?logo=github)](https://github.com/maxemail/api-php/actions/workflows/code-checks.yml)
 [![Codecov](https://img.shields.io/codecov/c/github/maxemail/api-php.svg?logo=codecov)](https://codecov.io/gh/maxemail/api-php)
 [![Latest Stable Version](https://img.shields.io/packagist/v/maxemail/api-php.svg?logo=packagist)](https://packagist.org/packages/maxemail/api-php)
 [![Total Downloads](https://img.shields.io/packagist/dt/maxemail/api-php.svg?logo=packagist)](https://packagist.org/packages/maxemail/api-php)
