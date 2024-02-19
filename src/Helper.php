@@ -152,7 +152,8 @@ class Helper
         try {
             $response = $this->httpClient->request('GET', $uri, [
                 'headers' => [
-                    'Accept' => '*', // Override API's default 'application/json'
+                    // Override API's default 'application/json'
+                    'Accept' => '*',
                 ],
                 'stream' => true,
             ]);
@@ -209,7 +210,6 @@ class Helper
                 break;
 
             case (strpos($mime, 'csv')):
-                // no break
             case ($mime === 'text/plain'):
                 rename($filename, $filename . '.csv');
                 $filename = $filename . '.csv';

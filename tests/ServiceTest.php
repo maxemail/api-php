@@ -57,11 +57,15 @@ class ServiceTest extends TestCase
 
         $service = new Service('dummy_service', $this->httpClient);
         $service->dummyMethod(
-            'var1', // check variables properly passed
-            'var2', // another string to check values are in correct order
-            123, // int to check typing
+            // check variables are properly passed
+            'var1',
+            // another string to check values are in correct order
+            'var2',
+            // int to check typing
+            123,
+            // array to check encoding
             [
-                'foo' => [ // array to check encoding
+                'foo' => [
                     'bar' => 'bob',
                 ],
             ]

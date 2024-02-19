@@ -81,7 +81,9 @@ class HelperTest extends TestCase
         $fileUploadService->expects($this->once())
             ->method('__call')
             ->with('initialise', [])
-            ->willReturn((object)['key' => $key]);
+            ->willReturn((object)[
+                'key' => $key,
+            ]);
 
         // Use a Closure to save the request body at the point of handling the request
         // Using the Request instance saved by the history middleware isn't an option,
