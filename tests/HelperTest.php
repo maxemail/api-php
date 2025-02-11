@@ -12,6 +12,7 @@ use GuzzleHttp\Middleware as GuzzleMiddleware;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use phpmock\phpunit\PHPMock;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -22,8 +23,9 @@ use PHPUnit\Framework\TestCase;
  * @copyright  2007-2019 Emailcenter UK Ltd. (https://maxemail.xtremepush.com)
  * @license    LGPL-3.0
  *
- * @runTestsInSeparateProcesses Used so global functions can be mocked after already accessed in other tests
+ * RunTestsInSeparateProcesses: Allow global functions to be mocked after already accessed in other tests
  */
+#[RunTestsInSeparateProcesses]
 class HelperTest extends TestCase
 {
     use PHPMock;
@@ -97,11 +99,10 @@ class HelperTest extends TestCase
         // Check request is multipart and body contains expected parameters
         static::assertTrue($request->hasHeader('Content-Type'));
         static::assertStringStartsWith('multipart/form-data', $request->getHeader('Content-Type')[0]);
-        // @todo phpunit > v8, change to `assertMatchesRegularExpression()`
-        static::assertRegExp("/name=\"method\".*\r\n\r\nhandle\r\n/sU", $requestBody);
-        static::assertRegExp("/name=\"key\".*\r\n\r\n{$key}\r\n/sU", $requestBody);
+        static::assertMatchesRegularExpression("/name=\"method\".*\r\n\r\nhandle\r\n/sU", $requestBody);
+        static::assertMatchesRegularExpression("/name=\"key\".*\r\n\r\n{$key}\r\n/sU", $requestBody);
         $fileContents = file_get_contents($sampleFile);
-        static::assertRegExp("/name=\"file\".*\r\n\r\n{$fileContents}\r\n/sU", $requestBody);
+        static::assertMatchesRegularExpression("/name=\"file\".*\r\n\r\n{$fileContents}\r\n/sU", $requestBody);
 
         static::assertSame($key, $actual);
     }

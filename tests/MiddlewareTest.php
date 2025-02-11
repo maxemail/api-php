@@ -46,15 +46,14 @@ class MiddlewareTest extends TestCase
         $warningMsg = 'dummyMethod Deprecated: some example description';
         $warning = "299 MxmApi/v100 \"{$warningMsg}\"";
 
-        // @todo phpunit > v7, change to `expectDeprecation()` etc.
-        // Requires convertDeprecationsToExceptions='true' in PHPUnit config
-        if (version_compare(\PHPUnit\Runner\Version::id(), '8.0.0') < 0) {
-            // PHPUnit v7
-            $this->expectException(\PHPUnit\Framework\Error\Deprecated::class);
-        } else {
-            // PHPUnit v8+
-            $this->expectDeprecation();
-        }
+        // Capture deprecation error
+        $originalErrorLevel = error_reporting();
+        error_reporting(E_ALL);
+        set_error_handler(static function (int $errno, string $errstr): never {
+            throw new \Exception($errstr, $errno);
+        }, E_USER_DEPRECATED);
+
+        $this->expectException(\Exception::class);
         $this->expectExceptionMessage($warningMsg);
 
         /** @var LoggerInterface|MockObject $logger */
@@ -75,7 +74,12 @@ class MiddlewareTest extends TestCase
         );
 
         $service = new Service('dummy_service', $this->httpClient);
-        $service->dummyMethod();
+        try {
+            $service->dummyMethod();
+        } finally {
+            error_reporting($originalErrorLevel);
+            restore_error_handler();
+        }
     }
 
     public function testWarningLoggerSkipsNoAgent(): void
