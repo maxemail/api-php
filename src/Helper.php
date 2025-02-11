@@ -16,16 +16,12 @@ use Psr\Log\LogLevel;
  */
 class Helper
 {
-    private Client $api;
-
-    private GuzzleClient $httpClient;
-
     private string $logLevel = LogLevel::DEBUG;
 
-    public function __construct(Client $api, GuzzleClient $httpClient)
-    {
-        $this->api = $api;
-        $this->httpClient = $httpClient;
+    public function __construct(
+        private readonly Client $api,
+        private readonly GuzzleClient $httpClient,
+    ) {
     }
 
     public function setLogLevel(string $level): self
