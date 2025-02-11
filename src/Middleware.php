@@ -89,7 +89,7 @@ class Middleware
                 if ($error instanceof \stdClass && isset($error->msg)) {
                     throw new Exception\ClientException($error->msg, $response->getStatusCode());
                 }
-            } catch (\UnexpectedValueException $e) {
+            } catch (\UnexpectedValueException) {
                 // Failed to decode as Maxemail error, leave Guzzle to handle it
             }
             return $response;

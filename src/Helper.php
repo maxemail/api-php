@@ -185,7 +185,7 @@ class Helper
 
         // Add extension to filename, optionally extract zip
         switch (true) {
-            case (strpos($mime, 'zip')):
+            case str_contains($mime, 'zip'):
                 if (!isset($options['extract']) || $options['extract'] === true) {
                     // Maxemail only compresses CSV files, and only contains one file in a zip
                     $zip = new \ZipArchive();
@@ -204,12 +204,12 @@ class Helper
 
                 break;
 
-            case (strpos($mime, 'pdf')):
+            case str_contains($mime, 'pdf'):
                 rename($filename, $filename . '.pdf');
                 $filename = $filename . '.pdf';
                 break;
 
-            case (strpos($mime, 'csv')):
+            case str_contains($mime, 'csv'):
             case ($mime === 'text/plain'):
                 rename($filename, $filename . '.csv');
                 $filename = $filename . '.csv';
