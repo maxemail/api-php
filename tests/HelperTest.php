@@ -64,12 +64,12 @@ class HelperTest extends TestCase
         $fileUploadService = $this->createMock(Service::class);
 
         // The API client will be used to initialise the upload
-        $this->apiClientMock->expects($this->once())
+        $this->apiClientMock->expects(static::once())
             ->method('__get')
             ->with('file_upload')
             ->willReturn($fileUploadService);
 
-        $fileUploadService->expects($this->once())
+        $fileUploadService->expects(static::once())
             ->method('__call')
             ->with('initialise', [])
             ->willReturn((object)[
@@ -89,21 +89,21 @@ class HelperTest extends TestCase
 
         $actual = $this->helper->uploadFile($sampleFile);
 
-        $this->assertCount(1, $this->clientHistory);
+        static::assertCount(1, $this->clientHistory);
 
         /** @var Request $request */
         $request = $this->clientHistory[0]['request'];
 
         // Check request is multipart and body contains expected parameters
-        $this->assertTrue($request->hasHeader('Content-Type'));
-        $this->assertStringStartsWith('multipart/form-data', $request->getHeader('Content-Type')[0]);
+        static::assertTrue($request->hasHeader('Content-Type'));
+        static::assertStringStartsWith('multipart/form-data', $request->getHeader('Content-Type')[0]);
         // @todo phpunit > v8, change to `assertMatchesRegularExpression()`
-        $this->assertRegExp("/name=\"method\".*\r\n\r\nhandle\r\n/sU", $requestBody);
-        $this->assertRegExp("/name=\"key\".*\r\n\r\n{$key}\r\n/sU", $requestBody);
+        static::assertRegExp("/name=\"method\".*\r\n\r\nhandle\r\n/sU", $requestBody);
+        static::assertRegExp("/name=\"key\".*\r\n\r\n{$key}\r\n/sU", $requestBody);
         $fileContents = file_get_contents($sampleFile);
-        $this->assertRegExp("/name=\"file\".*\r\n\r\n{$fileContents}\r\n/sU", $requestBody);
+        static::assertRegExp("/name=\"file\".*\r\n\r\n{$fileContents}\r\n/sU", $requestBody);
 
-        $this->assertSame($key, $actual);
+        static::assertSame($key, $actual);
     }
 
     public function testUploadUnreadable(): void
@@ -124,7 +124,7 @@ class HelperTest extends TestCase
         $sampleFile = __DIR__ . '/__files/sample-file.csv';
 
         $fopenMock = $this->getFunctionMock(__NAMESPACE__, 'fopen');
-        $fopenMock->expects($this->once())
+        $fopenMock->expects(static::once())
             ->with($sampleFile, 'r')
             ->willReturn(false);
 
@@ -142,16 +142,16 @@ class HelperTest extends TestCase
 
         $downloadedFile = $this->helper->downloadFile('file', $key);
 
-        $this->assertCount(1, $this->clientHistory);
+        static::assertCount(1, $this->clientHistory);
 
         /** @var Request $request */
         $request = $this->clientHistory[0]['request'];
 
-        $this->assertSame('GET', $request->getMethod());
-        $this->assertSame('/download/file/key/' . $key, $request->getUri()->getPath());
-        $this->assertSame(['*'], $request->getHeader('Accept'));
+        static::assertSame('GET', $request->getMethod());
+        static::assertSame('/download/file/key/' . $key, $request->getUri()->getPath());
+        static::assertSame(['*'], $request->getHeader('Accept'));
 
-        $this->assertFileEquals($sampleFile, $downloadedFile);
+        static::assertFileEquals($sampleFile, $downloadedFile);
     }
 
     public function testDownloadZip(): void
@@ -166,16 +166,16 @@ class HelperTest extends TestCase
 
         $downloadedFile = $this->helper->downloadFile('file', $key);
 
-        $this->assertCount(1, $this->clientHistory);
+        static::assertCount(1, $this->clientHistory);
 
         /** @var Request $request */
         $request = $this->clientHistory[0]['request'];
 
-        $this->assertSame('GET', $request->getMethod());
-        $this->assertSame('/download/file/key/' . $key, $request->getUri()->getPath());
-        $this->assertSame(['*'], $request->getHeader('Accept'));
+        static::assertSame('GET', $request->getMethod());
+        static::assertSame('/download/file/key/' . $key, $request->getUri()->getPath());
+        static::assertSame(['*'], $request->getHeader('Accept'));
 
-        $this->assertFileEquals($expectedFile, $downloadedFile);
+        static::assertFileEquals($expectedFile, $downloadedFile);
     }
 
     public function testDownloadZipNoExtract(): void
@@ -191,16 +191,16 @@ class HelperTest extends TestCase
             'extract' => false,
         ]);
 
-        $this->assertCount(1, $this->clientHistory);
+        static::assertCount(1, $this->clientHistory);
 
         /** @var Request $request */
         $request = $this->clientHistory[0]['request'];
 
-        $this->assertSame('GET', $request->getMethod());
-        $this->assertSame('/download/file/key/' . $key, $request->getUri()->getPath());
-        $this->assertSame(['*'], $request->getHeader('Accept'));
+        static::assertSame('GET', $request->getMethod());
+        static::assertSame('/download/file/key/' . $key, $request->getUri()->getPath());
+        static::assertSame(['*'], $request->getHeader('Accept'));
 
-        $this->assertFileEquals($sampleFile, $downloadedFile);
+        static::assertFileEquals($sampleFile, $downloadedFile);
     }
 
     public function testDownloadPdf(): void
@@ -214,16 +214,16 @@ class HelperTest extends TestCase
 
         $downloadedFilename = $this->helper->downloadFile('file', $key);
 
-        $this->assertCount(1, $this->clientHistory);
+        static::assertCount(1, $this->clientHistory);
 
         /** @var Request $request */
         $request = $this->clientHistory[0]['request'];
 
-        $this->assertSame('GET', $request->getMethod());
-        $this->assertSame('/download/file/key/' . $key, $request->getUri()->getPath());
-        $this->assertSame(['*'], $request->getHeader('Accept'));
+        static::assertSame('GET', $request->getMethod());
+        static::assertSame('/download/file/key/' . $key, $request->getUri()->getPath());
+        static::assertSame(['*'], $request->getHeader('Accept'));
 
-        $this->assertFileEquals($sampleFile, $downloadedFilename);
+        static::assertFileEquals($sampleFile, $downloadedFilename);
     }
 
     public function testDownloadListExport(): void
@@ -237,16 +237,16 @@ class HelperTest extends TestCase
 
         $downloadedFile = $this->helper->downloadFile('listexport', $key);
 
-        $this->assertCount(1, $this->clientHistory);
+        static::assertCount(1, $this->clientHistory);
 
         /** @var Request $request */
         $request = $this->clientHistory[0]['request'];
 
-        $this->assertSame('GET', $request->getMethod());
-        $this->assertSame('/download/listexport/id/' . $key, $request->getUri()->getPath());
-        $this->assertSame(['*'], $request->getHeader('Accept'));
+        static::assertSame('GET', $request->getMethod());
+        static::assertSame('/download/listexport/id/' . $key, $request->getUri()->getPath());
+        static::assertSame(['*'], $request->getHeader('Accept'));
 
-        $this->assertFileEquals($sampleFile, $downloadedFile);
+        static::assertFileEquals($sampleFile, $downloadedFile);
     }
 
     public function testDownloadDataExport(): void
@@ -260,16 +260,16 @@ class HelperTest extends TestCase
 
         $downloadedFile = $this->helper->downloadFile('dataexport', $key);
 
-        $this->assertCount(1, $this->clientHistory);
+        static::assertCount(1, $this->clientHistory);
 
         /** @var Request $request */
         $request = $this->clientHistory[0]['request'];
 
-        $this->assertSame('GET', $request->getMethod());
-        $this->assertSame('/download/dataexport/id/' . $key, $request->getUri()->getPath());
-        $this->assertSame(['*'], $request->getHeader('Accept'));
+        static::assertSame('GET', $request->getMethod());
+        static::assertSame('/download/dataexport/id/' . $key, $request->getUri()->getPath());
+        static::assertSame(['*'], $request->getHeader('Accept'));
 
-        $this->assertFileEquals($sampleFile, $downloadedFile);
+        static::assertFileEquals($sampleFile, $downloadedFile);
     }
 
     public function testDownloadUnknownType(): void
@@ -288,8 +288,8 @@ class HelperTest extends TestCase
         $this->expectException(\Exception::class);
 
         $fopenMock = $this->getFunctionMock(__NAMESPACE__, 'fopen');
-        $fopenMock->expects($this->once())
-            ->with($this->stringStartsWith(realpath(sys_get_temp_dir())), 'w')
+        $fopenMock->expects(static::once())
+            ->with(static::stringStartsWith(realpath(sys_get_temp_dir())), 'w')
             ->willReturn(false);
 
         $this->helper->downloadFile('file', 123);
@@ -305,8 +305,8 @@ class HelperTest extends TestCase
         $directory = __DIR__ . '/__files';
 
         $fopenMock = $this->getFunctionMock(__NAMESPACE__, 'fopen');
-        $fopenMock->expects($this->once())
-            ->with($this->stringStartsWith($directory), 'w')
+        $fopenMock->expects(static::once())
+            ->with(static::stringStartsWith($directory), 'w')
             ->willReturn(false);
 
         $this->helper->downloadFile('file', 123, [
@@ -320,7 +320,7 @@ class HelperTest extends TestCase
         $this->expectExceptionMessage('Unable to open local file');
 
         $fopenMock = $this->getFunctionMock(__NAMESPACE__, 'fopen');
-        $fopenMock->expects($this->once())
+        $fopenMock->expects(static::once())
             ->willReturn(false);
 
         $this->helper->downloadFile('file', 123);
@@ -341,7 +341,7 @@ class HelperTest extends TestCase
         $tmpResource = null;
 
         $fopenMock = $this->getFunctionMock(__NAMESPACE__, 'fopen');
-        $fopenMock->expects($this->once())
+        $fopenMock->expects(static::once())
             ->willReturnCallback(function ($filename, $mode) use (&$tmpFile, &$tmpResource) {
                 $tmpFile = $filename;
                 $tmpResource = \fopen($filename, $mode);
@@ -349,16 +349,16 @@ class HelperTest extends TestCase
             });
 
         $fcloseMock = $this->getFunctionMock(__NAMESPACE__, 'fclose');
-        $fcloseMock->expects($this->once())
+        $fcloseMock->expects(static::once())
             ->willReturnCallback(function ($resource) use (&$tmpResource): bool {
-                $this->assertSame($tmpResource, $resource);
+                static::assertSame($tmpResource, $resource);
                 return \fclose($tmpResource);
             });
 
         $unlinkMock = $this->getFunctionMock(__NAMESPACE__, 'unlink');
-        $unlinkMock->expects($this->once())
+        $unlinkMock->expects(static::once())
             ->willReturnCallback(function ($filename) use (&$tmpFile): bool {
-                $this->assertSame($tmpFile, $filename);
+                static::assertSame($tmpFile, $filename);
                 return \unlink($tmpFile);
             });
 
@@ -383,7 +383,7 @@ class HelperTest extends TestCase
         $tmpResource = null;
 
         $fopenMock = $this->getFunctionMock(__NAMESPACE__, 'fopen');
-        $fopenMock->expects($this->once())
+        $fopenMock->expects(static::once())
             ->willReturnCallback(function ($filename, $mode) use (&$tmpFile, &$tmpResource) {
                 $tmpFile = $filename;
                 $tmpResource = \fopen($filename, $mode);
@@ -391,20 +391,20 @@ class HelperTest extends TestCase
             });
 
         $fwriteMock = $this->getFunctionMock(__NAMESPACE__, 'fwrite');
-        $fwriteMock->expects($this->once())
+        $fwriteMock->expects(static::once())
             ->willReturn(false);
 
         $fcloseMock = $this->getFunctionMock(__NAMESPACE__, 'fclose');
-        $fcloseMock->expects($this->once())
+        $fcloseMock->expects(static::once())
             ->willReturnCallback(function ($resource) use (&$tmpResource): bool {
-                $this->assertSame($tmpResource, $resource);
+                static::assertSame($tmpResource, $resource);
                 return \fclose($tmpResource);
             });
 
         $unlinkMock = $this->getFunctionMock(__NAMESPACE__, 'unlink');
-        $unlinkMock->expects($this->once())
+        $unlinkMock->expects(static::once())
             ->willReturnCallback(function ($filename) use (&$tmpFile): bool {
-                $this->assertSame($tmpFile, $filename);
+                static::assertSame($tmpFile, $filename);
                 return \unlink($tmpFile);
             });
 

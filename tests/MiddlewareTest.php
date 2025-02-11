@@ -59,7 +59,7 @@ class MiddlewareTest extends TestCase
 
         /** @var LoggerInterface|MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects($this->once())
+        $logger->expects(static::once())
             ->method('warning')
             ->with($warningMsg);
 
@@ -85,8 +85,8 @@ class MiddlewareTest extends TestCase
 
         /** @var LoggerInterface|MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects($this->never())
-            ->method($this->anything());
+        $logger->expects(static::never())
+            ->method(static::anything());
 
         Middleware::addWarningLogging($this->handlerStack, $logger);
         $this->mockHandler->append(
@@ -110,8 +110,8 @@ class MiddlewareTest extends TestCase
 
         /** @var LoggerInterface|MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects($this->never())
-            ->method($this->anything());
+        $logger->expects(static::never())
+            ->method(static::anything());
 
         Middleware::addWarningLogging($this->handlerStack, $logger);
         $this->mockHandler->append(
@@ -135,8 +135,8 @@ class MiddlewareTest extends TestCase
 
         /** @var LoggerInterface|MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects($this->never())
-            ->method($this->anything());
+        $logger->expects(static::never())
+            ->method(static::anything());
 
         Middleware::addWarningLogging($this->handlerStack, $logger);
         $this->mockHandler->append(
@@ -157,8 +157,8 @@ class MiddlewareTest extends TestCase
     {
         /** @var LoggerInterface|MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects($this->never())
-            ->method($this->anything());
+        $logger->expects(static::never())
+            ->method(static::anything());
 
         Middleware::addWarningLogging($this->handlerStack, $logger);
         $this->mockHandler->append(
@@ -179,7 +179,7 @@ class MiddlewareTest extends TestCase
         $service = new Service('dummy_service', $this->httpClient);
         $result = $service->dummyMethod();
 
-        $this->assertSame('OK', $result);
+        static::assertSame('OK', $result);
     }
 
     public function testErrorHandlerSkips500(): void

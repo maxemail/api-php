@@ -77,13 +77,13 @@ class ServiceTest extends TestCase
             ]),
         ];
 
-        $this->assertCount(1, $this->clientHistory);
+        static::assertCount(1, $this->clientHistory);
 
         /** @var Request $request */
         $request = $this->clientHistory[0]['request'];
 
-        $this->assertSame('POST', $request->getMethod());
-        $this->assertSame('/api/json/dummy_service', $request->getUri()->getPath());
-        $this->assertSame(http_build_query($expectedParams), (string)$request->getBody());
+        static::assertSame('POST', $request->getMethod());
+        static::assertSame('/api/json/dummy_service', $request->getUri()->getPath());
+        static::assertSame(http_build_query($expectedParams), (string)$request->getBody());
     }
 }

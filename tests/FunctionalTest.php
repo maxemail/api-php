@@ -22,7 +22,7 @@ class FunctionalTest extends TestCase
     protected function setUp(): void
     {
         if (!getenv('FUNC_ENABLED')) {
-            $this->markTestSkipped('Functional tests are disabled');
+            static::markTestSkipped('Functional tests are disabled');
         }
 
         $config = [
@@ -39,7 +39,7 @@ class FunctionalTest extends TestCase
     public function testUserAuth(): void
     {
         $user = $this->client->user->isLoggedIn();
-        $this->assertTrue($user);
+        static::assertTrue($user);
     }
 
     /**
@@ -50,8 +50,8 @@ class FunctionalTest extends TestCase
         $tree = $this->client->tree->fetchRoot('email', []);
         $root = $tree[0];
 
-        $this->assertSame('email', $root->text);
-        $this->assertTrue($root->rootNode);
+        static::assertSame('email', $root->text);
+        static::assertTrue($root->rootNode);
     }
 
     /**
@@ -85,7 +85,7 @@ class FunctionalTest extends TestCase
 
         $downloadFile = $this->client->getHelper()->downloadFile('file', $key);
 
-        $this->assertFileEquals($sampleFile, $downloadFile);
+        static::assertFileEquals($sampleFile, $downloadFile);
         unlink($downloadFile);
     }
 }

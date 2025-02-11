@@ -26,7 +26,7 @@ class ApiTest extends TestCase
     {
         $api = new Client($this->testConfig);
 
-        $this->assertSame($this->testConfig, $api->getConfig());
+        static::assertSame($this->testConfig, $api->getConfig());
     }
 
     public function testConfigSupportDeprecatedUserPass(): void
@@ -38,8 +38,8 @@ class ApiTest extends TestCase
 
         $api = new Client($config);
 
-        $this->assertSame($config['user'], $api->getConfig()['username']);
-        $this->assertSame($config['pass'], $api->getConfig()['password']);
+        static::assertSame($config['user'], $api->getConfig()['username']);
+        static::assertSame($config['pass'], $api->getConfig()['password']);
     }
 
     public function testConfigDefaultHost(): void
@@ -51,7 +51,7 @@ class ApiTest extends TestCase
 
         $api = new Client($config);
 
-        $this->assertSame('https://mxm.xtremepush.com/', $api->getConfig()['uri']);
+        static::assertSame('https://mxm.xtremepush.com/', $api->getConfig()['uri']);
     }
 
     public function testConfigStripsUriPath(): void
@@ -64,7 +64,7 @@ class ApiTest extends TestCase
 
         $api = new Client($config);
 
-        $this->assertSame('http://maxemail.example.com/', $api->getConfig()['uri']);
+        static::assertSame('http://maxemail.example.com/', $api->getConfig()['uri']);
     }
 
     public function testConfigInvalidUri(): void
@@ -104,7 +104,7 @@ class ApiTest extends TestCase
 
         $api->setLogger($logger);
 
-        $this->assertSame($logger, $api->getLogger());
+        static::assertSame($logger, $api->getLogger());
     }
 
     public function testGetHelper(): void
@@ -113,7 +113,7 @@ class ApiTest extends TestCase
 
         $helper = $api->getHelper();
 
-        $this->assertInstanceOf(Helper::class, $helper);
+        static::assertInstanceOf(Helper::class, $helper);
     }
 
     /**
@@ -127,7 +127,7 @@ class ApiTest extends TestCase
         $sameService = $api->service;
         $differentService = $api->different;
 
-        $this->assertSame($originalService, $sameService);
-        $this->assertNotSame($originalService, $differentService);
+        static::assertSame($originalService, $sameService);
+        static::assertNotSame($originalService, $differentService);
     }
 }
