@@ -17,10 +17,7 @@ use PHPUnit\Framework\TestCase;
  */
 class FunctionalTest extends TestCase
 {
-    /**
-     * @var Client
-     */
-    private $client;
+    private Client $client;
 
     protected function setUp(): void
     {
@@ -39,7 +36,7 @@ class FunctionalTest extends TestCase
     /**
      * The most basic of tests
      */
-    public function testUserAuth()
+    public function testUserAuth(): void
     {
         $user = $this->client->user->isLoggedIn();
         $this->assertTrue($user);
@@ -48,7 +45,7 @@ class FunctionalTest extends TestCase
     /**
      * Test non-scalar result using Email tree which will always exist
      */
-    public function testFetchTree()
+    public function testFetchTree(): void
     {
         $tree = $this->client->tree->fetchRoot('email', []);
         $root = $tree[0];
@@ -61,7 +58,7 @@ class FunctionalTest extends TestCase
      * This test isn't about the message per-se,
      * but it checks that we're getting the properly decoded Maxemail error
      */
-    public function testFetchTreeError()
+    public function testFetchTreeError(): void
     {
         $this->expectException(Exception\ClientException::class);
         $this->expectExceptionMessage('Invalid Node Class');
@@ -69,7 +66,7 @@ class FunctionalTest extends TestCase
         $this->client->tree->fetchRoot('notATree', []);
     }
 
-    public function testDeprecatedMethod()
+    public function testDeprecatedMethod(): void
     {
         // @todo phpunit > v7, change to `expectDeprecation()` etc.
         $this->expectException(\PHPUnit\Framework\Error\Deprecated::class);
@@ -81,7 +78,7 @@ class FunctionalTest extends TestCase
     /**
      * The file uploaded should be identical to the file then downloaded
      */
-    public function testHelperUploadDownload()
+    public function testHelperUploadDownload(): void
     {
         $sampleFile = __DIR__ . '/__files/sample-file.csv';
         $key = $this->client->getHelper()->uploadFile($sampleFile);

@@ -24,20 +24,11 @@ use Psr\Log\LoggerInterface;
  */
 class MiddlewareTest extends TestCase
 {
-    /**
-     * @var GuzzleClient
-     */
-    private $httpClient;
+    private GuzzleClient $httpClient;
 
-    /**
-     * @var MockHandler
-     */
-    private $mockHandler;
+    private MockHandler $mockHandler;
 
-    /**
-     * @var HandlerStack
-     */
-    private $handlerStack;
+    private HandlerStack $handlerStack;
 
     protected function setUp(): void
     {
@@ -50,7 +41,7 @@ class MiddlewareTest extends TestCase
         ]);
     }
 
-    public function testWarningLoggerCreatesLog()
+    public function testWarningLoggerCreatesLog(): void
     {
         $warningMsg = 'dummyMethod Deprecated: some example description';
         $warning = "299 MxmApi/v100 \"{$warningMsg}\"";
@@ -87,7 +78,7 @@ class MiddlewareTest extends TestCase
         $service->dummyMethod();
     }
 
-    public function testWarningLoggerSkipsNoAgent()
+    public function testWarningLoggerSkipsNoAgent(): void
     {
         $warningMsg = 'some warning with no agent';
         $warning = "299 - \"{$warningMsg}\"";
@@ -112,7 +103,7 @@ class MiddlewareTest extends TestCase
         $service->dummyMethod();
     }
 
-    public function testWarningLoggerSkipsWrongAgent()
+    public function testWarningLoggerSkipsWrongAgent(): void
     {
         $warningMsg = 'some other system';
         $warning = "299 other/1.2.3 \"{$warningMsg}\"";
@@ -137,7 +128,7 @@ class MiddlewareTest extends TestCase
         $service->dummyMethod();
     }
 
-    public function testWarningLoggerSkipsWrongCode()
+    public function testWarningLoggerSkipsWrongCode(): void
     {
         $warningMsg = 'something which looks like Maxemail';
         $warning = "199 MxmApi/v100 \"{$warningMsg}\"";
@@ -162,7 +153,7 @@ class MiddlewareTest extends TestCase
         $service->dummyMethod();
     }
 
-    public function testWarningLoggerSkipsNoWarning()
+    public function testWarningLoggerSkipsNoWarning(): void
     {
         /** @var LoggerInterface|MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
@@ -178,7 +169,7 @@ class MiddlewareTest extends TestCase
         $service->dummyMethod();
     }
 
-    public function testErrorHandlerSkips200()
+    public function testErrorHandlerSkips200(): void
     {
         Middleware::addMaxemailErrorParser($this->handlerStack);
         $this->mockHandler->append(
@@ -191,7 +182,7 @@ class MiddlewareTest extends TestCase
         $this->assertSame('OK', $result);
     }
 
-    public function testErrorHandlerSkips500()
+    public function testErrorHandlerSkips500(): void
     {
         $this->expectException(ServerException::class);
 
@@ -204,7 +195,7 @@ class MiddlewareTest extends TestCase
         $service->dummyMethod();
     }
 
-    public function testErrorHandlerHandles400Standard()
+    public function testErrorHandlerHandles400Standard(): void
     {
         $this->expectException(ClientException::class);
 
@@ -217,7 +208,7 @@ class MiddlewareTest extends TestCase
         $service->dummyMethod();
     }
 
-    public function testErrorHandlerHandles400Maxemail()
+    public function testErrorHandlerHandles400Maxemail(): void
     {
         $errorMsg = 'Maxemail API error message';
 

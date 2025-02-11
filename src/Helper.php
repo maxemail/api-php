@@ -16,20 +16,11 @@ use Psr\Log\LogLevel;
  */
 class Helper
 {
-    /**
-     * @var Client
-     */
-    private $api;
+    private Client $api;
 
-    /**
-     * @var GuzzleClient
-     */
-    private $httpClient;
+    private GuzzleClient $httpClient;
 
-    /**
-     * @var string
-     */
-    private $logLevel = LogLevel::DEBUG;
+    private string $logLevel = LogLevel::DEBUG;
 
     public function __construct(Client $api, GuzzleClient $httpClient)
     {
@@ -108,15 +99,17 @@ class Helper
     /**
      * Download file by type
      *
-     * @param string|int $primaryId
      * @param array{
      *     extract: bool, // Whether to extract a compressed download, default true
      *     dir: string, // Directory to use for downloaded file(s), default sys_temp_dir
      * } $options
      * @return string filename
      */
-    public function downloadFile(string $type, $primaryId, array $options = []): string
-    {
+    public function downloadFile(
+        string $type,
+        string|int $primaryId,
+        array $options = [],
+    ): string {
         $typePrimary = [
             'file' => 'key',
             'listexport' => 'id',

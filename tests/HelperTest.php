@@ -28,22 +28,13 @@ class HelperTest extends TestCase
 {
     use PHPMock;
 
-    /**
-     * @var Client|MockObject
-     */
-    private $apiClientMock;
+    private Client&MockObject $apiClientMock;
 
-    /**
-     * @var MockHandler
-     */
-    private $mockHandler;
+    private MockHandler $mockHandler;
 
-    private $clientHistory = [];
+    private array $clientHistory = [];
 
-    /**
-     * @var Helper
-     */
-    private $helper;
+    private Helper $helper;
 
     protected function setUp(): void
     {
@@ -64,7 +55,7 @@ class HelperTest extends TestCase
         $this->helper = new Helper($this->apiClientMock, $httpClient);
     }
 
-    public function testUpload()
+    public function testUpload(): void
     {
         $sampleFile = __DIR__ . '/__files/sample-file.csv';
         $key = 'abc123def456';
@@ -90,7 +81,7 @@ class HelperTest extends TestCase
         // as the file handle will be closed by then
         $requestBody = '';
         $this->mockHandler->append(
-            function (Request $request) use (&$requestBody) {
+            function (Request $request) use (&$requestBody): Response {
                 $requestBody = (string)$request->getBody();
                 return new Response(200, [], '');
             },
@@ -115,7 +106,7 @@ class HelperTest extends TestCase
         $this->assertSame($key, $actual);
     }
 
-    public function testUploadUnreadable()
+    public function testUploadUnreadable(): void
     {
         $this->expectException(Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage('File path is not readable');
@@ -125,7 +116,7 @@ class HelperTest extends TestCase
         $this->helper->uploadFile($sampleFile);
     }
 
-    public function testUploadUnableToOpen()
+    public function testUploadUnableToOpen(): void
     {
         $this->expectException(Exception\RuntimeException::class);
         $this->expectExceptionMessage('Unable to open local file');
@@ -140,7 +131,7 @@ class HelperTest extends TestCase
         $this->helper->uploadFile($sampleFile);
     }
 
-    public function testDownloadCsv()
+    public function testDownloadCsv(): void
     {
         $sampleFile = __DIR__ . '/__files/sample-file.csv';
         $key = 'abc123def456';
@@ -163,7 +154,7 @@ class HelperTest extends TestCase
         $this->assertFileEquals($sampleFile, $downloadedFile);
     }
 
-    public function testDownloadZip()
+    public function testDownloadZip(): void
     {
         $responseFile = __DIR__ . '/__files/sample-file.csv.zip';
         $expectedFile = __DIR__ . '/__files/sample-file.csv';
@@ -187,7 +178,7 @@ class HelperTest extends TestCase
         $this->assertFileEquals($expectedFile, $downloadedFile);
     }
 
-    public function testDownloadZipNoExtract()
+    public function testDownloadZipNoExtract(): void
     {
         $sampleFile = __DIR__ . '/__files/sample-file.csv.zip';
         $key = 'abc123def456';
@@ -212,7 +203,7 @@ class HelperTest extends TestCase
         $this->assertFileEquals($sampleFile, $downloadedFile);
     }
 
-    public function testDownloadPdf()
+    public function testDownloadPdf(): void
     {
         $sampleFile = __DIR__ . '/__files/sample-file.pdf';
         $key = 'abc123def456';
@@ -235,7 +226,7 @@ class HelperTest extends TestCase
         $this->assertFileEquals($sampleFile, $downloadedFilename);
     }
 
-    public function testDownloadListExport()
+    public function testDownloadListExport(): void
     {
         $sampleFile = __DIR__ . '/__files/sample-file.csv';
         $key = 123;
@@ -258,7 +249,7 @@ class HelperTest extends TestCase
         $this->assertFileEquals($sampleFile, $downloadedFile);
     }
 
-    public function testDownloadDataExport()
+    public function testDownloadDataExport(): void
     {
         $sampleFile = __DIR__ . '/__files/sample-file.csv';
         $key = 123;
@@ -281,7 +272,7 @@ class HelperTest extends TestCase
         $this->assertFileEquals($sampleFile, $downloadedFile);
     }
 
-    public function testDownloadUnknownType()
+    public function testDownloadUnknownType(): void
     {
         $this->expectException(Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid download type specified');
@@ -292,7 +283,7 @@ class HelperTest extends TestCase
     /**
      * Use exception to stop method early
      */
-    public function testDownloadTmpFileLocation()
+    public function testDownloadTmpFileLocation(): void
     {
         $this->expectException(\Exception::class);
 
@@ -307,7 +298,7 @@ class HelperTest extends TestCase
     /**
      * Use exception to stop method early
      */
-    public function testDownloadTmpFileLocationCustom()
+    public function testDownloadTmpFileLocationCustom(): void
     {
         $this->expectException(\Exception::class);
 
@@ -323,7 +314,7 @@ class HelperTest extends TestCase
         ]);
     }
 
-    public function testDownloadTmpFileUnableToOpen()
+    public function testDownloadTmpFileUnableToOpen(): void
     {
         $this->expectException(Exception\RuntimeException::class);
         $this->expectExceptionMessage('Unable to open local file');
@@ -335,7 +326,7 @@ class HelperTest extends TestCase
         $this->helper->downloadFile('file', 123);
     }
 
-    public function testDownloadTmpFileDeletedRequestError()
+    public function testDownloadTmpFileDeletedRequestError(): void
     {
         $this->expectException(ClientException::class);
         $this->expectExceptionMessage('400 Bad Request');
@@ -359,14 +350,14 @@ class HelperTest extends TestCase
 
         $fcloseMock = $this->getFunctionMock(__NAMESPACE__, 'fclose');
         $fcloseMock->expects($this->once())
-            ->willReturnCallback(function ($resource) use (&$tmpResource) {
+            ->willReturnCallback(function ($resource) use (&$tmpResource): bool {
                 $this->assertSame($tmpResource, $resource);
                 return \fclose($tmpResource);
             });
 
         $unlinkMock = $this->getFunctionMock(__NAMESPACE__, 'unlink');
         $unlinkMock->expects($this->once())
-            ->willReturnCallback(function ($filename) use (&$tmpFile) {
+            ->willReturnCallback(function ($filename) use (&$tmpFile): bool {
                 $this->assertSame($tmpFile, $filename);
                 return \unlink($tmpFile);
             });
@@ -376,7 +367,7 @@ class HelperTest extends TestCase
         ]);
     }
 
-    public function testDownloadTmpFileDeletedWriteError()
+    public function testDownloadTmpFileDeletedWriteError(): void
     {
         $this->expectException(Exception\RuntimeException::class);
         $this->expectExceptionMessage('Unable to write to local file');
@@ -405,14 +396,14 @@ class HelperTest extends TestCase
 
         $fcloseMock = $this->getFunctionMock(__NAMESPACE__, 'fclose');
         $fcloseMock->expects($this->once())
-            ->willReturnCallback(function ($resource) use (&$tmpResource) {
+            ->willReturnCallback(function ($resource) use (&$tmpResource): bool {
                 $this->assertSame($tmpResource, $resource);
                 return \fclose($tmpResource);
             });
 
         $unlinkMock = $this->getFunctionMock(__NAMESPACE__, 'unlink');
         $unlinkMock->expects($this->once())
-            ->willReturnCallback(function ($filename) use (&$tmpFile) {
+            ->willReturnCallback(function ($filename) use (&$tmpFile): bool {
                 $this->assertSame($tmpFile, $filename);
                 return \unlink($tmpFile);
             });

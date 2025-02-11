@@ -6,6 +6,7 @@ namespace Maxemail\Api;
 
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\HandlerStack;
+use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -56,49 +57,28 @@ use Psr\Log\LoggerInterface;
  * @property mixed transactional https://docs.maxemail.xtremepush.com/mxm-dev/api/services/transactional
  * @property mixed data_export_quick_transactional https://docs.maxemail.xtremepush.com/mxm-dev/api/services/data-export-quick-transactional
  */
-class Client implements \Psr\Log\LoggerAwareInterface
+class Client implements LoggerAwareInterface
 {
     public const VERSION = '5.1';
 
-    /**
-     * @var string
-     */
-    private $uri = 'https://mxm.xtremepush.com/';
+    private string $uri = 'https://mxm.xtremepush.com/';
 
-    /**
-     * @var string
-     */
-    private $username;
+    private readonly string $username;
 
-    /**
-     * @var string
-     */
-    private $password;
+    private readonly string $password;
 
     /**
      * @var Service[]
      */
-    private $services = [];
+    private array $services = [];
 
-    /**
-     * @var Helper
-     */
-    private $helper;
+    private Helper $helper;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface $logger;
 
-    /**
-     * @var GuzzleClient
-     */
-    private $httpClient;
+    private GuzzleClient $httpClient;
 
-    /**
-     * @var bool
-     */
-    private $debugLoggingEnabled = false;
+    private bool $debugLoggingEnabled = false;
 
     /**
      * @param array{
@@ -159,7 +139,7 @@ class Client implements \Psr\Log\LoggerAwareInterface
 
     private function getClient(): GuzzleClient
     {
-        if ($this->httpClient === null) {
+        if (!isset($this->httpClient)) {
             $stack = HandlerStack::create();
             Middleware::addMaxemailErrorParser($stack);
             Middleware::addWarningLogging($stack, $this->getLogger());

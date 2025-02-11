@@ -50,7 +50,7 @@ class Middleware
      */
     public static function addWarningLogging(HandlerStack $stack, LoggerInterface $logger): void
     {
-        $middleware = GuzzleMiddleware::mapResponse(function (ResponseInterface $response) use ($logger) {
+        $middleware = GuzzleMiddleware::mapResponse(function (ResponseInterface $response) use ($logger): ResponseInterface {
             if ($response->hasHeader('Warning')) {
                 foreach ($response->getHeader('Warning') as $message) {
                     // Code, agent, message, [date]
@@ -76,7 +76,7 @@ class Middleware
      */
     public static function addMaxemailErrorParser(HandlerStack $stack): void
     {
-        $middleware = GuzzleMiddleware::mapResponse(function (ResponseInterface $response) {
+        $middleware = GuzzleMiddleware::mapResponse(function (ResponseInterface $response): ResponseInterface {
             $code = $response->getStatusCode();
             if ($code < 400 || $code >= 500) {
                 // Allow success response to continue, and 500-level errors to be handled by Guzzle

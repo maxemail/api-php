@@ -17,15 +17,9 @@ class Service
 {
     use JsonTrait;
 
-    /**
-     * @var string
-     */
-    private $service;
+    private string $service;
 
-    /**
-     * @var GuzzleClient
-     */
-    private $httpClient;
+    private GuzzleClient $httpClient;
 
     public function __construct(string $service, GuzzleClient $httpClient)
     {

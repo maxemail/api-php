@@ -16,20 +16,20 @@ use PHPUnit\Framework\TestCase;
  */
 class ApiTest extends TestCase
 {
-    private $testConfig = [
+    private array $testConfig = [
         'uri' => 'https://maxemail.example.com/',
         'username' => 'api@user.com',
         'password' => 'apipass',
     ];
 
-    public function testConfigValid()
+    public function testConfigValid(): void
     {
         $api = new Client($this->testConfig);
 
         $this->assertSame($this->testConfig, $api->getConfig());
     }
 
-    public function testConfigSupportDeprecatedUserPass()
+    public function testConfigSupportDeprecatedUserPass(): void
     {
         $config = [
             'user' => 'api@user.com',
@@ -42,7 +42,7 @@ class ApiTest extends TestCase
         $this->assertSame($config['pass'], $api->getConfig()['password']);
     }
 
-    public function testConfigDefaultHost()
+    public function testConfigDefaultHost(): void
     {
         $config = [
             'username' => 'api@user.com',
@@ -54,7 +54,7 @@ class ApiTest extends TestCase
         $this->assertSame('https://mxm.xtremepush.com/', $api->getConfig()['uri']);
     }
 
-    public function testConfigStripsUriPath()
+    public function testConfigStripsUriPath(): void
     {
         $config = [
             'uri' => 'http://maxemail.example.com/some/extra/path',
@@ -67,7 +67,7 @@ class ApiTest extends TestCase
         $this->assertSame('http://maxemail.example.com/', $api->getConfig()['uri']);
     }
 
-    public function testConfigInvalidUri()
+    public function testConfigInvalidUri(): void
     {
         $this->expectException(Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage('URI malformed');
@@ -81,7 +81,7 @@ class ApiTest extends TestCase
         new Client($config);
     }
 
-    public function testConfigMissingUriProtocol()
+    public function testConfigMissingUriProtocol(): void
     {
         $this->expectException(Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage('URI must contain protocol scheme and host');
@@ -95,7 +95,7 @@ class ApiTest extends TestCase
         new Client($config);
     }
 
-    public function testSetGetLogger()
+    public function testSetGetLogger(): void
     {
         /** @var \Psr\Log\LoggerInterface|MockObject $logger */
         $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
@@ -107,7 +107,7 @@ class ApiTest extends TestCase
         $this->assertSame($logger, $api->getLogger());
     }
 
-    public function testGetHelper()
+    public function testGetHelper(): void
     {
         $api = new Client($this->testConfig);
 
@@ -119,7 +119,7 @@ class ApiTest extends TestCase
     /**
      * Test getInstance() returns same Service instance for same name, different for different name
      */
-    public function testGetInstance()
+    public function testGetInstance(): void
     {
         $api = new Client($this->testConfig);
 

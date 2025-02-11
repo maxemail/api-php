@@ -21,17 +21,11 @@ use PHPUnit\Framework\TestCase;
  */
 class ServiceTest extends TestCase
 {
-    /**
-     * @var GuzzleClient
-     */
-    private $httpClient;
+    private GuzzleClient $httpClient;
 
-    /**
-     * @var MockHandler
-     */
-    private $mockHandler;
+    private MockHandler $mockHandler;
 
-    private $clientHistory = [];
+    private array $clientHistory = [];
 
     protected function setUp(): void
     {
@@ -49,7 +43,7 @@ class ServiceTest extends TestCase
         ]);
     }
 
-    public function testMagicCallSendsRequest()
+    public function testMagicCallSendsRequest(): void
     {
         $this->mockHandler->append(
             new Response(200, [], json_encode('OK')),
