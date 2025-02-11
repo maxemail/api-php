@@ -109,10 +109,10 @@ class Helper
      * Download file by type
      *
      * @param string|int $primaryId
-     * @param array $options {
-     *     @var bool   $extract Whether to extract a compressed download, default true
-     *     @var string $dir     Directory to use for downloaded file(s), default sys_temp_dir
-     * }
+     * @param array{
+     *     extract: bool, // Whether to extract a compressed download, default true
+     *     dir: string, // Directory to use for downloaded file(s), default sys_temp_dir
+     * } $options
      * @return string filename
      */
     public function downloadFile(string $type, $primaryId, array $options = []): string

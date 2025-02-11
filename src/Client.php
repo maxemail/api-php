@@ -101,14 +101,14 @@ class Client implements \Psr\Log\LoggerAwareInterface
     private $debugLoggingEnabled = false;
 
     /**
-     * @param array $config {
-     *     @var string $username     Required
-     *     @var string $password     Required
-     *     @var string $uri          Optional. Default https://mxm.xtremepush.com/
-     *     @var string $user         @deprecated See username
-     *     @var string $pass         @deprecated See password
-     *     @var bool   $debugLogging Optional. Enable logging of request/response. Default false
-     * }
+     * @param array{
+     *     username: string, // Required
+     *     password: string, // Required
+     *     uri: string, // Optional. Default https://mxm.xtremepush.com/
+     *     user: string, // @deprecated See username
+     *     pass: string, // @deprecated See password
+     *     debugLogging: bool, // Optional. Enable logging of request/response. Default false
+     * } $config
      */
     public function __construct(array $config)
     {
@@ -187,10 +187,10 @@ class Client implements \Psr\Log\LoggerAwareInterface
     /**
      * Get API connection config
      *
-     * @return array {
-     *     @var string $uri
-     *     @var string $username
-     *     @var string $password
+     * @return array{
+     *     uri: string,
+     *     username: string,
+     *     password: string,
      * }
      */
     public function getConfig(): array
