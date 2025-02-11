@@ -130,7 +130,7 @@ class Helper
         // Create target file
         $filename = tempnam(
             ($options['dir'] ?? sys_get_temp_dir()),
-            "mxm-{$type}-{$primaryId}-"
+            "mxm-{$type}-{$primaryId}-",
         );
         $local = @fopen($filename, 'w');
         if ($local === false) {
@@ -210,7 +210,7 @@ class Helper
                 break;
 
             case str_contains($mime, 'csv'):
-            case ($mime === 'text/plain'):
+            case $mime === 'text/plain':
                 rename($filename, $filename . '.csv');
                 $filename = $filename . '.csv';
                 break;

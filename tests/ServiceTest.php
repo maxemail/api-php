@@ -40,7 +40,7 @@ class ServiceTest extends TestCase
         $stack = HandlerStack::create($this->mockHandler);
         Middleware::addMaxemailErrorParser($stack);
         $stack->push(
-            GuzzleMiddleware::history($this->clientHistory)
+            GuzzleMiddleware::history($this->clientHistory),
         );
 
         $this->httpClient = new GuzzleClient([
@@ -52,7 +52,7 @@ class ServiceTest extends TestCase
     public function testMagicCallSendsRequest()
     {
         $this->mockHandler->append(
-            new Response(200, [], json_encode('OK'))
+            new Response(200, [], json_encode('OK')),
         );
 
         $service = new Service('dummy_service', $this->httpClient);
@@ -68,7 +68,7 @@ class ServiceTest extends TestCase
                 'foo' => [
                     'bar' => 'bob',
                 ],
-            ]
+            ],
         );
 
         $expectedParams = [

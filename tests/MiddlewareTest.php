@@ -79,8 +79,8 @@ class MiddlewareTest extends TestCase
                 [
                     'Warning' => $warning,
                 ],
-                json_encode('OK')
-            )
+                json_encode('OK'),
+            ),
         );
 
         $service = new Service('dummy_service', $this->httpClient);
@@ -104,8 +104,8 @@ class MiddlewareTest extends TestCase
                 [
                     'Warning' => $warning,
                 ],
-                json_encode('OK')
-            )
+                json_encode('OK'),
+            ),
         );
 
         $service = new Service('dummy_service', $this->httpClient);
@@ -129,8 +129,8 @@ class MiddlewareTest extends TestCase
                 [
                     'Warning' => $warning,
                 ],
-                json_encode('OK')
-            )
+                json_encode('OK'),
+            ),
         );
 
         $service = new Service('dummy_service', $this->httpClient);
@@ -154,8 +154,8 @@ class MiddlewareTest extends TestCase
                 [
                     'Warning' => $warning,
                 ],
-                json_encode('OK')
-            )
+                json_encode('OK'),
+            ),
         );
 
         $service = new Service('dummy_service', $this->httpClient);
@@ -171,7 +171,7 @@ class MiddlewareTest extends TestCase
 
         Middleware::addWarningLogging($this->handlerStack, $logger);
         $this->mockHandler->append(
-            new Response(200, [], json_encode('OK'))
+            new Response(200, [], json_encode('OK')),
         );
 
         $service = new Service('dummy_service', $this->httpClient);
@@ -182,7 +182,7 @@ class MiddlewareTest extends TestCase
     {
         Middleware::addMaxemailErrorParser($this->handlerStack);
         $this->mockHandler->append(
-            new Response(200, [], json_encode('OK'))
+            new Response(200, [], json_encode('OK')),
         );
 
         $service = new Service('dummy_service', $this->httpClient);
@@ -197,7 +197,7 @@ class MiddlewareTest extends TestCase
 
         Middleware::addMaxemailErrorParser($this->handlerStack);
         $this->mockHandler->append(
-            new Response(500, [], 'Internal server error')
+            new Response(500, [], 'Internal server error'),
         );
 
         $service = new Service('dummy_service', $this->httpClient);
@@ -210,7 +210,7 @@ class MiddlewareTest extends TestCase
 
         Middleware::addMaxemailErrorParser($this->handlerStack);
         $this->mockHandler->append(
-            new Response(400, [], 'Error')
+            new Response(400, [], 'Error'),
         );
 
         $service = new Service('dummy_service', $this->httpClient);
@@ -230,7 +230,7 @@ class MiddlewareTest extends TestCase
             'msg' => $errorMsg,
         ];
         $this->mockHandler->append(
-            new Response(400, [], json_encode($mxmError))
+            new Response(400, [], json_encode($mxmError)),
         );
 
         $service = new Service('dummy_service', $this->httpClient);

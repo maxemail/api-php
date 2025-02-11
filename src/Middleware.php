@@ -38,10 +38,10 @@ class Middleware
             $middleware = GuzzleMiddleware::log(
                 $logger,
                 new MessageFormatter($messageFormat),
-                LogLevel::DEBUG
+                LogLevel::DEBUG,
             );
             $stack->push($middleware, 'log' . $idx);
-        };
+        }
     }
 
     /**

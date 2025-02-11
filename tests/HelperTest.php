@@ -53,7 +53,7 @@ class HelperTest extends TestCase
 
         $stack = HandlerStack::create($this->mockHandler);
         $stack->push(
-            GuzzleMiddleware::history($this->clientHistory)
+            GuzzleMiddleware::history($this->clientHistory),
         );
 
         $httpClient = new GuzzleClient([
@@ -93,7 +93,7 @@ class HelperTest extends TestCase
             function (Request $request) use (&$requestBody) {
                 $requestBody = (string)$request->getBody();
                 return new Response(200, [], '');
-            }
+            },
         );
 
         $actual = $this->helper->uploadFile($sampleFile);
@@ -146,7 +146,7 @@ class HelperTest extends TestCase
         $key = 'abc123def456';
 
         $this->mockHandler->append(
-            new Response(200, [], fopen($sampleFile, 'r'))
+            new Response(200, [], fopen($sampleFile, 'r')),
         );
 
         $downloadedFile = $this->helper->downloadFile('file', $key);
@@ -170,7 +170,7 @@ class HelperTest extends TestCase
         $key = 'abc123def456';
 
         $this->mockHandler->append(
-            new Response(200, [], fopen($responseFile, 'r'))
+            new Response(200, [], fopen($responseFile, 'r')),
         );
 
         $downloadedFile = $this->helper->downloadFile('file', $key);
@@ -193,7 +193,7 @@ class HelperTest extends TestCase
         $key = 'abc123def456';
 
         $this->mockHandler->append(
-            new Response(200, [], fopen($sampleFile, 'r'))
+            new Response(200, [], fopen($sampleFile, 'r')),
         );
 
         $downloadedFile = $this->helper->downloadFile('file', $key, [
@@ -218,7 +218,7 @@ class HelperTest extends TestCase
         $key = 'abc123def456';
 
         $this->mockHandler->append(
-            new Response(200, [], fopen($sampleFile, 'r'))
+            new Response(200, [], fopen($sampleFile, 'r')),
         );
 
         $downloadedFilename = $this->helper->downloadFile('file', $key);
@@ -241,7 +241,7 @@ class HelperTest extends TestCase
         $key = 123;
 
         $this->mockHandler->append(
-            new Response(200, [], fopen($sampleFile, 'r'))
+            new Response(200, [], fopen($sampleFile, 'r')),
         );
 
         $downloadedFile = $this->helper->downloadFile('listexport', $key);
@@ -264,7 +264,7 @@ class HelperTest extends TestCase
         $key = 123;
 
         $this->mockHandler->append(
-            new Response(200, [], fopen($sampleFile, 'r'))
+            new Response(200, [], fopen($sampleFile, 'r')),
         );
 
         $downloadedFile = $this->helper->downloadFile('dataexport', $key);
@@ -341,7 +341,7 @@ class HelperTest extends TestCase
         $this->expectExceptionMessage('400 Bad Request');
 
         $this->mockHandler->append(
-            new Response(400, [], 'Error')
+            new Response(400, [], 'Error'),
         );
 
         $directory = __DIR__ . '/__files';
@@ -383,7 +383,7 @@ class HelperTest extends TestCase
 
         $sampleFile = __DIR__ . '/__files/sample-file.csv';
         $this->mockHandler->append(
-            new Response(200, [], fopen($sampleFile, 'r'))
+            new Response(200, [], fopen($sampleFile, 'r')),
         );
 
         $directory = __DIR__ . '/__files';
