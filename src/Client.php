@@ -6,6 +6,7 @@ namespace Maxemail\Api;
 
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\HandlerStack;
+use Psr\Log\LoggerInterface;
 
 /**
  * Maxemail API Client
@@ -85,7 +86,7 @@ class Client implements \Psr\Log\LoggerAwareInterface
     private $helper;
 
     /**
-     * @var \Psr\Log\LoggerInterface
+     * @var LoggerInterface
      */
     private $logger;
 
@@ -210,14 +211,12 @@ class Client implements \Psr\Log\LoggerAwareInterface
         return $this->helper;
     }
 
-    public function setLogger(\Psr\Log\LoggerInterface $logger): self
+    public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
-
-        return $this;
     }
 
-    public function getLogger(): \Psr\Log\LoggerInterface
+    public function getLogger(): LoggerInterface
     {
         if (!isset($this->logger)) {
             $this->logger = new \Psr\Log\NullLogger();

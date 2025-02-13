@@ -21,7 +21,7 @@
         "ext-json" : "*",
         "ext-zip": "*",
 
-        "psr/log" : "^1.0",
+        "psr/log" : "^1 || ^2 || ^3",
         "guzzlehttp/guzzle": "^6 || ^7"
     },
 
@@ -36,7 +36,6 @@
     },
 
     "require-dev": {
-        "phlib/logger": "^3|^4",
         "phpunit/phpunit" : "^7|^8|^9",
         "php-mock/php-mock-phpunit": "^2.0",
         "symplify/easy-coding-standard": "^9"
