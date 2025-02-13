@@ -119,8 +119,10 @@ class HelperTest extends TestCase
 
     public function testUploadUnableToOpen(): void
     {
+        $reasonMessage = sha1(uniqid('error'));
+
         $this->expectException(Exception\RuntimeException::class);
-        $this->expectExceptionMessage('Unable to open local file');
+        $this->expectExceptionMessage('Unable to open local file: ' . $reasonMessage);
 
         $sampleFile = __DIR__ . '/__files/sample-file.csv';
 
@@ -128,6 +130,12 @@ class HelperTest extends TestCase
         $fopenMock->expects(static::once())
             ->with($sampleFile, 'r')
             ->willReturn(false);
+
+        $errorMock = $this->getFunctionMock(__NAMESPACE__, 'error_get_last');
+        $errorMock->expects(static::once())
+            ->willReturn([
+                'message' => $reasonMessage,
+            ]);
 
         $this->helper->uploadFile($sampleFile);
     }
@@ -281,48 +289,68 @@ class HelperTest extends TestCase
         $this->helper->downloadFile('unknown', 123);
     }
 
-    /**
-     * Use exception to stop method early
-     */
     public function testDownloadTmpFileLocation(): void
     {
-        $this->expectException(\Exception::class);
-
         $fopenMock = $this->getFunctionMock(__NAMESPACE__, 'fopen');
         $fopenMock->expects(static::once())
             ->with(static::stringStartsWith(realpath(sys_get_temp_dir())), 'w')
+            // Return false to exit early
             ->willReturn(false);
 
-        $this->helper->downloadFile('file', 123);
+        $errorMock = $this->getFunctionMock(__NAMESPACE__, 'error_get_last');
+        $errorMock->expects(static::once())
+            ->willReturn([
+                'message' => 'exit early',
+            ]);
+
+        try {
+            $this->helper->downloadFile('file', 123);
+        } catch (Exception\RuntimeException) {
+            // Ignore exception from exiting early
+        }
     }
 
-    /**
-     * Use exception to stop method early
-     */
     public function testDownloadTmpFileLocationCustom(): void
     {
-        $this->expectException(\Exception::class);
-
         $directory = __DIR__ . '/__files';
 
         $fopenMock = $this->getFunctionMock(__NAMESPACE__, 'fopen');
         $fopenMock->expects(static::once())
             ->with(static::stringStartsWith($directory), 'w')
+            // Return false to exit early
             ->willReturn(false);
 
-        $this->helper->downloadFile('file', 123, [
-            'dir' => $directory,
-        ]);
+        $errorMock = $this->getFunctionMock(__NAMESPACE__, 'error_get_last');
+        $errorMock->expects(static::once())
+            ->willReturn([
+                'message' => 'exit early',
+            ]);
+
+        try {
+            $this->helper->downloadFile('file', 123, [
+                'dir' => $directory,
+            ]);
+        } catch (Exception\RuntimeException) {
+            // Ignore exception from exiting early
+        }
     }
 
     public function testDownloadTmpFileUnableToOpen(): void
     {
+        $reasonMessage = sha1(uniqid('error'));
+
         $this->expectException(Exception\RuntimeException::class);
-        $this->expectExceptionMessage('Unable to open local file');
+        $this->expectExceptionMessage('Unable to open local file: ' . $reasonMessage);
 
         $fopenMock = $this->getFunctionMock(__NAMESPACE__, 'fopen');
         $fopenMock->expects(static::once())
             ->willReturn(false);
+
+        $errorMock = $this->getFunctionMock(__NAMESPACE__, 'error_get_last');
+        $errorMock->expects(static::once())
+            ->willReturn([
+                'message' => $reasonMessage,
+            ]);
 
         $this->helper->downloadFile('file', 123);
     }
@@ -370,8 +398,10 @@ class HelperTest extends TestCase
 
     public function testDownloadTmpFileDeletedWriteError(): void
     {
+        $reasonMessage = sha1(uniqid('error'));
+
         $this->expectException(Exception\RuntimeException::class);
-        $this->expectExceptionMessage('Unable to write to local file');
+        $this->expectExceptionMessage('Unable to write to local file: ' . $reasonMessage);
 
         $sampleFile = __DIR__ . '/__files/sample-file.csv';
         $this->mockHandler->append(
@@ -394,6 +424,12 @@ class HelperTest extends TestCase
         $fwriteMock = $this->getFunctionMock(__NAMESPACE__, 'fwrite');
         $fwriteMock->expects(static::once())
             ->willReturn(false);
+
+        $errorMock = $this->getFunctionMock(__NAMESPACE__, 'error_get_last');
+        $errorMock->expects(static::once())
+            ->willReturn([
+                'message' => $reasonMessage,
+            ]);
 
         $fcloseMock = $this->getFunctionMock(__NAMESPACE__, 'fclose');
         $fcloseMock->expects(static::once())
