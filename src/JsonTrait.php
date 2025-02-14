@@ -13,10 +13,7 @@ namespace Maxemail\Api;
  */
 trait JsonTrait
 {
-    /**
-     * @return mixed
-     */
-    private static function decodeJson(string $json)
+    private static function decodeJson(string $json): string|int|bool|\stdClass
     {
         $result = json_decode($json, false);
         $errorCode = json_last_error();
