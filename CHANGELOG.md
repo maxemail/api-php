@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Add PHP 8 type declarations.
 ### Removed
+- Remove deprecated config options for `user` and `pass`.
 - **BC break**: Removed support for PHP versions <= v8.0 as they are no longer
   [actively supported](https://php.net/supported-versions.php) by the PHP project.
 
