@@ -22,7 +22,7 @@
         "ext-zip": "*",
 
         "psr/log": "^2 || ^3",
-        "guzzlehttp/guzzle": "^6 || ^7"
+        "guzzlehttp/guzzle": "^7"
     },
 
     "suggest": {
