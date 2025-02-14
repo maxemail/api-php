@@ -32,11 +32,7 @@ class Helper
     }
 
     /**
-     * Upload file
-     *
-     * Returns file key to use for list import, email content, etc.
-     *
-     * @return string file key
+     * @return string File key to use for list import, email content, etc.
      */
     public function uploadFile(string $path): string
     {
