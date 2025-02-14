@@ -26,7 +26,7 @@ class Service
     /**
      * Call service method
      */
-    public function __call(string $name, array $params): string|int|bool|\stdClass
+    public function __call(string $name, array $params): string|int|bool|array|\stdClass
     {
         $data = [
             'method' => $name,
