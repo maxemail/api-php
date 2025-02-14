@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [6.0.0] - 2025-02-14
 ### Added
 - Add PHP 8 type declarations.
 ### Removed

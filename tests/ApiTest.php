@@ -10,9 +10,9 @@ use PHPUnit\Framework\TestCase;
 /**
  * Maxemail API Client
  *
- * @package    Maxemail\Api
- * @copyright  2007-2019 Emailcenter UK Ltd. (https://maxemail.xtremepush.com)
- * @license    LGPL-3.0
+ * @package Maxemail\Api
+ * @copyright 2007-2025 Emailcenter UK Ltd. (https://maxemail.xtremepush.com)
+ * @license LGPL-3.0
  */
 class ApiTest extends TestCase
 {

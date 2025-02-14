@@ -10,9 +10,9 @@ Self-contained client in PHP for simplifying access to the Maxemail API
 
 ## Requirements
 
-![PHP](https://img.shields.io/badge/php-%5E7.1-brightgreen.svg)
+![PHP](https://img.shields.io/badge/php-%5E8.1-brightgreen.svg)
 
-This package requires at least PHP 7.1 . Please see previous releases if you
+This package requires at least PHP 8.1 . Please see previous releases if you
 require compatibility with an older version of PHP.
 
 Composer will verify any other environment requirements on install/update.

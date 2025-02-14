@@ -12,9 +12,9 @@ use Psr\Log\LoggerInterface;
 /**
  * Maxemail API Client
  *
- * @package    Maxemail\Api
- * @copyright  2007-2019 Emailcenter UK Ltd. (https://maxemail.xtremepush.com)
- * @license    LGPL-3.0
+ * @package Maxemail\Api
+ * @copyright 2007-2025 Emailcenter UK Ltd. (https://maxemail.xtremepush.com)
+ * @license LGPL-3.0
  *
  * Services
  * @property mixed file_upload https://docs.maxemail.xtremepush.com/mxm-dev/api/services/file-upload
@@ -59,7 +59,7 @@ use Psr\Log\LoggerInterface;
  */
 class Client implements LoggerAwareInterface
 {
-    public const VERSION = '5.1';
+    public const VERSION = '6.0';
 
     private string $uri = 'https://mxm.xtremepush.com/';
 
