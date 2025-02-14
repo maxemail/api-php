@@ -24,20 +24,11 @@ use Psr\Log\LoggerInterface;
  */
 class MiddlewareTest extends TestCase
 {
-    /**
-     * @var GuzzleClient
-     */
-    private $httpClient;
+    private GuzzleClient $httpClient;
 
-    /**
-     * @var MockHandler
-     */
-    private $mockHandler;
+    private MockHandler $mockHandler;
 
-    /**
-     * @var HandlerStack
-     */
-    private $handlerStack;
+    private HandlerStack $handlerStack;
 
     protected function setUp(): void
     {
@@ -50,25 +41,24 @@ class MiddlewareTest extends TestCase
         ]);
     }
 
-    public function testWarningLoggerCreatesLog()
+    public function testWarningLoggerCreatesLog(): void
     {
         $warningMsg = 'dummyMethod Deprecated: some example description';
         $warning = "299 MxmApi/v100 \"{$warningMsg}\"";
 
-        // @todo phpunit > v7, change to `expectDeprecation()` etc.
-        // Requires convertDeprecationsToExceptions='true' in PHPUnit config
-        if (version_compare(\PHPUnit\Runner\Version::id(), '8.0.0') < 0) {
-            // PHPUnit v7
-            $this->expectException(\PHPUnit\Framework\Error\Deprecated::class);
-        } else {
-            // PHPUnit v8+
-            $this->expectDeprecation();
-        }
+        // Capture deprecation error
+        $originalErrorLevel = error_reporting();
+        error_reporting(E_ALL);
+        set_error_handler(static function (int $errno, string $errstr): never {
+            throw new \Exception($errstr, $errno);
+        }, E_USER_DEPRECATED);
+
+        $this->expectException(\Exception::class);
         $this->expectExceptionMessage($warningMsg);
 
         /** @var LoggerInterface|MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects($this->once())
+        $logger->expects(static::once())
             ->method('warning')
             ->with($warningMsg);
 
@@ -79,23 +69,28 @@ class MiddlewareTest extends TestCase
                 [
                     'Warning' => $warning,
                 ],
-                json_encode('OK')
-            )
+                json_encode('OK'),
+            ),
         );
 
         $service = new Service('dummy_service', $this->httpClient);
-        $service->dummyMethod();
+        try {
+            $service->dummyMethod();
+        } finally {
+            error_reporting($originalErrorLevel);
+            restore_error_handler();
+        }
     }
 
-    public function testWarningLoggerSkipsNoAgent()
+    public function testWarningLoggerSkipsNoAgent(): void
     {
         $warningMsg = 'some warning with no agent';
         $warning = "299 - \"{$warningMsg}\"";
 
         /** @var LoggerInterface|MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects($this->never())
-            ->method($this->anything());
+        $logger->expects(static::never())
+            ->method(static::anything());
 
         Middleware::addWarningLogging($this->handlerStack, $logger);
         $this->mockHandler->append(
@@ -104,23 +99,23 @@ class MiddlewareTest extends TestCase
                 [
                     'Warning' => $warning,
                 ],
-                json_encode('OK')
-            )
+                json_encode('OK'),
+            ),
         );
 
         $service = new Service('dummy_service', $this->httpClient);
         $service->dummyMethod();
     }
 
-    public function testWarningLoggerSkipsWrongAgent()
+    public function testWarningLoggerSkipsWrongAgent(): void
     {
         $warningMsg = 'some other system';
         $warning = "299 other/1.2.3 \"{$warningMsg}\"";
 
         /** @var LoggerInterface|MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects($this->never())
-            ->method($this->anything());
+        $logger->expects(static::never())
+            ->method(static::anything());
 
         Middleware::addWarningLogging($this->handlerStack, $logger);
         $this->mockHandler->append(
@@ -129,23 +124,23 @@ class MiddlewareTest extends TestCase
                 [
                     'Warning' => $warning,
                 ],
-                json_encode('OK')
-            )
+                json_encode('OK'),
+            ),
         );
 
         $service = new Service('dummy_service', $this->httpClient);
         $service->dummyMethod();
     }
 
-    public function testWarningLoggerSkipsWrongCode()
+    public function testWarningLoggerSkipsWrongCode(): void
     {
         $warningMsg = 'something which looks like Maxemail';
         $warning = "199 MxmApi/v100 \"{$warningMsg}\"";
 
         /** @var LoggerInterface|MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects($this->never())
-            ->method($this->anything());
+        $logger->expects(static::never())
+            ->method(static::anything());
 
         Middleware::addWarningLogging($this->handlerStack, $logger);
         $this->mockHandler->append(
@@ -154,70 +149,70 @@ class MiddlewareTest extends TestCase
                 [
                     'Warning' => $warning,
                 ],
-                json_encode('OK')
-            )
+                json_encode('OK'),
+            ),
         );
 
         $service = new Service('dummy_service', $this->httpClient);
         $service->dummyMethod();
     }
 
-    public function testWarningLoggerSkipsNoWarning()
+    public function testWarningLoggerSkipsNoWarning(): void
     {
         /** @var LoggerInterface|MockObject $logger */
         $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects($this->never())
-            ->method($this->anything());
+        $logger->expects(static::never())
+            ->method(static::anything());
 
         Middleware::addWarningLogging($this->handlerStack, $logger);
         $this->mockHandler->append(
-            new Response(200, [], json_encode('OK'))
+            new Response(200, [], json_encode('OK')),
         );
 
         $service = new Service('dummy_service', $this->httpClient);
         $service->dummyMethod();
     }
 
-    public function testErrorHandlerSkips200()
+    public function testErrorHandlerSkips200(): void
     {
         Middleware::addMaxemailErrorParser($this->handlerStack);
         $this->mockHandler->append(
-            new Response(200, [], json_encode('OK'))
+            new Response(200, [], json_encode('OK')),
         );
 
         $service = new Service('dummy_service', $this->httpClient);
         $result = $service->dummyMethod();
 
-        $this->assertSame('OK', $result);
+        static::assertSame('OK', $result);
     }
 
-    public function testErrorHandlerSkips500()
+    public function testErrorHandlerSkips500(): void
     {
         $this->expectException(ServerException::class);
 
         Middleware::addMaxemailErrorParser($this->handlerStack);
         $this->mockHandler->append(
-            new Response(500, [], 'Internal server error')
+            new Response(500, [], 'Internal server error'),
         );
 
         $service = new Service('dummy_service', $this->httpClient);
         $service->dummyMethod();
     }
 
-    public function testErrorHandlerHandles400Standard()
+    public function testErrorHandlerHandles400Standard(): void
     {
         $this->expectException(ClientException::class);
 
         Middleware::addMaxemailErrorParser($this->handlerStack);
         $this->mockHandler->append(
-            new Response(400, [], 'Error')
+            new Response(400, [], 'Error'),
         );
 
         $service = new Service('dummy_service', $this->httpClient);
         $service->dummyMethod();
     }
 
-    public function testErrorHandlerHandles400Maxemail()
+    public function testErrorHandlerHandles400Maxemail(): void
     {
         $errorMsg = 'Maxemail API error message';
 
@@ -230,7 +225,7 @@ class MiddlewareTest extends TestCase
             'msg' => $errorMsg,
         ];
         $this->mockHandler->append(
-            new Response(400, [], json_encode($mxmError))
+            new Response(400, [], json_encode($mxmError)),
         );
 
         $service = new Service('dummy_service', $this->httpClient);

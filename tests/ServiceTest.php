@@ -21,17 +21,11 @@ use PHPUnit\Framework\TestCase;
  */
 class ServiceTest extends TestCase
 {
-    /**
-     * @var GuzzleClient
-     */
-    private $httpClient;
+    private GuzzleClient $httpClient;
 
-    /**
-     * @var MockHandler
-     */
-    private $mockHandler;
+    private MockHandler $mockHandler;
 
-    private $clientHistory = [];
+    private array $clientHistory = [];
 
     protected function setUp(): void
     {
@@ -40,7 +34,7 @@ class ServiceTest extends TestCase
         $stack = HandlerStack::create($this->mockHandler);
         Middleware::addMaxemailErrorParser($stack);
         $stack->push(
-            GuzzleMiddleware::history($this->clientHistory)
+            GuzzleMiddleware::history($this->clientHistory),
         );
 
         $this->httpClient = new GuzzleClient([
@@ -49,10 +43,10 @@ class ServiceTest extends TestCase
         ]);
     }
 
-    public function testMagicCallSendsRequest()
+    public function testMagicCallSendsRequest(): void
     {
         $this->mockHandler->append(
-            new Response(200, [], json_encode('OK'))
+            new Response(200, [], json_encode('OK')),
         );
 
         $service = new Service('dummy_service', $this->httpClient);
@@ -68,7 +62,7 @@ class ServiceTest extends TestCase
                 'foo' => [
                     'bar' => 'bob',
                 ],
-            ]
+            ],
         );
 
         $expectedParams = [
@@ -83,13 +77,13 @@ class ServiceTest extends TestCase
             ]),
         ];
 
-        $this->assertCount(1, $this->clientHistory);
+        static::assertCount(1, $this->clientHistory);
 
         /** @var Request $request */
         $request = $this->clientHistory[0]['request'];
 
-        $this->assertSame('POST', $request->getMethod());
-        $this->assertSame('/api/json/dummy_service', $request->getUri()->getPath());
-        $this->assertSame(http_build_query($expectedParams), (string)$request->getBody());
+        static::assertSame('POST', $request->getMethod());
+        static::assertSame('/api/json/dummy_service', $request->getUri()->getPath());
+        static::assertSame(http_build_query($expectedParams), (string)$request->getBody());
     }
 }

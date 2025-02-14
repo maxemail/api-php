@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Maxemail\Api;
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -12,20 +13,16 @@ use PHPUnit\Framework\TestCase;
  * @package    Maxemail\Api
  * @copyright  2007-2019 Emailcenter UK Ltd. (https://maxemail.xtremepush.com)
  * @license    LGPL-3.0
- *
- * @group functional
  */
+#[Group('functional')]
 class FunctionalTest extends TestCase
 {
-    /**
-     * @var Client
-     */
-    private $client;
+    private Client $client;
 
     protected function setUp(): void
     {
         if (!getenv('FUNC_ENABLED')) {
-            $this->markTestSkipped('Functional tests are disabled');
+            static::markTestSkipped('Functional tests are disabled');
         }
 
         $config = [
@@ -39,29 +36,29 @@ class FunctionalTest extends TestCase
     /**
      * The most basic of tests
      */
-    public function testUserAuth()
+    public function testUserAuth(): void
     {
         $user = $this->client->user->isLoggedIn();
-        $this->assertTrue($user);
+        static::assertTrue($user);
     }
 
     /**
      * Test non-scalar result using Email tree which will always exist
      */
-    public function testFetchTree()
+    public function testFetchTree(): void
     {
         $tree = $this->client->tree->fetchRoot('email', []);
         $root = $tree[0];
 
-        $this->assertSame('email', $root->text);
-        $this->assertTrue($root->rootNode);
+        static::assertSame('email', $root->text);
+        static::assertTrue($root->rootNode);
     }
 
     /**
      * This test isn't about the message per-se,
      * but it checks that we're getting the properly decoded Maxemail error
      */
-    public function testFetchTreeError()
+    public function testFetchTreeError(): void
     {
         $this->expectException(Exception\ClientException::class);
         $this->expectExceptionMessage('Invalid Node Class');
@@ -69,26 +66,37 @@ class FunctionalTest extends TestCase
         $this->client->tree->fetchRoot('notATree', []);
     }
 
-    public function testDeprecatedMethod()
+    public function testDeprecatedMethod(): void
     {
-        // @todo phpunit > v7, change to `expectDeprecation()` etc.
-        $this->expectException(\PHPUnit\Framework\Error\Deprecated::class);
+        // Capture deprecation error
+        $originalErrorLevel = error_reporting();
+        error_reporting(E_ALL);
+        set_error_handler(static function (int $errno, string $errstr): never {
+            throw new \Exception($errstr, $errno);
+        }, E_USER_DEPRECATED);
+
+        $this->expectException(\Exception::class);
         $this->expectExceptionMessage('searchLists Deprecated');
 
-        $this->client->recipient->searchLists('test@example.com');
+        try {
+            $this->client->recipient->searchLists('test@example.com');
+        } finally {
+            error_reporting($originalErrorLevel);
+            restore_error_handler();
+        }
     }
 
     /**
      * The file uploaded should be identical to the file then downloaded
      */
-    public function testHelperUploadDownload()
+    public function testHelperUploadDownload(): void
     {
         $sampleFile = __DIR__ . '/__files/sample-file.csv';
         $key = $this->client->getHelper()->uploadFile($sampleFile);
 
         $downloadFile = $this->client->getHelper()->downloadFile('file', $key);
 
-        $this->assertFileEquals($sampleFile, $downloadFile);
+        static::assertFileEquals($sampleFile, $downloadFile);
         unlink($downloadFile);
     }
 }

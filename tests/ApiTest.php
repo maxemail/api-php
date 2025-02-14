@@ -16,20 +16,20 @@ use PHPUnit\Framework\TestCase;
  */
 class ApiTest extends TestCase
 {
-    private $testConfig = [
+    private array $testConfig = [
         'uri' => 'https://maxemail.example.com/',
         'username' => 'api@user.com',
         'password' => 'apipass',
     ];
 
-    public function testConfigValid()
+    public function testConfigValid(): void
     {
         $api = new Client($this->testConfig);
 
-        $this->assertSame($this->testConfig, $api->getConfig());
+        static::assertSame($this->testConfig, $api->getConfig());
     }
 
-    public function testConfigSupportDeprecatedUserPass()
+    public function testConfigSupportDeprecatedUserPass(): void
     {
         $config = [
             'user' => 'api@user.com',
@@ -38,11 +38,11 @@ class ApiTest extends TestCase
 
         $api = new Client($config);
 
-        $this->assertSame($config['user'], $api->getConfig()['username']);
-        $this->assertSame($config['pass'], $api->getConfig()['password']);
+        static::assertSame($config['user'], $api->getConfig()['username']);
+        static::assertSame($config['pass'], $api->getConfig()['password']);
     }
 
-    public function testConfigDefaultHost()
+    public function testConfigDefaultHost(): void
     {
         $config = [
             'username' => 'api@user.com',
@@ -51,10 +51,10 @@ class ApiTest extends TestCase
 
         $api = new Client($config);
 
-        $this->assertSame('https://mxm.xtremepush.com/', $api->getConfig()['uri']);
+        static::assertSame('https://mxm.xtremepush.com/', $api->getConfig()['uri']);
     }
 
-    public function testConfigStripsUriPath()
+    public function testConfigStripsUriPath(): void
     {
         $config = [
             'uri' => 'http://maxemail.example.com/some/extra/path',
@@ -64,10 +64,10 @@ class ApiTest extends TestCase
 
         $api = new Client($config);
 
-        $this->assertSame('http://maxemail.example.com/', $api->getConfig()['uri']);
+        static::assertSame('http://maxemail.example.com/', $api->getConfig()['uri']);
     }
 
-    public function testConfigInvalidUri()
+    public function testConfigInvalidUri(): void
     {
         $this->expectException(Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage('URI malformed');
@@ -81,7 +81,7 @@ class ApiTest extends TestCase
         new Client($config);
     }
 
-    public function testConfigMissingUriProtocol()
+    public function testConfigMissingUriProtocol(): void
     {
         $this->expectException(Exception\InvalidArgumentException::class);
         $this->expectExceptionMessage('URI must contain protocol scheme and host');
@@ -95,7 +95,7 @@ class ApiTest extends TestCase
         new Client($config);
     }
 
-    public function testSetGetLogger()
+    public function testSetGetLogger(): void
     {
         /** @var \Psr\Log\LoggerInterface|MockObject $logger */
         $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
@@ -104,22 +104,22 @@ class ApiTest extends TestCase
 
         $api->setLogger($logger);
 
-        $this->assertSame($logger, $api->getLogger());
+        static::assertSame($logger, $api->getLogger());
     }
 
-    public function testGetHelper()
+    public function testGetHelper(): void
     {
         $api = new Client($this->testConfig);
 
         $helper = $api->getHelper();
 
-        $this->assertInstanceOf(Helper::class, $helper);
+        static::assertInstanceOf(Helper::class, $helper);
     }
 
     /**
      * Test getInstance() returns same Service instance for same name, different for different name
      */
-    public function testGetInstance()
+    public function testGetInstance(): void
     {
         $api = new Client($this->testConfig);
 
@@ -127,7 +127,7 @@ class ApiTest extends TestCase
         $sameService = $api->service;
         $differentService = $api->different;
 
-        $this->assertSame($originalService, $sameService);
-        $this->assertNotSame($originalService, $differentService);
+        static::assertSame($originalService, $sameService);
+        static::assertNotSame($originalService, $differentService);
     }
 }

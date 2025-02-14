@@ -6,6 +6,7 @@ namespace Maxemail\Api;
 
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\HandlerStack;
+use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -56,59 +57,38 @@ use Psr\Log\LoggerInterface;
  * @property mixed transactional https://docs.maxemail.xtremepush.com/mxm-dev/api/services/transactional
  * @property mixed data_export_quick_transactional https://docs.maxemail.xtremepush.com/mxm-dev/api/services/data-export-quick-transactional
  */
-class Client implements \Psr\Log\LoggerAwareInterface
+class Client implements LoggerAwareInterface
 {
     public const VERSION = '5.1';
 
-    /**
-     * @var string
-     */
-    private $uri = 'https://mxm.xtremepush.com/';
+    private string $uri = 'https://mxm.xtremepush.com/';
 
-    /**
-     * @var string
-     */
-    private $username;
+    private readonly string $username;
 
-    /**
-     * @var string
-     */
-    private $password;
+    private readonly string $password;
 
     /**
      * @var Service[]
      */
-    private $services = [];
+    private array $services = [];
+
+    private Helper $helper;
+
+    private LoggerInterface $logger;
+
+    private GuzzleClient $httpClient;
+
+    private bool $debugLoggingEnabled = false;
 
     /**
-     * @var Helper
-     */
-    private $helper;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @var GuzzleClient
-     */
-    private $httpClient;
-
-    /**
-     * @var bool
-     */
-    private $debugLoggingEnabled = false;
-
-    /**
-     * @param array $config {
-     *     @var string $username     Required
-     *     @var string $password     Required
-     *     @var string $uri          Optional. Default https://mxm.xtremepush.com/
-     *     @var string $user         @deprecated See username
-     *     @var string $pass         @deprecated See password
-     *     @var bool   $debugLogging Optional. Enable logging of request/response. Default false
-     * }
+     * @param array{
+     *     username: string, // Required
+     *     password: string, // Required
+     *     uri: string, // Optional. Default https://mxm.xtremepush.com/
+     *     user: string, // @deprecated See username
+     *     pass: string, // @deprecated See password
+     *     debugLogging: bool, // Optional. Enable logging of request/response. Default false
+     * } $config
      */
     public function __construct(array $config)
     {
@@ -159,7 +139,7 @@ class Client implements \Psr\Log\LoggerAwareInterface
 
     private function getClient(): GuzzleClient
     {
-        if ($this->httpClient === null) {
+        if (!isset($this->httpClient)) {
             $stack = HandlerStack::create();
             Middleware::addMaxemailErrorParser($stack);
             Middleware::addWarningLogging($stack, $this->getLogger());
@@ -187,10 +167,10 @@ class Client implements \Psr\Log\LoggerAwareInterface
     /**
      * Get API connection config
      *
-     * @return array {
-     *     @var string $uri
-     *     @var string $username
-     *     @var string $password
+     * @return array{
+     *     uri: string,
+     *     username: string,
+     *     password: string,
      * }
      */
     public function getConfig(): array

@@ -16,25 +16,12 @@ use Psr\Log\LogLevel;
  */
 class Helper
 {
-    /**
-     * @var Client
-     */
-    private $api;
+    private string $logLevel = LogLevel::DEBUG;
 
-    /**
-     * @var GuzzleClient
-     */
-    private $httpClient;
-
-    /**
-     * @var string
-     */
-    private $logLevel = LogLevel::DEBUG;
-
-    public function __construct(Client $api, GuzzleClient $httpClient)
-    {
-        $this->api = $api;
-        $this->httpClient = $httpClient;
+    public function __construct(
+        private readonly Client $api,
+        private readonly GuzzleClient $httpClient,
+    ) {
     }
 
     public function setLogLevel(string $level): self
@@ -108,15 +95,17 @@ class Helper
     /**
      * Download file by type
      *
-     * @param string|int $primaryId
-     * @param array $options {
-     *     @var bool   $extract Whether to extract a compressed download, default true
-     *     @var string $dir     Directory to use for downloaded file(s), default sys_temp_dir
-     * }
+     * @param array{
+     *     extract: bool, // Whether to extract a compressed download, default true
+     *     dir: string, // Directory to use for downloaded file(s), default sys_temp_dir
+     * } $options
      * @return string filename
      */
-    public function downloadFile(string $type, $primaryId, array $options = []): string
-    {
+    public function downloadFile(
+        string $type,
+        string|int $primaryId,
+        array $options = [],
+    ): string {
         $typePrimary = [
             'file' => 'key',
             'listexport' => 'id',
@@ -130,7 +119,7 @@ class Helper
         // Create target file
         $filename = tempnam(
             ($options['dir'] ?? sys_get_temp_dir()),
-            "mxm-{$type}-{$primaryId}-"
+            "mxm-{$type}-{$primaryId}-",
         );
         $local = @fopen($filename, 'w');
         if ($local === false) {
@@ -185,7 +174,7 @@ class Helper
 
         // Add extension to filename, optionally extract zip
         switch (true) {
-            case (strpos($mime, 'zip')):
+            case str_contains($mime, 'zip'):
                 if (!isset($options['extract']) || $options['extract'] === true) {
                     // Maxemail only compresses CSV files, and only contains one file in a zip
                     $zip = new \ZipArchive();
@@ -204,13 +193,13 @@ class Helper
 
                 break;
 
-            case (strpos($mime, 'pdf')):
+            case str_contains($mime, 'pdf'):
                 rename($filename, $filename . '.pdf');
                 $filename = $filename . '.pdf';
                 break;
 
-            case (strpos($mime, 'csv')):
-            case ($mime === 'text/plain'):
+            case str_contains($mime, 'csv'):
+            case $mime === 'text/plain':
                 rename($filename, $filename . '.csv');
                 $filename = $filename . '.csv';
                 break;
