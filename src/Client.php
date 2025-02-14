@@ -85,21 +85,11 @@ class Client implements LoggerAwareInterface
      *     username: string, // Required
      *     password: string, // Required
      *     uri: string, // Optional. Default https://mxm.xtremepush.com/
-     *     user: string, // @deprecated See username
-     *     pass: string, // @deprecated See password
      *     debugLogging: bool, // Optional. Enable logging of request/response. Default false
      * } $config
      */
     public function __construct(array $config)
     {
-        // Support deprecated key names from v3
-        if (!isset($config['username']) && isset($config['user'])) {
-            $config['username'] = $config['user'];
-        }
-        if (!isset($config['password']) && isset($config['pass'])) {
-            $config['password'] = $config['pass'];
-        }
-
         // Must have user/pass
         if (!isset($config['username']) || !isset($config['password'])) {
             throw new Exception\InvalidArgumentException('API config requires username & password');

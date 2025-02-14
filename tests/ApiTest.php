@@ -29,19 +29,6 @@ class ApiTest extends TestCase
         static::assertSame($this->testConfig, $api->getConfig());
     }
 
-    public function testConfigSupportDeprecatedUserPass(): void
-    {
-        $config = [
-            'user' => 'api@user.com',
-            'pass' => 'apipass',
-        ];
-
-        $api = new Client($config);
-
-        static::assertSame($config['user'], $api->getConfig()['username']);
-        static::assertSame($config['pass'], $api->getConfig()['password']);
-    }
-
     public function testConfigDefaultHost(): void
     {
         $config = [
