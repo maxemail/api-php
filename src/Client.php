@@ -69,6 +69,11 @@ class Client implements \Psr\Log\LoggerAwareInterface
     /**
      * @var string
      */
+    private $token;
+
+    /**
+     * @var string
+     */
     private $username;
 
     /**
@@ -118,20 +123,25 @@ class Client implements \Psr\Log\LoggerAwareInterface
      */
     public function __construct(array $config)
     {
-        // Support deprecated key names from v3
-        if (!isset($config['username']) && isset($config['user'])) {
-            $config['username'] = $config['user'];
-        }
-        if (!isset($config['password']) && isset($config['pass'])) {
-            $config['password'] = $config['pass'];
-        }
+        // Must have API token
+        if (!isset($config['token'])) {
+            // Support deprecated key names from v3
+            if (!isset($config['username']) && isset($config['user'])) {
+                $config['username'] = $config['user'];
+            }
+            if (!isset($config['password']) && isset($config['pass'])) {
+                $config['password'] = $config['pass'];
+            }
 
-        // Must have user/pass
-        if (!isset($config['username']) || !isset($config['password'])) {
-            throw new Exception\InvalidArgumentException('API config requires username & password');
+            // Must have user/pass
+            if (!isset($config['username']) || !isset($config['password'])) {
+                throw new Exception\InvalidArgumentException('API config requires token OR username & password');
+            }
+            $this->username = $config['username'];
+            $this->password = $config['password'];
+        } else {
+            $this->token = $config['token'];
         }
-        $this->username = $config['username'];
-        $this->password = $config['password'];
 
         if (isset($config['uri'])) {
             $parsed = parse_url($config['uri']);
@@ -175,10 +185,6 @@ class Client implements \Psr\Log\LoggerAwareInterface
 
             $clientConfig = [
                 'base_uri' => $this->uri . 'api/json/',
-                'auth' => [
-                    $this->username,
-                    $this->password,
-                ],
                 'headers' => [
                     'User-Agent' => 'MxmApiClient/' . self::VERSION . ' PHP/' . PHP_VERSION,
                     'Content-Type' => 'application/x-www-form-urlencoded',
@@ -186,6 +192,15 @@ class Client implements \Psr\Log\LoggerAwareInterface
                 ],
                 'handler' => $stack,
             ];
+
+            if (isset($this->token)) {
+                $clientConfig['headers']['Authorization'] = 'Bearer ' . $this->token;
+            } else {
+                $clientConfig['auth'] = [
+                    $this->username,
+                    $this->password,
+                ];
+            }
 
             if (!isset($this->httpClientFactory)) {
                 $this->httpClient = new GuzzleClient($clientConfig);
