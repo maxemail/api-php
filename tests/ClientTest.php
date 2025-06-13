@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
  * @copyright 2007-2025 Emailcenter UK Ltd. (https://maxemail.xtremepush.com)
  * @license LGPL-3.0
  */
-class ApiTest extends TestCase
+class ClientTest extends TestCase
 {
     private array $testConfig = [
         'uri' => 'https://maxemail.example.com/',
@@ -77,6 +77,30 @@ class ApiTest extends TestCase
             'uri' => 'maxemail.example.com',
             'username' => 'api@user.com',
             'password' => 'apipass',
+        ];
+
+        new Client($config);
+    }
+
+    public function testConfigMissingUsername(): void
+    {
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage('API config requires username & password');
+
+        $config = [
+            'password' => 'apipass',
+        ];
+
+        new Client($config);
+    }
+
+    public function testConfigMissingPassword(): void
+    {
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage('API config requires username & password');
+
+        $config = [
+            'username' => 'api@user.com',
         ];
 
         new Client($config);

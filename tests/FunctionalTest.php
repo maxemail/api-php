@@ -38,8 +38,9 @@ class FunctionalTest extends TestCase
      */
     public function testUserAuth(): void
     {
-        $user = $this->client->user->isLoggedIn();
-        static::assertTrue($user);
+        $userDetails = $this->client->user->getDetails();
+        static::assertIsObject($userDetails);
+        static::assertTrue($userDetails->success);
     }
 
     /**
