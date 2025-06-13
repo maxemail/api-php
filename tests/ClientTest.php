@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
  * @copyright  2007-2019 Emailcenter UK Ltd. (https://maxemail.xtremepush.com)
  * @license    LGPL-3.0
  */
-class ApiTest extends TestCase
+class ClientTest extends TestCase
 {
     private $testConfig = [
         'uri' => 'https://maxemail.example.com/',
