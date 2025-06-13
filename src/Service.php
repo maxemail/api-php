@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Maxemail\Api;
 
-use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\ClientInterface as GuzzleClient;
 
 /**
  * Maxemail API Client

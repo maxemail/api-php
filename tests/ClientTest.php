@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Maxemail\Api;
 
+use GuzzleHttp\ClientInterface as GuzzleClient;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -18,15 +19,32 @@ class ClientTest extends TestCase
 {
     private $testConfig = [
         'uri' => 'https://maxemail.example.com/',
-        'username' => 'api@user.com',
-        'password' => 'apipass',
+        'token' => 'apitoken',
     ];
 
     public function testConfigValid()
     {
         $api = new Client($this->testConfig);
 
-        $this->assertSame($this->testConfig, $api->getConfig());
+        $factory = function (array $actual): GuzzleClient {
+            $expectedUri = $this->testConfig['uri'] . 'api/json/';
+            static::assertSame($expectedUri, $actual['base_uri']);
+
+            $expectedHeaders = [
+                'User-Agent' => 'MxmApiClient/' . Client::VERSION . ' PHP/' . PHP_VERSION,
+                'Content-Type' => 'application/x-www-form-urlencoded',
+                'Accept' => 'application/json',
+                'Authorization' => 'Bearer ' . $this->testConfig['token'],
+            ];
+            static::assertSame($expectedHeaders, $actual['headers']);
+
+            return $this->createMock(GuzzleClient::class);
+        };
+
+        $api->setHttpClientFactory($factory);
+
+        // Get a service, to trigger the HTTP Client factory
+        $api->folder;
     }
 
     public function testConfigSupportDeprecatedUserPass()
@@ -38,33 +56,63 @@ class ClientTest extends TestCase
 
         $api = new Client($config);
 
-        $this->assertSame($config['user'], $api->getConfig()['username']);
-        $this->assertSame($config['pass'], $api->getConfig()['password']);
+        $factory = function (array $actual) use ($config): GuzzleClient {
+            $expectedAuth = [
+                $config['user'],
+                $config['pass'],
+            ];
+            static::assertSame($expectedAuth, $actual['auth']);
+
+            return $this->createMock(GuzzleClient::class);
+        };
+
+        $api->setHttpClientFactory($factory);
+
+        // Get a service, to trigger the HTTP Client factory
+        $api->folder;
     }
 
     public function testConfigDefaultHost()
     {
         $config = [
-            'username' => 'api@user.com',
-            'password' => 'apipass',
+            'token' => 'apitoken',
         ];
 
         $api = new Client($config);
 
-        $this->assertSame('https://mxm.xtremepush.com/', $api->getConfig()['uri']);
+        $factory = function (array $actual) use ($config): GuzzleClient {
+            $expectedUri = 'https://mxm.xtremepush.com/api/json/';
+            static::assertSame($expectedUri, $actual['base_uri']);
+
+            return $this->createMock(GuzzleClient::class);
+        };
+
+        $api->setHttpClientFactory($factory);
+
+        // Get a service, to trigger the HTTP Client factory
+        $api->folder;
     }
 
     public function testConfigStripsUriPath()
     {
         $config = [
-            'uri' => 'http://maxemail.example.com/some/extra/path',
-            'username' => 'api@user.com',
-            'password' => 'apipass',
+            'uri' => 'https://maxemail.example.com/some/extra/path',
+            'token' => 'apitoken',
         ];
 
         $api = new Client($config);
 
-        $this->assertSame('http://maxemail.example.com/', $api->getConfig()['uri']);
+        $factory = function (array $actual) use ($config): GuzzleClient {
+            $expectedUri = 'https://maxemail.example.com/api/json/';
+            static::assertSame($expectedUri, $actual['base_uri']);
+
+            return $this->createMock(GuzzleClient::class);
+        };
+
+        $api->setHttpClientFactory($factory);
+
+        // Get a service, to trigger the HTTP Client factory
+        $api->folder;
     }
 
     public function testConfigInvalidUri()
@@ -74,8 +122,7 @@ class ClientTest extends TestCase
 
         $config = [
             'uri' => '//',
-            'username' => 'api@user.com',
-            'password' => 'apipass',
+            'token' => 'apitoken',
         ];
 
         new Client($config);
@@ -88,17 +135,49 @@ class ClientTest extends TestCase
 
         $config = [
             'uri' => 'maxemail.example.com',
-            'username' => 'api@user.com',
-            'password' => 'apipass',
+            'token' => 'apitoken',
         ];
 
         new Client($config);
     }
 
+    public function testConfigLegacyAuthentication(): void
+    {
+        $config = [
+            'username' => 'api@user.com',
+            'password' => 'apipass',
+        ];
+
+        $api = new Client($config);
+
+        $factory = function (array $actual) use ($config): GuzzleClient {
+            $expectedAuth = [
+                $config['username'],
+                $config['password'],
+            ];
+            static::assertSame($expectedAuth, $actual['auth']);
+
+            return $this->createMock(GuzzleClient::class);
+        };
+
+        $api->setHttpClientFactory($factory);
+
+        // Get a service, to trigger the HTTP Client factory
+        $api->folder;
+    }
+
+    public function testConfigMissingToken(): void
+    {
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage('API config requires token OR username & password');
+
+        new Client([]);
+    }
+
     public function testConfigMissingUsername(): void
     {
         $this->expectException(Exception\InvalidArgumentException::class);
-        $this->expectExceptionMessage('API config requires username & password');
+        $this->expectExceptionMessage('API config requires token OR username & password');
 
         $config = [
             'password' => 'apipass',
@@ -110,13 +189,39 @@ class ClientTest extends TestCase
     public function testConfigMissingPassword(): void
     {
         $this->expectException(Exception\InvalidArgumentException::class);
-        $this->expectExceptionMessage('API config requires username & password');
+        $this->expectExceptionMessage('API config requires token OR username & password');
 
         $config = [
             'username' => 'api@user.com',
         ];
 
         new Client($config);
+    }
+
+    public function testGetConfigWithToken(): void
+    {
+        $api = new Client($this->testConfig);
+
+        $expected = [
+            'uri' => $this->testConfig['uri'],
+            'username' => null,
+            'password' => null,
+        ];
+
+        static::assertSame($expected, $api->getConfig());
+    }
+
+    public function testGetConfigWithLegacyAuthentication(): void
+    {
+        $config = [
+            'uri' => 'https://maxemail.example.com/',
+            'username' => 'api@user.com',
+            'password' => 'apipass',
+        ];
+
+        $api = new Client($config);
+
+        static::assertSame($config, $api->getConfig());
     }
 
     public function testSetGetLogger()
