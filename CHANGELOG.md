@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Changed
+- Deprecate `getConfig()` method. Packages can maintain their config internally.
 
 ## [5.1.1] - 2021-08-10
 ### Fixed

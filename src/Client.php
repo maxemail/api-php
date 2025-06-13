@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Maxemail\Api;
 
 use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\ClientInterface as GuzzleClientInterface;
 use GuzzleHttp\HandlerStack;
 use Psr\Log\LoggerInterface;
 
@@ -91,7 +92,7 @@ class Client implements \Psr\Log\LoggerAwareInterface
     private $logger;
 
     /**
-     * @var GuzzleClient
+     * @var GuzzleClientInterface
      */
     private $httpClient;
 
@@ -99,6 +100,11 @@ class Client implements \Psr\Log\LoggerAwareInterface
      * @var bool
      */
     private $debugLoggingEnabled = false;
+
+    /**
+     * @var \Closure(array):GuzzleClientInterface
+     */
+    private $httpClientFactory;
 
     /**
      * @param array $config {
@@ -157,7 +163,7 @@ class Client implements \Psr\Log\LoggerAwareInterface
         return $this->services[$serviceName];
     }
 
-    private function getClient(): GuzzleClient
+    private function getClient(): GuzzleClientInterface
     {
         if ($this->httpClient === null) {
             $stack = HandlerStack::create();
@@ -166,7 +172,8 @@ class Client implements \Psr\Log\LoggerAwareInterface
             if ($this->debugLoggingEnabled) {
                 Middleware::addLogging($stack, $this->getLogger());
             }
-            $this->httpClient = new GuzzleClient([
+
+            $clientConfig = [
                 'base_uri' => $this->uri . 'api/json/',
                 'auth' => [
                     $this->username,
@@ -178,7 +185,13 @@ class Client implements \Psr\Log\LoggerAwareInterface
                     'Accept' => 'application/json',
                 ],
                 'handler' => $stack,
-            ]);
+            ];
+
+            if (!isset($this->httpClientFactory)) {
+                $this->httpClient = new GuzzleClient($clientConfig);
+            } else {
+                $this->httpClient = ($this->httpClientFactory)($clientConfig);
+            }
         }
 
         return $this->httpClient;
@@ -187,6 +200,7 @@ class Client implements \Psr\Log\LoggerAwareInterface
     /**
      * Get API connection config
      *
+     * @deprecated v5.2 No replacement; packages can maintain their own config; to be removed in v7.
      * @return array {
      *     @var string $uri
      *     @var string $username
@@ -223,5 +237,13 @@ class Client implements \Psr\Log\LoggerAwareInterface
         }
 
         return $this->logger;
+    }
+
+    /**
+     * @internal This method is not part of the BC promise. Used for DI for unit tests only.
+     */
+    public function setHttpClientFactory(\Closure $httpClientFactory): void
+    {
+        $this->httpClientFactory = $httpClientFactory;
     }
 }
