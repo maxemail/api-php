@@ -95,6 +95,30 @@ class ClientTest extends TestCase
         new Client($config);
     }
 
+    public function testConfigMissingUsername(): void
+    {
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage('API config requires username & password');
+
+        $config = [
+            'password' => 'apipass',
+        ];
+
+        new Client($config);
+    }
+
+    public function testConfigMissingPassword(): void
+    {
+        $this->expectException(Exception\InvalidArgumentException::class);
+        $this->expectExceptionMessage('API config requires username & password');
+
+        $config = [
+            'username' => 'api@user.com',
+        ];
+
+        new Client($config);
+    }
+
     public function testSetGetLogger()
     {
         /** @var \Psr\Log\LoggerInterface|MockObject $logger */
