@@ -60,7 +60,7 @@ use Psr\Log\LoggerInterface;
  */
 class Client implements LoggerAwareInterface
 {
-    public const VERSION = '6.0';
+    public const VERSION = '6.1';
 
     private string $uri = 'https://mxm.xtremepush.com/';
 
