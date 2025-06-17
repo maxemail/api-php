@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Maxemail\Api;
 
 use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\ClientInterface as GuzzleClientInterface;
 use GuzzleHttp\HandlerStack;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
@@ -63,6 +64,8 @@ class Client implements LoggerAwareInterface
 
     private string $uri = 'https://mxm.xtremepush.com/';
 
+    private readonly string $token;
+
     private readonly string $username;
 
     private readonly string $password;
@@ -76,26 +79,37 @@ class Client implements LoggerAwareInterface
 
     private LoggerInterface $logger;
 
-    private GuzzleClient $httpClient;
+    private GuzzleClientInterface $httpClient;
 
     private bool $debugLoggingEnabled = false;
 
     /**
+     * @var \Closure(array):GuzzleClientInterface
+     */
+    private \Closure $httpClientFactory;
+
+    /**
      * @param array{
-     *     username: string, // Required
-     *     password: string, // Required
+     *     token: string, // Required, or username & password
+     *     username: string, // Required, if no token
+     *     password: string, // Required, if no token
      *     uri: string, // Optional. Default https://mxm.xtremepush.com/
      *     debugLogging: bool, // Optional. Enable logging of request/response. Default false
      * } $config
      */
     public function __construct(array $config)
     {
-        // Must have user/pass
-        if (!isset($config['username']) || !isset($config['password'])) {
-            throw new Exception\InvalidArgumentException('API config requires username & password');
+        // Must have API token
+        if (!isset($config['token'])) {
+            // Must have user/pass
+            if (!isset($config['username']) || !isset($config['password'])) {
+                throw new Exception\InvalidArgumentException('API config requires token OR username & password');
+            }
+            $this->username = $config['username'];
+            $this->password = $config['password'];
+        } else {
+            $this->token = $config['token'];
         }
-        $this->username = $config['username'];
-        $this->password = $config['password'];
 
         if (isset($config['uri'])) {
             $parsed = parse_url($config['uri']);
@@ -127,7 +141,7 @@ class Client implements LoggerAwareInterface
         return $this->services[$serviceName];
     }
 
-    private function getClient(): GuzzleClient
+    private function getClient(): GuzzleClientInterface
     {
         if (!isset($this->httpClient)) {
             $stack = HandlerStack::create();
@@ -136,19 +150,31 @@ class Client implements LoggerAwareInterface
             if ($this->debugLoggingEnabled) {
                 Middleware::addLogging($stack, $this->getLogger());
             }
-            $this->httpClient = new GuzzleClient([
+
+            $clientConfig = [
                 'base_uri' => $this->uri . 'api/json/',
-                'auth' => [
-                    $this->username,
-                    $this->password,
-                ],
                 'headers' => [
                     'User-Agent' => 'MxmApiClient/' . self::VERSION . ' PHP/' . PHP_VERSION,
                     'Content-Type' => 'application/x-www-form-urlencoded',
                     'Accept' => 'application/json',
                 ],
                 'handler' => $stack,
-            ]);
+            ];
+
+            if (isset($this->token)) {
+                $clientConfig['headers']['Authorization'] = 'Bearer ' . $this->token;
+            } else {
+                $clientConfig['auth'] = [
+                    $this->username,
+                    $this->password,
+                ];
+            }
+
+            if (!isset($this->httpClientFactory)) {
+                $this->httpClient = new GuzzleClient($clientConfig);
+            } else {
+                $this->httpClient = ($this->httpClientFactory)($clientConfig);
+            }
         }
 
         return $this->httpClient;
@@ -157,6 +183,7 @@ class Client implements LoggerAwareInterface
     /**
      * Get API connection config
      *
+     * @deprecated v5.2 No replacement; packages can maintain their own config; to be removed in v7.
      * @return array{
      *     uri: string,
      *     username: string,
@@ -167,8 +194,8 @@ class Client implements LoggerAwareInterface
     {
         return [
             'uri' => $this->uri,
-            'username' => $this->username,
-            'password' => $this->password,
+            'username' => $this->username ?? null,
+            'password' => $this->password ?? null,
         ];
     }
 
@@ -193,5 +220,13 @@ class Client implements LoggerAwareInterface
         }
 
         return $this->logger;
+    }
+
+    /**
+     * @internal This method is not part of the BC promise. Used for DI for unit tests only.
+     */
+    public function setHttpClientFactory(\Closure $httpClientFactory): void
+    {
+        $this->httpClientFactory = $httpClientFactory;
     }
 }

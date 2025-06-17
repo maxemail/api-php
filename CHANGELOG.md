@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+- Support for API token authentication. Username and password can still be used
+  as a fallback.
+### Changed
+- Deprecate `getConfig()` method. Packages can maintain their config internally.
 
 ## [6.0.0] - 2025-02-14
 ### Added
@@ -13,6 +18,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Remove deprecated config options for `user` and `pass`.
 - **BC break**: Removed support for PHP versions <= v8.0 as they are no longer
   [actively supported](https://php.net/supported-versions.php) by the PHP project.
+
+## [5.2.0] - 2025-06-25
+### Added
+- Support for API token authentication. Username and password can still be used
+  as a fallback.
+### Changed
+- Deprecate `getConfig()` method. Packages can maintain their config internally.
 
 ## [5.1.1] - 2021-08-10
 ### Fixed
