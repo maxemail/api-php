@@ -59,7 +59,7 @@ use Psr\Log\LoggerInterface;
  */
 class Client implements \Psr\Log\LoggerAwareInterface
 {
-    public const VERSION = '5.1';
+    public const VERSION = '5.2';
 
     /**
      * @var string
