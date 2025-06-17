@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [5.2.0] - 2025-06-25
 ### Added
 - Support for API token authentication. Username and password can still be used
   as a fallback.
