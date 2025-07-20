@@ -36,8 +36,8 @@ $ composer require maxemail/api-php
 ```php
 // Instantiate Client:
 $config = [
-    'username' => 'api@user.com',
-    'password' => 'apipass'
+    'username' => 'client ID',
+    'password' => 'client secret'
 ];
 $api = new \Maxemail\Api\Client($config);
 

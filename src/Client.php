@@ -108,8 +108,8 @@ class Client implements \Psr\Log\LoggerAwareInterface
 
     /**
      * @param array $config {
-     *     @var string $username     Required
-     *     @var string $password     Required
+     *     @var string $username     Required; API client ID
+     *     @var string $password     Required; API client secret
      *     @var string $uri          Optional. Default https://mxm.xtremepush.com/
      *     @var string $user         @deprecated See username
      *     @var string $pass         @deprecated See password

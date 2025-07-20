@@ -19,8 +19,8 @@ class ClientTest extends TestCase
 {
     private $testConfig = [
         'uri' => 'https://maxemail.example.com/',
-        'username' => 'api@user.com',
-        'password' => 'apipass',
+        'username' => 'clientId',
+        'password' => 'clientSecret',
     ];
 
     public function testConfigValid()
@@ -81,8 +81,8 @@ class ClientTest extends TestCase
     public function testConfigDefaultHost()
     {
         $config = [
-            'username' => 'api@user.com',
-            'password' => 'apipass',
+            'username' => 'clientId',
+            'password' => 'clientSecret',
         ];
 
         $api = new Client($config);
@@ -104,8 +104,8 @@ class ClientTest extends TestCase
     {
         $config = [
             'uri' => 'https://maxemail.example.com/some/extra/path',
-            'username' => 'api@user.com',
-            'password' => 'apipass',
+            'username' => 'clientId',
+            'password' => 'clientSecret',
         ];
 
         $api = new Client($config);
@@ -130,8 +130,8 @@ class ClientTest extends TestCase
 
         $config = [
             'uri' => '//',
-            'username' => 'api@user.com',
-            'password' => 'apipass',
+            'username' => 'clientId',
+            'password' => 'clientSecret',
         ];
 
         new Client($config);
@@ -144,8 +144,8 @@ class ClientTest extends TestCase
 
         $config = [
             'uri' => 'maxemail.example.com',
-            'username' => 'api@user.com',
-            'password' => 'apipass',
+            'username' => 'clientId',
+            'password' => 'clientSecret',
         ];
 
         new Client($config);
@@ -157,7 +157,7 @@ class ClientTest extends TestCase
         $this->expectExceptionMessage('API config requires username & password');
 
         $config = [
-            'password' => 'apipass',
+            'password' => 'clientSecret',
         ];
 
         new Client($config);
@@ -169,7 +169,7 @@ class ClientTest extends TestCase
         $this->expectExceptionMessage('API config requires username & password');
 
         $config = [
-            'username' => 'api@user.com',
+            'username' => 'clientId',
         ];
 
         new Client($config);

@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Changed
 - Revert support for token auth, added in v5.2.0.
+- Label username and password for clientId and clientSecret. No param changes.
 
 ## [5.2.0] - 2025-06-25
 ### Added
