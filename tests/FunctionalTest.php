@@ -30,7 +30,8 @@ class FunctionalTest extends TestCase
 
         $config = [
             'uri' => getenv('FUNC_API_URI'),
-            'token' => getenv('FUNC_API_TOKEN'),
+            'username' => getenv('FUNC_API_USERNAME'),
+            'password' => getenv('FUNC_API_PASSWORD'),
         ];
         $this->client = new Client($config);
     }

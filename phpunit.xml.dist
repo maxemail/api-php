@@ -12,7 +12,8 @@
         <!-- Configuration to enable functional tests -->
         <env name="FUNC_ENABLED" value="false" />
         <env name="FUNC_API_URI" value="https://mxm.xtremepush.com/" />
-        <env name="FUNC_API_TOKEN" value="apitoken" />
+        <env name="FUNC_API_USERNAME" value="api@user.com" />
+        <env name="FUNC_API_PASSWORD" value="apipass" />
     </php>
 
     <testsuites>
