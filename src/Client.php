@@ -64,8 +64,6 @@ class Client implements LoggerAwareInterface
 
     private string $uri = 'https://mxm.xtremepush.com/';
 
-    private readonly string $token;
-
     private readonly string $username;
 
     private readonly string $password;
@@ -90,26 +88,20 @@ class Client implements LoggerAwareInterface
 
     /**
      * @param array{
-     *     token: string, // Required, or username & password
-     *     username: string, // Required, if no token
-     *     password: string, // Required, if no token
+     *     username: string, // Required; API client ID
+     *     password: string, // Required; API client secret
      *     uri: string, // Optional. Default https://mxm.xtremepush.com/
      *     debugLogging: bool, // Optional. Enable logging of request/response. Default false
      * } $config
      */
     public function __construct(array $config)
     {
-        // Must have API token
-        if (!isset($config['token'])) {
-            // Must have user/pass
-            if (!isset($config['username']) || !isset($config['password'])) {
-                throw new Exception\InvalidArgumentException('API config requires token OR username & password');
-            }
-            $this->username = $config['username'];
-            $this->password = $config['password'];
-        } else {
-            $this->token = $config['token'];
+        // Must have user/pass
+        if (!isset($config['username']) || !isset($config['password'])) {
+            throw new Exception\InvalidArgumentException('API config requires username & password');
         }
+        $this->username = $config['username'];
+        $this->password = $config['password'];
 
         if (isset($config['uri'])) {
             $parsed = parse_url($config['uri']);
@@ -153,6 +145,10 @@ class Client implements LoggerAwareInterface
 
             $clientConfig = [
                 'base_uri' => $this->uri . 'api/json/',
+                'auth' => [
+                    $this->username,
+                    $this->password,
+                ],
                 'headers' => [
                     'User-Agent' => 'MxmApiClient/' . self::VERSION . ' PHP/' . PHP_VERSION,
                     'Content-Type' => 'application/x-www-form-urlencoded',
@@ -160,15 +156,6 @@ class Client implements LoggerAwareInterface
                 ],
                 'handler' => $stack,
             ];
-
-            if (isset($this->token)) {
-                $clientConfig['headers']['Authorization'] = 'Bearer ' . $this->token;
-            } else {
-                $clientConfig['auth'] = [
-                    $this->username,
-                    $this->password,
-                ];
-            }
 
             if (!isset($this->httpClientFactory)) {
                 $this->httpClient = new GuzzleClient($clientConfig);
