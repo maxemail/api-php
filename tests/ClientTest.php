@@ -19,7 +19,8 @@ class ClientTest extends TestCase
 {
     private $testConfig = [
         'uri' => 'https://maxemail.example.com/',
-        'token' => 'apitoken',
+        'username' => 'clientId',
+        'password' => 'clientSecret',
     ];
 
     public function testConfigValid()
@@ -30,11 +31,16 @@ class ClientTest extends TestCase
             $expectedUri = $this->testConfig['uri'] . 'api/json/';
             static::assertSame($expectedUri, $actual['base_uri']);
 
+            $expectedAuth = [
+                $this->testConfig['username'],
+                $this->testConfig['password'],
+            ];
+            static::assertSame($expectedAuth, $actual['auth']);
+
             $expectedHeaders = [
                 'User-Agent' => 'MxmApiClient/' . Client::VERSION . ' PHP/' . PHP_VERSION,
                 'Content-Type' => 'application/x-www-form-urlencoded',
                 'Accept' => 'application/json',
-                'Authorization' => 'Bearer ' . $this->testConfig['token'],
             ];
             static::assertSame($expectedHeaders, $actual['headers']);
 
@@ -75,7 +81,8 @@ class ClientTest extends TestCase
     public function testConfigDefaultHost()
     {
         $config = [
-            'token' => 'apitoken',
+            'username' => 'clientId',
+            'password' => 'clientSecret',
         ];
 
         $api = new Client($config);
@@ -97,7 +104,8 @@ class ClientTest extends TestCase
     {
         $config = [
             'uri' => 'https://maxemail.example.com/some/extra/path',
-            'token' => 'apitoken',
+            'username' => 'clientId',
+            'password' => 'clientSecret',
         ];
 
         $api = new Client($config);
@@ -122,7 +130,8 @@ class ClientTest extends TestCase
 
         $config = [
             'uri' => '//',
-            'token' => 'apitoken',
+            'username' => 'clientId',
+            'password' => 'clientSecret',
         ];
 
         new Client($config);
@@ -135,52 +144,20 @@ class ClientTest extends TestCase
 
         $config = [
             'uri' => 'maxemail.example.com',
-            'token' => 'apitoken',
+            'username' => 'clientId',
+            'password' => 'clientSecret',
         ];
 
         new Client($config);
     }
 
-    public function testConfigLegacyAuthentication(): void
-    {
-        $config = [
-            'username' => 'api@user.com',
-            'password' => 'apipass',
-        ];
-
-        $api = new Client($config);
-
-        $factory = function (array $actual) use ($config): GuzzleClient {
-            $expectedAuth = [
-                $config['username'],
-                $config['password'],
-            ];
-            static::assertSame($expectedAuth, $actual['auth']);
-
-            return $this->createMock(GuzzleClient::class);
-        };
-
-        $api->setHttpClientFactory($factory);
-
-        // Get a service, to trigger the HTTP Client factory
-        $api->folder;
-    }
-
-    public function testConfigMissingToken(): void
-    {
-        $this->expectException(Exception\InvalidArgumentException::class);
-        $this->expectExceptionMessage('API config requires token OR username & password');
-
-        new Client([]);
-    }
-
     public function testConfigMissingUsername(): void
     {
         $this->expectException(Exception\InvalidArgumentException::class);
-        $this->expectExceptionMessage('API config requires token OR username & password');
+        $this->expectExceptionMessage('API config requires username & password');
 
         $config = [
-            'password' => 'apipass',
+            'password' => 'clientSecret',
         ];
 
         new Client($config);
@@ -189,39 +166,20 @@ class ClientTest extends TestCase
     public function testConfigMissingPassword(): void
     {
         $this->expectException(Exception\InvalidArgumentException::class);
-        $this->expectExceptionMessage('API config requires token OR username & password');
+        $this->expectExceptionMessage('API config requires username & password');
 
         $config = [
-            'username' => 'api@user.com',
+            'username' => 'clientId',
         ];
 
         new Client($config);
     }
 
-    public function testGetConfigWithToken(): void
+    public function testGetConfig(): void
     {
         $api = new Client($this->testConfig);
 
-        $expected = [
-            'uri' => $this->testConfig['uri'],
-            'username' => null,
-            'password' => null,
-        ];
-
-        static::assertSame($expected, $api->getConfig());
-    }
-
-    public function testGetConfigWithLegacyAuthentication(): void
-    {
-        $config = [
-            'uri' => 'https://maxemail.example.com/',
-            'username' => 'api@user.com',
-            'password' => 'apipass',
-        ];
-
-        $api = new Client($config);
-
-        static::assertSame($config, $api->getConfig());
+        static::assertSame($this->testConfig, $api->getConfig());
     }
 
     public function testSetGetLogger()
