@@ -5,11 +5,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Changed
+- Revert support for token auth, added in v6.1.0.
+- Label username and password for clientId and clientSecret. No param changes.
 
 ## [6.1.0] - 2025-06-25
 ### Added
-- Support for API token authentication. Username and password can still be used
-  as a fallback.
+- ~~Support for API token authentication. Username and password can still be used
+  as a fallback.~~ Reverted in v6.1.1.
 ### Changed
 - Deprecate `getConfig()` method. Packages can maintain their config internally.
 
@@ -21,10 +24,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - **BC break**: Removed support for PHP versions <= v8.0 as they are no longer
   [actively supported](https://php.net/supported-versions.php) by the PHP project.
 
+## [5.2.1] - 2025-07-20
+### Changed
+- Revert support for token auth, added in v5.2.0.
+- Label username and password for clientId and clientSecret. No param changes.
+
 ## [5.2.0] - 2025-06-25
 ### Added
-- Support for API token authentication. Username and password can still be used
-  as a fallback.
+- ~~Support for API token authentication. Username and password can still be used
+  as a fallback.~~ Reverted in v5.2.1.
 ### Changed
 - Deprecate `getConfig()` method. Packages can maintain their config internally.
 
