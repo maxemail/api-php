@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [6.1.1] - 2025-07-20
 ### Changed
 - Revert support for token auth, added in v6.1.0.
 - Label username and password for clientId and clientSecret. No param changes.
